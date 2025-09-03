@@ -3,295 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS180 Portfolio - Project 0</title>
+    <title>CS180 Project 0 - Becoming Friends with Your Camera</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Global Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-        
-        :root {
-            --primary: #4a6fa5;
-            --secondary: #166088;
-            --accent: #4fc3a1;
-            --light: #f8f9fa;
-            --dark: #343a40;
-            --gray: #6c757d;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
             line-height: 1.6;
-            color: var(--dark);
-            background-color: #f4f4f4;
-        }
-        
-        .container {
-            width: 90%;
+            padding: 20px;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 15px;
         }
         
-        /* Header Styles */
         header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #3a5f8a, #144a74);
             color: white;
-            padding: 1.5rem 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
         }
         
-        nav {
+        h1 {
+            font-size: 2.4rem;
+            margin-bottom: 12px;
+        }
+        
+        .course-info {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        
+        .tags {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
         }
         
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
-        
-        .logo span {
-            color: var(--accent);
+        .tag {
+            background: rgba(255, 255, 255, 0.18);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
         }
         
         .nav-links {
             display: flex;
-            list-style: none;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
         }
         
-        .nav-links li {
-            margin-left: 2rem;
-        }
-        
-        .nav-links a {
+        .nav-btn {
+            padding: 12px 24px;
+            background: #4fc3a1;
             color: white;
             text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        
-        .nav-links a:hover {
-            color: var(--accent);
-        }
-        
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(rgba(74, 111, 165, 0.8), rgba(22, 96, 136, 0.9)), url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3') center/cover no-repeat;
-            color: white;
-            text-align: center;
-            padding: 6rem 0;
-        }
-        
-        .hero-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-        }
-        
-        .btn {
-            display: inline-block;
-            background: var(--accent);
-            color: white;
-            padding: 0.8rem 1.8rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
+            border-radius: 6px;
             transition: all 0.3s;
+            font-weight: 500;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
         
-        .btn:hover {
+        .nav-btn:hover {
             background: #3da58a;
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
         }
         
-        /* Projects Section */
-        .section-title {
-            text-align: center;
-            margin: 3rem 0;
-            color: var(--secondary);
-            font-size: 2.5rem;
-        }
-        
-        .projects {
-            padding: 3rem 0;
-            background-color: white;
-        }
-        
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .project-card {
+        section {
             background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
         
-        .project-card:hover {
-            transform: translateY(-10px);
-        }
-        
-        .project-img {
-            height: 200px;
-            background-color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 3rem;
-        }
-        
-        .project-content {
-            padding: 1.5rem;
-        }
-        
-        .project-content h3 {
-            color: var(--secondary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .project-content p {
-            color: var(--gray);
-            margin-bottom: 1rem;
-        }
-        
-        /* About Section */
-        .about {
-            padding: 5rem 0;
-            background-color: var(--light);
-        }
-        
-        .about-content {
-            display: flex;
-            align-items: center;
-            gap: 3rem;
-        }
-        
-        .about-text {
-            flex: 1;
-        }
-        
-        .about-img {
-            flex: 1;
-            background-color: var(--primary);
-            height: 300px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-        }
-        
-        /* Footer */
-        footer {
-            background: var(--dark);
-            color: white;
-            text-align: center;
-            padding: 2rem 0;
-        }
-        
-        .social-links {
-            margin-bottom: 1rem;
-        }
-        
-        .social-links a {
-            color: white;
-            font-size: 1.5rem;
-            margin: 0 0.5rem;
-            transition: color 0.3s;
-        }
-        
-        .social-links a:hover {
-            color: var(--accent);
-        }
-        
-        /* Project 0 Specific Styles */
-        .project0-hero {
-            background: linear-gradient(rgba(74, 111, 165, 0.9), rgba(22, 96, 136, 0.9)), url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3') center/cover no-repeat;
-            color: white;
-            padding: 4rem 0;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .project0-hero h1 {
-            font-size: 2.8rem;
-            margin-bottom: 1rem;
-        }
-        
-        .project0-tags {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-            margin: 1.5rem 0;
-        }
-        
-        .project0-tag {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.4rem 1rem;
-            border-radius: 50px;
-            font-size: 0.9rem;
-        }
-        
-        .project0-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        
-        .project0-section {
-            background: white;
-            border-radius: 10px;
-            padding: 2.5rem;
-            margin-bottom: 2.5rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        .project0-section h2 {
-            color: var(--secondary);
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.8rem;
-            border-bottom: 2px solid var(--accent);
+        h2 {
+            color: #144a74;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #4fc3a1;
         }
         
         .note {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-left: 4px solid var(--accent);
-            margin-bottom: 1.5rem;
-            font-style: italic;
+            background: #f0f8ff;
+            padding: 18px;
+            border-left: 4px solid #3a5f8a;
+            margin-bottom: 25px;
+            border-radius: 6px;
+            line-height: 1.7;
         }
         
         .image-grid {
             display: grid;
-            gap: 1.5rem;
-            margin: 2rem 0;
+            gap: 25px;
+            margin: 30px 0;
         }
         
         .grid-4 {
@@ -302,119 +120,108 @@
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
         }
         
-        .project0-figure {
+        .figure {
             background: #f8f9fa;
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         
-        .project0-figure img {
+        .figure:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .figure img {
             width: 100%;
-            height: 250px;
+            height: 200px;
             object-fit: cover;
             display: block;
+            border-bottom: 1px solid #eaeaea;
         }
         
-        .project0-figcaption {
-            padding: 1rem;
-            font-size: 0.9rem;
-            color: var(--gray);
+        .figcaption {
+            padding: 16px;
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.5;
         }
         
         .gif-container {
             text-align: center;
-            margin: 2rem 0;
+            margin: 30px 0;
         }
         
         .gif-container img {
             max-width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
         }
         
         .reflection {
             background: #f0f8ff;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-top: 2rem;
-            border-left: 4px solid var(--primary);
+            padding: 24px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 4px solid #3a5f8a;
         }
         
         .reflection h4 {
-            color: var(--primary);
-            margin-bottom: 1rem;
+            color: #144a74;
+            margin-bottom: 16px;
+            font-size: 1.2rem;
         }
         
-        /* Responsive Design */
+        footer {
+            text-align: center;
+            padding: 25px;
+            margin-top: 40px;
+            color: #666;
+            font-size: 0.95rem;
+            border-top: 1px solid #ddd;
+        }
+        
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .about-content {
-                flex-direction: column;
-            }
-            
-            .project-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .project0-hero h1 {
-                font-size: 2.2rem;
-            }
-            
             .grid-4, .grid-2 {
                 grid-template-columns: 1fr;
             }
             
-            .project0-section {
-                padding: 1.5rem;
+            h1 {
+                font-size: 1.9rem;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            section {
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
-        <div class="container">
-            <nav>
-                <div class="logo">CS<span>180</span></div>
-                <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="index.html#projects">Projects</a></li>
-                    <li><a href="index.html#about">About</a></li>
-                    <li><a href="index.html#contact">Contact</a></li>
-                </ul>
-            </nav>
+        <h1>Project 0 — Becoming Friends with Your Camera</h1>
+        <p class="course-info">CS180/280A • Fall 2025</p>
+        <div class="tags">
+            <span class="tag">Photography</span>
+            <span class="tag">Perspective</span>
+            <span class="tag">Focal length</span>
+            <span class="tag">Dolly Zoom</span>
+        </div>
+        <div class="nav-links">
+            <a class="nav-btn" href="#part1">Part 1</a>
+            <a class="nav-btn" href="#part2">Part 2</a>
+            <a class="nav-btn" href="#part3">Part 3</a>
         </div>
     </header>
 
-    <!-- Project 0 Hero Section -->
-    <section class="project0-hero">
-        <div class="container">
-            <h1>Project 0 — Becoming Friends with Your Camera</h1>
-            <p>CS180/280A • Fall 2025</p>
-            <div class="project0-tags">
-                <span class="project0-tag">Photography</span>
-                <span class="project0-tag">Perspective</span>
-                <span class="project0-tag">Focal length</span>
-                <span class="project0-tag">Dolly Zoom</span>
-            </div>
-            <div class="project0-nav">
-                <a class="btn" href="#part1">Part 1</a>
-                <a class="btn" href="#part2">Part 2</a>
-                <a class="btn" href="#part3">Part 3</a>
-            </div>
-        </div>
-    </section>
-
-    <main class="container">
+    <main>
         <!-- ======================= Part 1 ======================= -->
-        <section id="part1" class="project0-section">
+        <section id="part1">
             <h2>Part 1 — Portrait Series at Controlled Camera Offsets</h2>
             <p class="note">
                 Distances are expressed relative to a <em>baseline</em> vantage point that yields the desired framing.
@@ -423,21 +230,21 @@
             </p>
 
             <div class="image-grid grid-4">
-                <div class="project0-figure">
-                    <img src="https://via.placeholder.com/300x250/4a6fa5/ffffff?text=Placeholder+-1ft" alt="Portrait at −1 feet relative to baseline; closer, wider perspective">
-                    <div class="project0-figcaption">(−1 feet) Closer than baseline; stronger perspective exaggeration.</div>
+                <div class="figure">
+                    <img src="Image_20250902220431.jpg" alt="Portrait at −1 feet relative to baseline; closer, wider perspective">
+                    <div class="figcaption">(−1 feet) Closer than baseline; stronger perspective exaggeration.</div>
                 </div>
-                <div class="project0-figure">
-                    <img src="https://via.placeholder.com/300x250/166088/ffffff?text=Placeholder+0ft" alt="Portrait at 0 feet: baseline vantage and framing">
-                    <div class="project0-figcaption">(0 feet) Baseline position and framing.</div>
+                <div class="figure">
+                    <img src="Image_20250902220437.jpg" alt="Portrait at 0 feet: baseline vantage and framing">
+                    <div class="figcaption">(0 feet) Baseline position and framing.</div>
                 </div>
-                <div class="project0-figure">
-                    <img src="https://via.placeholder.com/300x250/4fc3a1/ffffff?text=Placeholder+1ft" alt="Portrait at +1 feet; stepped back and zoomed to match framing">
-                    <div class="project0-figcaption">(+1 feet) Step back ~1 ft; zoomed to maintain subject size.</div>
+                <div class="figure">
+                    <img src="https://placehold.co/600x400/4fc3a1/ffffff?text=Part+1+1ft" alt="Portrait at +1 feet; stepped back and zoomed to match framing">
+                    <div class="figcaption">(+1 feet) Step back ~1 ft; zoomed to maintain subject size.</div>
                 </div>
-                <div class="project0-figure">
-                    <img src="https://via.placeholder.com/300x250/343a40/ffffff?text=Placeholder+2ft" alt="Portrait at +2 feet; further reduced perspective distortion">
-                    <div class="project0-figcaption">(+2 feet) Step back ~2 ft; proportions appear more neutral.</div>
+                <div class="figure">
+                    <img src="https://placehold.co/600x400/2c3e50/ffffff?text=Part+1+2ft" alt="Portrait at +2 feet; further reduced perspective distortion">
+                    <div class="figcaption">(+2 feet) Step back ~2 ft; proportions appear more neutral.</div>
                 </div>
             </div>
 
@@ -453,16 +260,16 @@
         </section>
 
         <!-- ======================= Part 2 ======================= -->
-        <section id="part2" class="project0-section">
+        <section id="part2">
             <h2>Part 2 — Architectural Perspective Comparison</h2>
             <div class="image-grid grid-2">
-                <div class="project0-figure">
-                    <img src="https://via.placeholder.com/500x350/4a6fa5/ffffff?text=Zoomed+View" alt="Zoomed-in urban scene shot from far away; planar, compressed look">
-                    <div class="project0-figcaption">Zoomed from far — scene appears flatter/compressed; parallels remain nearly parallel.</div>
+                <div class="figure">
+                    <img src="Image_20250902215133.jpg" alt="Zoomed-in urban scene shot from far away; planar, compressed look">
+                    <div class="figcaption">Zoomed from far — scene appears flatter/compressed; parallels remain nearly parallel.</div>
                 </div>
-                <div class="project0-figure">
-                    <img src="https://via.placeholder.com/500x350/166088/ffffff?text=Wide+View" alt="Wide-angle view from near; converging verticals and exaggerated depth">
-                    <div class="project0-figcaption">No zoom — stronger convergence; foreground/background depth is emphasized.</div>
+                <div class="figure">
+                    <img src="Image_20250902215140.jpg" alt="Wide-angle view from near; converging verticals and exaggerated depth">
+                    <div class="figcaption">No zoom — stronger convergence; foreground/background depth is emphasized.</div>
                 </div>
             </div>
 
@@ -477,10 +284,10 @@
         </section>
 
         <!-- ======================= Part 3 ======================= -->
-        <section id="part3" class="project0-section">
+        <section id="part3">
             <h2>Part 3 — The Dolly Zoom</h2>
             <div class="gif-container">
-                <img src="https://via.placeholder.com/600x400/4fc3a1/ffffff?text=Dolly+Zoom+GIF+Placeholder" alt="Animated dolly zoom GIF">
+                <img src="a4ximv.gif" alt="Animated dolly zoom GIF">
             </div>
             
             <div class="reflection">
@@ -494,16 +301,8 @@
         </section>
     </main>
 
-    <!-- Footer -->
-    <footer id="contact">
-        <div class="container">
-            <div class="social-links">
-                <a href="#"><i class="fab fa-github"></i></a>
-                <a href="#"><i class="fab fa-linkedin"></i></a>
-                <a href="#"><i class="fas fa-envelope"></i></a>
-            </div>
-            <p>&copy; 2023 CS180 Portfolio. All rights reserved.</p>
-        </div>
+    <footer>
+        <p>CS180/280A Project 0 - © 2025</p>
     </footer>
 </body>
 </html>
