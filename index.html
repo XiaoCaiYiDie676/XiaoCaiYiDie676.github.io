@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS180 Portfolio - Home</title>
+    <title>CS180 Portfolio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -17,88 +17,151 @@
             background-color: #f8f9fa;
             color: #333;
             line-height: 1.6;
-            padding: 20px;
             max-width: 1200px;
             margin: 0 auto;
         }
         
+        /* Header Styles */
         header {
-            text-align: center;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, #3a5f8a, #144a74);
+            background: linear-gradient(135deg, #4a6fa5, #166088);
             color: white;
-            border-radius: 12px;
-            margin-bottom: 40px;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+            padding: 1.5rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         
-        h1 {
-            font-size: 2.8rem;
-            margin-bottom: 15px;
-        }
-        
-        .course-info {
-            font-size: 1.3rem;
-            margin-bottom: 25px;
-            opacity: 0.9;
-        }
-        
-        .tags {
+        nav {
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 25px 0;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
         
-        .tag {
-            background: rgba(255, 255, 255, 0.18);
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-size: 1rem;
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
         }
         
-        .intro {
-            max-width: 800px;
-            margin: 0 auto 40px;
+        .logo span {
+            color: #4fc3a1;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Page Sections */
+        .page-section {
+            display: none;
+            padding: 20px;
+        }
+        
+        .page-section.active {
+            display: block;
+        }
+        
+        /* Home Section */
+        .hero {
+            background: linear-gradient(rgba(74, 111, 165, 0.8), rgba(22, 96, 136, 0.9)), url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3') center/cover no-repeat;
+            color: white;
             text-align: center;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #555;
+            padding: 6rem 0;
+            border-radius: 0 0 10px 10px;
         }
         
-        .projects-section {
-            margin-bottom: 50px;
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
         }
         
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #4fc3a1;
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: #3da58a;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Projects Section */
         .section-title {
             text-align: center;
-            color: #144a74;
-            margin-bottom: 40px;
-            font-size: 2.2rem;
+            margin: 3rem 0;
+            color: #166088;
+            font-size: 2.5rem;
+        }
+        
+        .projects {
+            padding: 3rem 0;
+            background-color: white;
+            border-radius: 10px;
+            margin: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
         
         .project-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            gap: 2rem;
+            margin-top: 2rem;
+            padding: 0 20px;
         }
         
         .project-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 10px;
             overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
         }
         
         .project-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
         }
         
         .project-img {
             height: 200px;
+            background-color: #4a6fa5;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -106,167 +169,466 @@
             font-size: 3rem;
         }
         
-        .project-0 {
-            background: linear-gradient(135deg, #3a5f8a, #144a74);
-        }
-        
-        .project-1 {
-            background: linear-gradient(135deg, #4fc3a1, #3da58a);
-        }
-        
-        .project-2 {
-            background: linear-gradient(135deg, #ff7e5f, #feb47b);
-        }
-        
-        .project-3 {
-            background: linear-gradient(135deg, #7b4397, #dc2430);
-        }
-        
         .project-content {
-            padding: 25px;
+            padding: 1.5rem;
         }
         
         .project-content h3 {
-            color: #144a74;
-            margin-bottom: 12px;
-            font-size: 1.4rem;
+            color: #166088;
+            margin-bottom: 0.5rem;
         }
         
         .project-content p {
-            color: #666;
-            margin-bottom: 20px;
-            line-height: 1.6;
+            color: #6c757d;
+            margin-bottom: 1rem;
         }
         
-        .project-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #4fc3a1;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            transition: all 0.3s;
-            font-weight: 500;
-        }
-        
-        .project-link:hover {
-            background: #3da58a;
-            transform: translateY(-2px);
-        }
-        
-        .coming-soon {
-            background: #ddd !important;
-            cursor: not-allowed;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 30px;
-            margin-top: 60px;
-            color: #666;
-            font-size: 0.95rem;
-            border-top: 1px solid #ddd;
-        }
-        
-        .github-info {
-            background: #f0f8ff;
-            padding: 20px;
+        /* About Section */
+        .about {
+            padding: 5rem 0;
+            background-color: #f8f9fa;
             border-radius: 10px;
-            margin: 30px 0;
-            text-align: center;
+            margin: 20px;
         }
         
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            padding: 0 20px;
+        }
+        
+        .about-text {
+            flex: 1;
+        }
+        
+        .about-img {
+            flex: 1;
+            background-color: #4a6fa5;
+            height: 300px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        /* Project 0 Content */
+        .project0-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .project0-section h2 {
+            color: #144a74;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #4fc3a1;
+        }
+        
+        .note {
+            background: #f0f8ff;
+            padding: 18px;
+            border-left: 4px solid #3a5f8a;
+            margin-bottom: 25px;
+            border-radius: 6px;
+            line-height: 1.7;
+        }
+        
+        .image-grid {
+            display: grid;
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .grid-4 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+        
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        }
+        
+        .figure {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .figure img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .figure img:hover {
+            transform: scale(1.02);
+        }
+        
+        .figcaption {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.5;
+            max-width: 500px;
+        }
+        
+        .gif-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .gif-container img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+        }
+        
+        .reflection {
+            background: #f0f8ff;
+            padding: 24px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 4px solid #3a5f8a;
+        }
+        
+        .reflection h4 {
+            color: #144a74;
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+        }
+        
+        /* Footer */
+        footer {
+            background: #343a40;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 40px;
+            border-radius: 10px;
+        }
+        
+        .social-links {
+            margin-bottom: 1rem;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 0.5rem;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: #4fc3a1;
+        }
+        
+        /* Responsive Design */
         @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .about-content {
+                flex-direction: column;
+            }
+            
             .project-grid {
                 grid-template-columns: 1fr;
             }
             
-            h1 {
-                font-size: 2.2rem;
+            .grid-4, .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Mobile menu button */
+        .menu-toggle {
+            display: none;
+            color: white;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
             }
             
-            .section-title {
-                font-size: 1.8rem;
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: #166088;
+                padding: 20px;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .nav-links li {
+                margin: 10px 0;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
     <header>
-        <h1>CS180 Programming Portfolio</h1>
-        <p class="course-info">A showcase of my programming projects and skills from CS180 course</p>
-        <div class="tags">
-            <span class="tag">Computer Science</span>
-            <span class="tag">Programming</span>
-            <span class="tag">Projects</span>
-            <span class="tag">Learning Portfolio</span>
-        </div>
+        <nav>
+            <div class="logo">CS<span>180</span></div>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#" class="nav-link active" data-target="home">Home</a></li>
+                <li><a href="#" class="nav-link" data-target="project0">Project 0</a></li>
+                <li><a href="#" class="nav-link" data-target="projects">Projects</a></li>
+                <li><a href="#" class="nav-link" data-target="about">About</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <div class="intro">
-        <p>Welcome to my CS180 portfolio website. This site showcases the projects I've completed as part of my coursework. Each project demonstrates different programming concepts and techniques I've learned throughout the course.</p>
-        <p>The portfolio is hosted on GitHub Pages, which provides a simple way to create a website directly from a GitHub repository.</p>
-    </div>
+    <!-- Home Section -->
+    <section id="home" class="page-section active">
+        <div class="hero">
+            <div class="hero-content">
+                <h1>CS180 Programming Portfolio</h1>
+                <p>A showcase of my programming projects and skills from CS180 course</p>
+                <a href="#" class="btn" data-target="projects">View Projects</a>
+            </div>
+        </div>
 
-    <div class="github-info">
-        <h3><i class="fab fa-github"></i> GitHub Pages</h3>
-        <p>This site is hosted at: <strong>https://xiaocaiyidie676.github.io/</strong></p>
-        <p>Project 0 is located at: <strong>https://xiaocaiyidie676.github.io/project0.html</strong></p>
-    </div>
+        <div class="projects">
+            <h2 class="section-title">My Projects</h2>
+            <div class="project-grid">
+                <div class="project-card">
+                    <div class="project-img">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3>Project 0</h3>
+                        <p>Becoming Friends with Your Camera - Photography techniques and perspective.</p>
+                        <a href="#" class="btn" data-target="project0">View Project</a>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-img">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3>Project 1</h3>
+                        <p>First project description goes here. This showcases fundamental programming concepts.</p>
+                        <a href="#" class="btn">View Project</a>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-img">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3>Project 2</h3>
+                        <p>Second project description goes here. This demonstrates more advanced programming techniques.</p>
+                        <a href="#" class="btn">View Project</a>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-img">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3>Project 3</h3>
+                        <p>Third project description goes here. This shows application development skills.</p>
+                        <a href="#" class="btn">View Project</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <section class="projects-section">
-        <h2 class="section-title">My Projects</h2>
-        
-        <div class="project-grid">
-            <div class="project-card">
-                <div class="project-img project-0">
-                    <i class="fas fa-camera"></i>
+        <div class="about">
+            <h2 class="section-title">About This Portfolio</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>This portfolio showcases my work in the CS180 programming course. Each project demonstrates different programming concepts and techniques I've learned throughout the course.</p>
+                    <p>The portfolio is hosted on GitHub Pages, which provides a simple way to create a website directly from a GitHub repository.</p>
+                    <p>This responsive design works on both desktop and mobile devices, ensuring accessibility for all users.</p>
                 </div>
-                <div class="project-content">
-                    <h3>Project 0: Becoming Friends with Your Camera</h3>
-                    <p>Exploring perspective, focal length, and the dolly zoom effect through photography exercises.</p>
-                    <a href="project0.html" class="project-link">View Project</a>
-                </div>
-            </div>
-            
-            <div class="project-card">
-                <div class="project-img project-1">
-                    <i class="fas fa-project-diagram"></i>
-                </div>
-                <div class="project-content">
-                    <h3>Project 1: Data Structures</h3>
-                    <p>Implementation and analysis of fundamental data structures and algorithms.</p>
-                    <a href="#" class="project-link coming-soon">Coming Soon</a>
-                </div>
-            </div>
-            
-            <div class="project-card">
-                <div class="project-img project-2">
-                    <i class="fas fa-chart-bar"></i>
-                </div>
-                <div class="project-content">
-                    <h3>Project 2: Data Visualization</h3>
-                    <p>Creating interactive visualizations to represent complex data in understandable ways.</p>
-                    <a href="#" class="project-link coming-soon">Coming Soon</a>
-                </div>
-            </div>
-            
-            <div class="project-card">
-                <div class="project-img project-3">
-                    <i class="fas fa-gamepad"></i>
-                </div>
-                <div class="project-content">
-                    <h3>Project 3: Game Development</h3>
-                    <p>Design and implementation of an interactive game using programming concepts.</p>
-                    <a href="#" class="project-link coming-soon">Coming Soon</a>
+                <div class="about-img">
+                    <span>CS180 Portfolio</span>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Project 0 Section -->
+    <section id="project0" class="page-section">
+        <div class="project0-section">
+            <h2>Part 1 — Portrait Series at Controlled Camera Offsets</h2>
+            <p class="note">
+                Distances are expressed relative to a <em>baseline</em> vantage point that yields the desired framing.
+                Negative values indicate moving closer than baseline; positive values indicate stepping back. When stepping back,
+                I increased focal length to keep face size approximately constant.
+            </p>
+
+            <div class="image-grid grid-4">
+                <div class="figure">
+                    <img src="Image_20250902220431.jpg" alt="Portrait at −1 feet relative to baseline; closer, wider perspective">
+                    <div class="figcaption">(−1 feet) Closer than baseline; stronger perspective exaggeration.</div>
+                </div>
+                <div class="figure">
+                    <img src="Image_20250902220437.jpg" alt="Portrait at 0 feet: baseline vantage and framing">
+                    <div class="figcaption">(0 feet) Baseline position and framing.</div>
+                </div>
+                <div class="figure">
+                    <img src="https://placehold.co/600x800/4fc3a1/ffffff?text=Part+1+1ft" alt="Portrait at +1 feet; stepped back and zoomed to match framing">
+                    <div class="figcaption">(+1 feet) Step back ~1 ft; zoomed to maintain subject size.</div>
+                </div>
+                <div class="figure">
+                    <img src="https://placehold.co/600x800/2c3e50/ffffff?text=Part+1+2ft" alt="Portrait at +2 feet; further reduced perspective distortion">
+                    <div class="figcaption">(+2 feet) Step back ~2 ft; proportions appear more neutral.</div>
+                </div>
+            </div>
+
+            <div class="reflection">
+                <h4>Reflection — Part 1</h4>
+                <p>
+                    When stepping closer to the person, his facial features become more pronounced, with the nose appearing larger relative to the ears.
+                    When stepping back, the facial features appear more compressed and proportional.
+                    I think this is because when moving closer, the proportional distance differences between the noses and ears gets exaggerated.
+                    Therefore, the nose and mouth occupy a larger visual space, drawing more attention.
+                </p>
+            </div>
+        </div>
+
+        <div class="project0-section">
+            <h2>Part 2 — Architectural Perspective Comparison</h2>
+            <div class="image-grid grid-2">
+                <div class="figure">
+                    <img src="Image_20250902215133.jpg" alt="Zoomed-in urban scene shot from far away; planar, compressed look">
+                    <div class="figcaption">Zoomed from far — scene appears flatter/compressed; parallels remain nearly parallel.</div>
+                </div>
+                <div class="figure">
+                    <img src="Image_20250902215140.jpg" alt="Wide-angle view from near; converging verticals and exaggerated depth">
+                    <div class="figcaption">No zoom — stronger convergence; foreground/background depth is emphasized.</div>
+                </div>
+            </div>
+
+            <div class="reflection">
+                <h4>Reflection — Part 2</h4>
+                <p>
+                    Similar as Part 1, moving the camera changes perspective; changing focal length only changes framing.
+                    When I get close, near parts of the scene are much closer than far parts, so they project disproportionately larger.
+                    When I step back, those distance differences shrink, so the scene looks more "neutral" or "compressed."
+                </p>
+            </div>
+        </div>
+
+        <div class="project0-section">
+            <h2>Part 3 — The Dolly Zoom</h2>
+            <div class="gif-container">
+                <img src="a4ximv.gif" alt="Animated dolly zoom GIF">
+            </div>
+            
+            <div class="reflection">
+                <h4>Reflection — Part 3</h4>
+                <p>
+                    The dolly zoom effect creates a disorienting feeling as the background appears to change size relative to the subject.
+                    This technique manipulates perspective while maintaining the subject size, creating a surreal visual effect.
+                    It's fascinating how this simple camera technique can dramatically alter the viewer's perception of space.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
     <footer>
-        <p>CS180/280A Portfolio - © 2025</p>
-        <p>Hosted on GitHub Pages</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fas fa-envelope"></i></a>
+        </div>
+        <p>&copy; 2023 CS180 Portfolio. All rights reserved.</p>
     </footer>
+
+    <script>
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const pageSections = document.querySelectorAll('.page-section');
+            const menuToggle = document.getElementById('menuToggle');
+            const navLinksContainer = document.getElementById('navLinks');
+            
+            // Handle navigation clicks
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('data-target');
+                    
+                    // Update active nav link
+                    navLinks.forEach(navLink => navLink.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show target section, hide others
+                    pageSections.forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    document.getElementById(targetId).classList.add('active');
+                    
+                    // Close mobile menu if open
+                    navLinksContainer.classList.remove('active');
+                });
+            });
+            
+            // Handle button navigation
+            const buttons = document.querySelectorAll('.btn[data-target]');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('data-target');
+                    
+                    // Update active nav link
+                    navLinks.forEach(navLink => {
+                        navLink.classList.remove('active');
+                        if (navLink.getAttribute('data-target') === targetId) {
+                            navLink.classList.add('active');
+                        }
+                    });
+                    
+                    // Show target section, hide others
+                    pageSections.forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+            
+            // Mobile menu toggle
+            menuToggle.addEventListener('click', function() {
+                navLinksContainer.classList.toggle('active');
+            });
+        });
+    </script>
 </body>
 </html>
