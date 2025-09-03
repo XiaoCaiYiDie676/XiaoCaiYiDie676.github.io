@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS180 Portfolio</title>
+    <title>CS180 Portfolio - Project 0</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Global Styles */
@@ -229,6 +229,122 @@
             color: var(--accent);
         }
         
+        /* Project 0 Specific Styles */
+        .project0-hero {
+            background: linear-gradient(rgba(74, 111, 165, 0.9), rgba(22, 96, 136, 0.9)), url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3') center/cover no-repeat;
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .project0-hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .project0-tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin: 1.5rem 0;
+        }
+        
+        .project0-tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+        }
+        
+        .project0-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .project0-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .project0-section h2 {
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid var(--accent);
+        }
+        
+        .note {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-left: 4px solid var(--accent);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+        
+        .image-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .grid-4 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+        
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        }
+        
+        .project0-figure {
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .project0-figure img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .project0-figcaption {
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .gif-container {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .gif-container img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .reflection {
+            background: #f0f8ff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .reflection h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
         /* Responsive Design */
         @media (max-width: 768px) {
             .nav-links {
@@ -246,6 +362,18 @@
             .project-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .project0-hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .grid-4, .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .project0-section {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -256,83 +384,115 @@
             <nav>
                 <div class="logo">CS<span>180</span></div>
                 <ul class="nav-links">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#projects">Projects</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#projects">Projects</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
+    <!-- Project 0 Hero Section -->
+    <section class="project0-hero">
         <div class="container">
-            <div class="hero-content">
-                <h1>CS180 Programming Portfolio</h1>
-                <p>A showcase of my programming projects and skills from CS180 course</p>
-                <a href="#projects" class="btn">View Projects</a>
+            <h1>Project 0 — Becoming Friends with Your Camera</h1>
+            <p>CS180/280A • Fall 2025</p>
+            <div class="project0-tags">
+                <span class="project0-tag">Photography</span>
+                <span class="project0-tag">Perspective</span>
+                <span class="project0-tag">Focal length</span>
+                <span class="project0-tag">Dolly Zoom</span>
+            </div>
+            <div class="project0-nav">
+                <a class="btn" href="#part1">Part 1</a>
+                <a class="btn" href="#part2">Part 2</a>
+                <a class="btn" href="#part3">Part 3</a>
             </div>
         </div>
     </section>
 
-    <!-- Projects Section -->
-    <section class="projects" id="projects">
-        <div class="container">
-            <h2 class="section-title">My Projects</h2>
-            <div class="project-grid">
-                <div class="project-card">
-                    <div class="project-img">
-                        <i class="fas fa-project-diagram"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>Project 1</h3>
-                        <p>First project description goes here. This showcases fundamental programming concepts.</p>
-                        <a href="./1/index.html" class="btn">View Project</a>
-                    </div>
-                </div>
-                
-                <div class="project-card">
-                    <div class="project-img">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>Project 2</h3>
-                        <p>Second project description goes here. This demonstrates more advanced programming techniques.</p>
-                        <a href="./2/index.html" class="btn">View Project</a>
-                    </div>
-                </div>
-                
-                <div class="project-card">
-                    <div class="project-img">
-                        <i class="fas fa-gamepad"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>Project 3</h3>
-                        <p>Third project description goes here. This shows application development skills.</p>
-                        <a href="./3/index.html" class="btn">View Project</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <main class="container">
+        <!-- ======================= Part 1 ======================= -->
+        <section id="part1" class="project0-section">
+            <h2>Part 1 — Portrait Series at Controlled Camera Offsets</h2>
+            <p class="note">
+                Distances are expressed relative to a <em>baseline</em> vantage point that yields the desired framing.
+                Negative values indicate moving closer than baseline; positive values indicate stepping back. When stepping back,
+                I increased focal length to keep face size approximately constant.
+            </p>
 
-    <!-- About Section -->
-    <section class="about" id="about">
-        <div class="container">
-            <h2 class="section-title">About This Portfolio</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>This portfolio showcases my work in the CS180 programming course. Each project demonstrates different programming concepts and techniques I've learned throughout the course.</p>
-                    <p>The portfolio is hosted on GitHub Pages, which provides a simple way to create a website directly from a GitHub repository.</p>
-                    <p>This responsive design works on both desktop and mobile devices, ensuring accessibility for all users.</p>
+            <div class="image-grid grid-4">
+                <div class="project0-figure">
+                    <img src="https://via.placeholder.com/300x250/4a6fa5/ffffff?text=Placeholder+-1ft" alt="Portrait at −1 feet relative to baseline; closer, wider perspective">
+                    <div class="project0-figcaption">(−1 feet) Closer than baseline; stronger perspective exaggeration.</div>
                 </div>
-                <div class="about-img">
-                    <span>CS180 Portfolio</span>
+                <div class="project0-figure">
+                    <img src="https://via.placeholder.com/300x250/166088/ffffff?text=Placeholder+0ft" alt="Portrait at 0 feet: baseline vantage and framing">
+                    <div class="project0-figcaption">(0 feet) Baseline position and framing.</div>
+                </div>
+                <div class="project0-figure">
+                    <img src="https://via.placeholder.com/300x250/4fc3a1/ffffff?text=Placeholder+1ft" alt="Portrait at +1 feet; stepped back and zoomed to match framing">
+                    <div class="project0-figcaption">(+1 feet) Step back ~1 ft; zoomed to maintain subject size.</div>
+                </div>
+                <div class="project0-figure">
+                    <img src="https://via.placeholder.com/300x250/343a40/ffffff?text=Placeholder+2ft" alt="Portrait at +2 feet; further reduced perspective distortion">
+                    <div class="project0-figcaption">(+2 feet) Step back ~2 ft; proportions appear more neutral.</div>
                 </div>
             </div>
-        </div>
-    </section>
+
+            <div class="reflection">
+                <h4>Reflection — Part 1</h4>
+                <p>
+                    When stepping closer to the person, his facial features become more pronounced, with the nose appearing larger relative to the ears.
+                    When stepping back, the facial features appear more compressed and proportional.
+                    I think this is because when moving closer, the proportional distance differences between the noses and ears gets exaggerated.
+                    Therefore, the nose and mouth occupy a larger visual space, drawing more attention.
+                </p>
+            </div>
+        </section>
+
+        <!-- ======================= Part 2 ======================= -->
+        <section id="part2" class="project0-section">
+            <h2>Part 2 — Architectural Perspective Comparison</h2>
+            <div class="image-grid grid-2">
+                <div class="project0-figure">
+                    <img src="https://via.placeholder.com/500x350/4a6fa5/ffffff?text=Zoomed+View" alt="Zoomed-in urban scene shot from far away; planar, compressed look">
+                    <div class="project0-figcaption">Zoomed from far — scene appears flatter/compressed; parallels remain nearly parallel.</div>
+                </div>
+                <div class="project0-figure">
+                    <img src="https://via.placeholder.com/500x350/166088/ffffff?text=Wide+View" alt="Wide-angle view from near; converging verticals and exaggerated depth">
+                    <div class="project0-figcaption">No zoom — stronger convergence; foreground/background depth is emphasized.</div>
+                </div>
+            </div>
+
+            <div class="reflection">
+                <h4>Reflection — Part 2</h4>
+                <p>
+                    Similar as Part 1, moving the camera changes perspective; changing focal length only changes framing.
+                    When I get close, near parts of the scene are much closer than far parts, so they project disproportionately larger.
+                    When I step back, those distance differences shrink, so the scene looks more "neutral" or "compressed."
+                </p>
+            </div>
+        </section>
+
+        <!-- ======================= Part 3 ======================= -->
+        <section id="part3" class="project0-section">
+            <h2>Part 3 — The Dolly Zoom</h2>
+            <div class="gif-container">
+                <img src="https://via.placeholder.com/600x400/4fc3a1/ffffff?text=Dolly+Zoom+GIF+Placeholder" alt="Animated dolly zoom GIF">
+            </div>
+            
+            <div class="reflection">
+                <h4>Reflection — Part 3</h4>
+                <p>
+                    The dolly zoom effect creates a disorienting feeling as the background appears to change size relative to the subject.
+                    This technique manipulates perspective while maintaining the subject size, creating a surreal visual effect.
+                    It's fascinating how this simple camera technique can dramatically alter the viewer's perception of space.
+                </p>
+            </div>
+        </section>
+    </main>
 
     <!-- Footer -->
     <footer id="contact">
