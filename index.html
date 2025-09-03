@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS180 Project 0 - Becoming Friends with Your Camera</title>
+    <title>My CS180 Portfolio</title>
     <style>
         * {
             margin: 0;
@@ -17,13 +17,13 @@
             color: #333;
             line-height: 1.6;
             padding: 20px;
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
         }
         
         header {
             text-align: center;
-            padding: 30px 20px;
+            padding: 40px 20px;
             background: linear-gradient(135deg, #3a5f8a, #144a74);
             color: white;
             border-radius: 12px;
@@ -32,155 +32,232 @@
         }
         
         h1 {
-            font-size: 2.4rem;
-            margin-bottom: 12px;
+            font-size: 2.8rem;
+            margin-bottom: 15px;
         }
         
-        .course-info {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            opacity: 0.9;
-        }
-        
-        .tags {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        
-        .tag {
-            background: rgba(255, 255, 255, 0.18);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-        
-        section {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        }
-        
-        h2 {
-            color: #144a74;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #4fc3a1;
-        }
-        
-        .note {
-            background: #f0f8ff;
-            padding: 18px;
-            border-left: 4px solid #3a5f8a;
-            margin-bottom: 25px;
-            border-radius: 6px;
-            line-height: 1.7;
-        }
-        
-        .image-grid {
-            display: grid;
-            gap: 30px;
-            margin: 30px 0;
-        }
-        
-        .grid-4 {
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        }
-        
-        .grid-2 {
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        }
-        
-        .figure {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .figure img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        .figcaption {
+        .intro {
+            max-width: 800px;
+            margin: 0 auto 40px;
             text-align: center;
-            font-size: 0.95rem;
+            font-size: 1.2rem;
+            line-height: 1.8;
             color: #555;
-            line-height: 1.5;
-            max-width: 500px;
         }
         
-        .gif-container {
+        .project-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            max-width: 600px;
+            margin: 0 auto;
+            transition: transform 0.3s;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .project-img {
+            height: 200px;
+            background: linear-gradient(135deg, #4fc3a1, #3da58a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+        }
+        
+        .project-content {
+            padding: 25px;
             text-align: center;
-            margin: 30px 0;
         }
         
-        .gif-container img {
-            max-width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
-        }
-        
-        .reflection {
-            background: #f0f8ff;
-            padding: 24px;
-            border-radius: 10px;
-            margin-top: 30px;
-            border-left: 4px solid #3a5f8a;
-        }
-        
-        .reflection h4 {
+        .project-content h2 {
             color: #144a74;
-            margin-bottom: 16px;
-            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .project-content p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .project-link {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #4fc3a1;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .project-link:hover {
+            background: #3da58a;
+            transform: translateY(-2px);
         }
         
         footer {
             text-align: center;
-            padding: 25px;
-            margin-top: 40px;
+            padding: 30px;
+            margin-top: 60px;
             color: #666;
             font-size: 0.95rem;
             border-top: 1px solid #ddd;
         }
         
         @media (max-width: 768px) {
-            .grid-4, .grid-2 {
-                grid-template-columns: 1fr;
-            }
-            
             h1 {
-                font-size: 1.9rem;
+                font-size: 2.2rem;
             }
             
-            section {
-                padding: 20px;
+            .project-img {
+                height: 150px;
+                font-size: 3rem;
             }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Project 0 — Becoming Friends with Your Camera</h1>
-        <p class="course-info">CS180/280A • Fall 2025</p>
-        <div class="tags">
-            <span class="tag">Photography</span>
-            <span class="tag">Perspective</span>
-            <span class="tag">Focal length</span>
-            <span class="tag">Dolly Zoom</span>
-        </div>
+        <h1>Welcome to My CS180 Portfolio!</h1>
+        <p>Showcasing my projects from the CS180 course</p>
     </header>
 
-    <main>
-        <!-- ======================= Part 1 ======================= -->
-        <section id="part1">
+    <div class="intro">
+        <p>This portfolio contains the projects I've completed as part of my CS180 coursework. Each project demonstrates different programming concepts and techniques I've learned throughout the course.</p>
+        <p>Click on the project card below to view Project 0: Becoming Friends with Your Camera.</p>
+    </div>
+
+    <div class="project-card">
+        <div class="project-img">
+            <i class="fas fa-camera"></i>
+        </div>
+        <div class="project-content">
+            <h2>Project 0: Becoming Friends with Your Camera</h2>
+            <p>Exploring perspective, focal length, and the dolly zoom effect through photography exercises.</p>
+            <a href="#project0" class="project-link">View Project 0</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>CS180/280A Portfolio - © 2025</p>
+        <p>Hosted on GitHub Pages</p>
+    </footer>
+
+    <!-- Project 0 Content (initially hidden) -->
+    <div id="project0" style="display: none;">
+        <style>
+            .project0-section {
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                margin: 30px 0;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            }
+            
+            .project0-section h2 {
+                color: #144a74;
+                margin-bottom: 20px;
+                padding-bottom: 12px;
+                border-bottom: 2px solid #4fc3a1;
+            }
+            
+            .note {
+                background: #f0f8ff;
+                padding: 18px;
+                border-left: 4px solid #3a5f8a;
+                margin-bottom: 25px;
+                border-radius: 6px;
+                line-height: 1.7;
+            }
+            
+            .image-grid {
+                display: grid;
+                gap: 30px;
+                margin: 30px 0;
+            }
+            
+            .grid-2 {
+                grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            }
+            
+            .figure {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .figure img {
+                max-width: 100%;
+                height: auto;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+            
+            .figcaption {
+                text-align: center;
+                font-size: 0.95rem;
+                color: #555;
+                line-height: 1.5;
+                max-width: 500px;
+            }
+            
+            .gif-container {
+                text-align: center;
+                margin: 30px 0;
+            }
+            
+            .gif-container img {
+                max-width: 100%;
+                border-radius: 10px;
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+            }
+            
+            .reflection {
+                background: #f0f8ff;
+                padding: 24px;
+                border-radius: 10px;
+                margin-top: 30px;
+                border-left: 4px solid #3a5f8a;
+            }
+            
+            .reflection h4 {
+                color: #144a74;
+                margin-bottom: 16px;
+                font-size: 1.2rem;
+            }
+            
+            .back-btn {
+                display: inline-block;
+                padding: 12px 24px;
+                background: #144a74;
+                color: white;
+                text-decoration: none;
+                border-radius: 6px;
+                transition: all 0.3s;
+                font-weight: 500;
+                margin-top: 20px;
+            }
+            
+            .back-btn:hover {
+                background: #0d3a5c;
+                transform: translateY(-2px);
+            }
+            
+            @media (max-width: 768px) {
+                .grid-2 {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+        
+        <div class="project0-section">
             <h2>Part 1 — Portrait Series at Controlled Camera Offsets</h2>
             <p class="note">
                 Distances are expressed relative to a <em>baseline</em> vantage point that yields the desired framing.
@@ -188,7 +265,7 @@
                 I increased focal length to keep face size approximately constant.
             </p>
 
-            <div class="image-grid grid-4">
+            <div class="image-grid grid-2">
                 <div class="figure">
                     <img src="Image_20250902220431.jpg" alt="Portrait at −1 feet relative to baseline; closer, wider perspective">
                     <div class="figcaption">(−1 feet) Closer than baseline; stronger perspective exaggeration.</div>
@@ -208,10 +285,9 @@
                     Therefore, the nose and mouth occupy a larger visual space, drawing more attention.
                 </p>
             </div>
-        </section>
+        </div>
 
-        <!-- ======================= Part 2 ======================= -->
-        <section id="part2">
+        <div class="project0-section">
             <h2>Part 2 — Architectural Perspective Comparison</h2>
             <div class="image-grid grid-2">
                 <div class="figure">
@@ -232,10 +308,9 @@
                     When I step back, those distance differences shrink, so the scene looks more "neutral" or "compressed."
                 </p>
             </div>
-        </section>
+        </div>
 
-        <!-- ======================= Part 3 ======================= -->
-        <section id="part3">
+        <div class="project0-section">
             <h2>Part 3 — The Dolly Zoom</h2>
             <div class="gif-container">
                 <img src="a4ximv.gif" alt="Animated dolly zoom GIF">
@@ -249,12 +324,39 @@
                     It's fascinating how this simple camera technique can dramatically alter the viewer's perception of space.
                 </p>
             </div>
-        </section>
-    </main>
+        </div>
+        
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="#" class="back-btn" onclick="hideProject0(); return false;">Back to Portfolio</a>
+        </div>
+    </div>
 
-    <footer>
-        <p>CS180/280A Project 0 - Yichen Cai © 2025</p>
-        <p>Hosted on GitHub Pages</p>
-    </footer>
+    <script>
+        // Function to show Project 0 content
+        function showProject0() {
+            document.getElementById('project0').style.display = 'block';
+            document.querySelector('header').style.display = 'none';
+            document.querySelector('.intro').style.display = 'none';
+            document.querySelector('.project-card').style.display = 'none';
+            document.querySelector('footer').style.marginTop = '0';
+            window.scrollTo(0, 0);
+        }
+        
+        // Function to hide Project 0 content
+        function hideProject0() {
+            document.getElementById('project0').style.display = 'none';
+            document.querySelector('header').style.display = 'block';
+            document.querySelector('.intro').style.display = 'block';
+            document.querySelector('.project-card').style.display = 'block';
+            document.querySelector('footer').style.marginTop = '60px';
+            window.scrollTo(0, 0);
+        }
+        
+        // Add click event to the project link
+        document.querySelector('.project-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            showProject0();
+        });
+    </script>
 </body>
 </html>
