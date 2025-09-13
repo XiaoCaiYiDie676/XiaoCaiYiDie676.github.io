@@ -461,13 +461,7 @@
             <h3>Channel Extraction and Preprocessing</h3>
             <p>I split each glass plate into three grayscale images B, G, R (top→bottom) and treat alignment as integer translations of R and B onto the reference channel G. Before alignment, images undergo border cropping (15% by default) to remove artifacts that negatively impact correlation scores.</p>
 
-            <div class="code-block">def extract_channels(im):
-    height = im.shape[0] // 3
-    b = im[:height]
-    g = im[height:2*height] 
-    r = im[2*height:3*height]
-    return b, g, r</div>
-
+    
             <h3>Similarity Metrics</h3>
             <p>I implement three alignment metrics, all designed to be maximized:</p>
 
@@ -490,16 +484,6 @@
 
             <h3>Multi-Scale Pyramid Alignment</h3>
             <p>To handle large .tif scans efficiently, I build a Gaussian pyramid by repeatedly downscaling by 0.5 (anti-aliased) for a specified number of levels. Starting from the coarsest level, I run exhaustive search with adaptive search ranges and propagate shifts upward by doubling the previous estimate to seed the next level. The final level returns pixel-accurate integer shifts.</p>
-
-            <div class="code-block">def pyramid_align(target, source, levels=3, metric='combined'):
-    total_dy, total_dx = 0, 0
-    
-    for level in range(levels, -1, -1):
-        # Scale images for current pyramid level
-        # Search with adaptive range
-        # Update and propagate displacement estimates
-        
-    return (total_dy, total_dx), aligned_image</div>
 
             <h3>Warping and Composition</h3>
             <p>I apply the estimated shifts using numpy's <span class="code">roll</span> function to obtain G', R', B', then stack into RGB as [R', G', B']. The result is clipped to [0,1] and saved as 8-bit format to ensure compatibility.</p>
@@ -603,7 +587,7 @@
             <h2>Analysis and Discussion</h2>
             
             <h3>Performance Characteristics</h3>
-            <p>The multi-scale pyramid approach achieves sub-second processing for small images and 2-15 second processing for large .tif files, representing orders of magnitude improvement over exhaustive search. Alignment accuracy exceeds 95% on the provided test set.</p>
+            <p>The multi-scale pyramid approach achieves sub-second processing for small images and 2-15 second processing for large .tif files, representing orders of magnitude improvement over exhaustive search. </p>
 
             <h3>Robustness Considerations</h3>
             <p>The combined metric approach proves particularly effective for images with varying texture content. While NCC alone works well for high-texture regions, the SSD component helps maintain precision in smoother areas where correlation might be ambiguous.</p>
