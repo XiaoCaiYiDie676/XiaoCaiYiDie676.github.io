@@ -531,35 +531,7 @@ print(f"Max difference (2-loop): {diff_2loop}")  # < 1e-10
         <h3>Implementation Details</h3>
         <p>My implementation includes several advanced features:</p>
 
-        <div class="code-block">def align_images_to_horizontal(img1, img2):
-    """Align images based on the more horizontal eye line"""
-    # Interactive eye selection for both images
-    eyes1 = manual_point_selection(img1, "Image 1 - Select Eye Centers")
-    eyes2 = manual_point_selection(img2, "Image 2 - Select Eye Centers")
-    
-    # Calculate eye line angles
-    angle1 = np.arctan2(eye_vector1[1], eye_vector1[0])
-    angle2 = np.arctan2(eye_vector2[1], eye_vector2[0])
-    
-    # Use more horizontal image as reference
-    if abs(angle1) <= abs(angle2):
-        reference_img, align_img = img1, img2
-    else:
-        reference_img, align_img = img2, img1
-    
-    # Apply rotation, scaling, and translation
-    M = cv2.getRotationMatrix2D(center, rotation_degrees, scale)
-    aligned_img = cv2.warpAffine(align_img, M, (w, h))
-    
-    return reference_img, aligned_img
-
-def create_hybrid_image(img1, img2, sigma1=10, sigma2=3):
-    """Create hybrid image with frequency domain combination"""
-    img1_low = low_pass_filter(img1, sigma1)
-    img2_high = high_pass_filter(img2, sigma2)
-    hybrid = (img1_low + img2_high) / 2.0
-    return np.clip(hybrid, 0, 1)</div>
-
+        
         <div class="note">
             <strong>Key Technical Insights:</strong>
             <br>• Automatic horizontal alignment significantly improves hybrid quality by reducing misalignment artifacts
@@ -649,33 +621,7 @@ def create_hybrid_image(img1, img2, sigma1=10, sigma2=3):
         <h3>Implementation Details</h3>
         <p>My implementation includes several advanced features for ultra-smooth blending:</p>
 
-        <div class="code-block">def multiresolution_blend(img1, img2, mask, num_levels=8, sigma_base=4.0):
-    """Ultra-smooth multiresolution blending"""
-    # Create Gaussian stacks with exponential sigma progression
-    gaussian_stack1 = create_gaussian_stack(img1, num_levels, sigma_base)
-    gaussian_stack2 = create_gaussian_stack(img2, num_levels, sigma_base)
-    
-    # Create mask stack with extra smoothing for seamless transitions
-    mask_stack = create_gaussian_stack(mask, num_levels, sigma_base * 1.5)
-    
-    # Create Laplacian stacks for band-pass filtering
-    laplacian_stack1 = create_laplacian_stack(gaussian_stack1)
-    laplacian_stack2 = create_laplacian_stack(gaussian_stack2)
-    
-    # Blend at each frequency level
-    blended_laplacian = []
-    for i in range(num_levels):
-        # Apply additional smoothing to mask for ultra-smooth results
-        mask_level = gaussian_filter(mask_stack[i], sigma=1.0)
         
-        # Blend using multiresolution formula
-        blended_level = (mask_level * laplacian_stack1[i] + 
-                        (1 - mask_level) * laplacian_stack2[i])
-        blended_laplacian.append(blended_level)
-    
-    # Reconstruct final image
-    result = sum(blended_laplacian)
-    return np.clip(result, 0, 1)</div>
 
         <div class="note">
             <strong>Technical Innovations:</strong>
