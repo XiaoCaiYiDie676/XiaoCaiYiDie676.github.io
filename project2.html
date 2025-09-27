@@ -155,9 +155,29 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
+        /* NEW: Make images stretch full width */
         .result-item img {
             width: 100%;
-            max-width: 300px;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            object-fit: contain; /* Maintain aspect ratio while filling width */
+        }
+
+        /* NEW: Full-width image container for extra wide images */
+        .full-width-image {
+            width: calc(100% + 80px); /* Extend beyond content padding */
+            margin: 25px -40px; /* Negative margins to break out of content padding */
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .full-width-image img {
+            width: 100%;
             height: auto;
             border: 1px solid #ddd;
             border-radius: 6px;
@@ -213,6 +233,11 @@
             
             .project-content {
                 padding: 20px;
+            }
+
+            .full-width-image {
+                width: calc(100% + 40px);
+                margin: 25px -20px;
             }
         }
     </style>
@@ -327,11 +352,9 @@ print(f"Max difference (2-loop): {diff_2loop}")  # < 1e-10
         <h3>1.2 Finite Difference Operator</h3>
         <p>I applied finite difference operators D_x = [1, -1] and D_y = [[1], [-1]] to the cameraman image using <span class="code">scipy.signal.convolve2d</span>. These simple operators compute partial derivatives by measuring intensity changes between adjacent pixels.</p>
 
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_3.png" alt="Finite difference results">
-                <div class="result-caption">Partial Derivatives and Gradient Magnitude</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_3.png" alt="Finite difference results">
+            <div class="result-caption">Partial Derivatives and Gradient Magnitude</div>
         </div>
 
         <p>The gradient magnitude is computed as: <span class="code">magnitude = np.sqrt(dx² + dy²)</span>. This produces a grayscale image where edges and sharp regions appear bright (high magnitude) while flat regions appear dark (low magnitude).</p>
@@ -339,11 +362,9 @@ print(f"Max difference (2-loop): {diff_2loop}")  # < 1e-10
         <h3>Edge Detection Through Binarization</h3>
         <p>To create a clean edge image, I binarized the gradient magnitude using a threshold. The challenge is balancing edge preservation with noise suppression:</p>
 
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_4.png" alt="Binarization threshold comparison">
-                <div class="result-caption">Threshold Comparison and Final Edge Image</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_4.png" alt="Binarization threshold comparison">
+            <div class="result-caption">Threshold Comparison and Final Edge Image</div>
         </div>
 
         <div class="note">
@@ -356,11 +377,9 @@ print(f"Max difference (2-loop): {diff_2loop}")  # < 1e-10
         <h3>What Differences Do You See?</h3>
         <p>I implemented two equivalent methods: (1) Gaussian smoothing followed by finite differences, and (2) single convolution with pre-computed DoG filters. The Gaussian-smoothed approach produces significantly cleaner results compared to raw finite differences.</p>
 
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_5.png" alt="DoG filters visualization">
-                <div class="result-caption">DoG Filter Visualization: Gaussian, DoG_x, and DoG_y</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_5.png" alt="DoG filters visualization">
+            <div class="result-caption">DoG Filter Visualization: Gaussian, DoG_x, and DoG_y</div>
         </div>
 
         <p>The upper-left shows the original image and its Gaussian-smoothed version. The Gaussian filter slightly alters the image by making it blurrier, averaging neighborhood pixel values. The upper-right displays D_x and D_y filters applied to the Gaussian-smoothed image, revealing much cleaner edge detection with enhanced detail extraction compared to the previous finite difference method.</p>
@@ -368,11 +387,9 @@ print(f"Max difference (2-loop): {diff_2loop}")  # < 1e-10
         <h3>Single Convolution Verification</h3>
         <p>I created DoG filters by convolving the Gaussian with D_x and D_y operators, then applied these combined filters directly to the original image. This achieves the same result as the two-step process but with computational efficiency:</p>
 
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_6.png" alt="DoG method comparison">
-                <div class="result-caption">Method Comparison: Original vs Smoothed vs DoG</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_6.png" alt="DoG method comparison">
+            <div class="result-caption">Method Comparison: Original vs Smoothed vs DoG</div>
         </div>
 
         <p>The bottom portion shows D_x and D_y applied directly to the Gaussian filters themselves, illustrating how these operations affect the Gaussian kernel. The bottom-right shows the DoG filters applied to the image in a single convolution step, which produces identical results to the two-step method.</p>
@@ -380,11 +397,9 @@ print(f"Max difference (2-loop): {diff_2loop}")  # < 1e-10
         <h3>Edge Quality Comparison</h3>
         <p>The DoG approach provides superior edge detection compared to finite differences:</p>
 
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_7.png" alt="Edge detection comparison">
-                <div class="result-caption">Edge Detection: No Smoothing vs DoG</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_7.png" alt="Edge detection comparison">
+            <div class="result-caption">Edge Detection: No Smoothing vs DoG</div>
         </div>
 
         <div class="note">
@@ -411,36 +426,28 @@ print(f"Max difference (2-loop): {diff_2loop}")  # < 1e-10
         <p>The technique works by isolating high-frequency components (edges and fine details) that are lost during Gaussian blurring, then amplifying and adding them back to enhance image sharpness.</p>
 
         <h3>Taj Mahal Sharpening Results</h3>
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_8.png" alt="Taj Mahal sharpening process">
-                <div class="result-caption">Taj Mahal: Original, Blurred, High-Frequency, and Sharpened</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_8.png" alt="Taj Mahal sharpening process">
+            <div class="result-caption">Taj Mahal: Original, Blurred, High-Frequency, and Sharpened</div>
         </div>
 
         <h3>Sharpening Amount Variation</h3>
         <p>The parameter α controls sharpening intensity. Small values produce subtle enhancement, while larger values create more pronounced edges but risk introducing artifacts:</p>
 
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_9.png" alt="Taj sharpening parameter variation">
-                <div class="result-caption">Taj Mahal Sharpening with Different α Values</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_9.png" alt="Taj sharpening parameter variation">
+            <div class="result-caption">Taj Mahal Sharpening with Different α Values</div>
         </div>
 
         <h3>Additional Example: Flower Image</h3>
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_10.png" alt="Flower sharpening process">
-                <div class="result-caption">Flower: Original, Blurred, High-Frequency, and Sharpened</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_10.png" alt="Flower sharpening process">
+            <div class="result-caption">Flower: Original, Blurred, High-Frequency, and Sharpened</div>
         </div>
 
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_11.png" alt="Flower sharpening parameter variation">
-                <div class="result-caption">Flower Sharpening with Different α Values</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_11.png" alt="Flower sharpening parameter variation">
+            <div class="result-caption">Flower Sharpening with Different α Values</div>
         </div>
 
         <h3>Blur → Sharpen Evaluation</h3>
@@ -483,18 +490,14 @@ print(f"Max difference (2-loop): {diff_2loop}")  # < 1e-10
         <h3>Derek + Nutmeg: Complete Process Analysis</h3>
         <p>I demonstrate the full hybrid image creation process using the classic Derek and Nutmeg example, including alignment, frequency analysis, and parameter selection:</p>
 
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_13.png" alt="Derek Nutmeg frequency analysis">
-                <div class="result-caption">Frequency Analysis: Input FFTs and Hybrid Result FFT</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_13.png" alt="Derek Nutmeg frequency analysis">
+            <div class="result-caption">Frequency Analysis: Input FFTs and Hybrid Result FFT</div>
         </div>
 
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_14.png" alt="Derek Nutmeg multi-scale">
-                <div class="result-caption">Multi-scale Visualization: Hybrid image at different viewing distances</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_14.png" alt="Derek Nutmeg multi-scale">
+            <div class="result-caption">Multi-scale Visualization: Hybrid image at different viewing distances</div>
         </div>
 
         <div class="note">
@@ -505,27 +508,21 @@ print(f"Max difference (2-loop): {diff_2loop}")  # < 1e-10
         <p>I created two additional hybrid images exploring different themes:</p>
 
         <h4>Example 2: Expression Change</h4>
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_15.png" alt="Expression change hybrid">
-                <div class="result-caption">Happy/Sad Expression Hybrid: Input images and result</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_15.png" alt="Expression change hybrid">
+            <div class="result-caption">Happy/Sad Expression Hybrid: Input images and result</div>
         </div>
 
         <h4>Example 3: Object Transformation</h4>
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_16.png" alt="Object transformation hybrid">
-                <div class="result-caption">Cat/Dog Hybrid: Input images and result</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_16.png" alt="Object transformation hybrid">
+            <div class="result-caption">Cat/Dog Hybrid: Input images and result</div>
         </div>
 
         <h4>Example 4: Additional Hybrid</h4>
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_17.png" alt="Additional hybrid example">
-                <div class="result-caption">Additional Hybrid Example: Input images and result</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_17.png" alt="Additional hybrid example">
+            <div class="result-caption">Additional Hybrid Example: Input images and result</div>
         </div>
 
         <h3>Implementation Details</h3>
@@ -553,18 +550,14 @@ print(f"Max difference (2-loop): {diff_2loop}")  # < 1e-10
 
         <p>I applied this analysis to recreate Figure 3.42 from Szelski, demonstrating the frequency decomposition that enables seamless multi-resolution blending:</p>
 
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_18.png" alt="Apple Gaussian and Laplacian stacks">
-                <div class="result-caption">Apple: Gaussian and Laplacian Stacks</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_18.png" alt="Apple Gaussian and Laplacian stacks">
+            <div class="result-caption">Apple: Gaussian and Laplacian Stacks</div>
         </div>
 
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_19.png" alt="Orange Gaussian and Laplacian stacks">
-                <div class="result-caption">Orange: Gaussian and Laplacian Stacks</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_19.png" alt="Orange Gaussian and Laplacian stacks">
+            <div class="result-caption">Orange: Gaussian and Laplacian Stacks</div>
         </div>
 
         <h3>2.4 Multiresolution Blending (The Oraple!)</h3>
@@ -577,18 +570,14 @@ print(f"Max difference (2-loop): {diff_2loop}")  # < 1e-10
         </div>
 
         <h3>Classic Apple + Orange Blending</h3>
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_20.png" alt="Apple orange blending result">
-                <div class="result-caption">Apple + Orange: Input images, mask, and oraple result</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_20.png" alt="Apple orange blending result">
+            <div class="result-caption">Apple + Orange: Input images, mask, and oraple result</div>
         </div>
 
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_21.png" alt="Complete blending process visualization">
-                <div class="result-caption">Complete Blending Process: Laplacian stacks, mask stack, and blended result (Figure 10 style)</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_21.png" alt="Complete blending process visualization">
+            <div class="result-caption">Complete Blending Process: Laplacian stacks, mask stack, and blended result (Figure 10 style)</div>
         </div>
 
         <h3>Custom Blending Examples</h3>
@@ -596,26 +585,20 @@ print(f"Max difference (2-loop): {diff_2loop}")  # < 1e-10
         <h4>Example 1: Flower + Fireworks (Circular Mask)</h4>
         <p>I created a custom blend using an irregular circular mask with ultra-smooth transitions to seamlessly integrate a flower center with fireworks background:</p>
 
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_22.png" alt="Flower fireworks blending result">
-                <div class="result-caption">Flower + Fireworks: Input images, circular mask, and blended result</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_22.png" alt="Flower fireworks blending result">
+            <div class="result-caption">Flower + Fireworks: Input images, circular mask, and blended result</div>
         </div>
 
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_23.png" alt="Flower fireworks process visualization">
-                <div class="result-caption">Flower + Fireworks: Complete blending process with circular mask</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_23.png" alt="Flower fireworks process visualization">
+            <div class="result-caption">Flower + Fireworks: Complete blending process with circular mask</div>
         </div>
 
         <h4>Example 2: Additional Creative Blend</h4>
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="Figure_24.png" alt="Additional creative blend">
-                <div class="result-caption">Additional Creative Blend: Custom mask design</div>
-            </div>
+        <div class="full-width-image">
+            <img src="Figure_24.png" alt="Additional creative blend">
+            <div class="result-caption">Additional Creative Blend: Custom mask design</div>
         </div>
 
         <h3>Implementation Details</h3>
@@ -651,18 +634,4 @@ print(f"Max difference (2-loop): {diff_2loop}")  # < 1e-10
         <h3>Frequency Domain Insights</h3>
         <p>The multiresolution approach succeeds because it addresses the fundamental challenge of blending: different spatial frequencies require different transition strategies. High frequencies need sharp transitions to preserve detail, while low frequencies benefit from gradual blending to avoid visible seams.</p>
         
-        <h3>Mask Design Impact</h3>
-        <p>The circular mask design demonstrates superior results compared to simple vertical splits. The ultra-smooth transitions (80-pixel width with 20σ smoothing) eliminate all visible artifacts while preserving the essential character of both source images.</p>
-
-        <h2>Conclusion</h2>
-        <p>This implementation successfully demonstrates the power of multiresolution blending for creating seamless image composites. The combination of proper frequency decomposition, ultra-smooth masking, and careful parameter tuning produces results that would be impossible with simple alpha blending or other naive approaches. The technique's success lies in its frequency-aware processing, enabling natural integration across all spatial scales simultaneously.</p>
-
-        <h2>Conclusion</h2>
-        <p>This project demonstrates fundamental frequency domain techniques in image processing, from basic convolution to sophisticated multi-resolution blending, revealing how human perception can be manipulated through careful frequency domain engineering. The progression from simple convolution to complex hybrid images illustrates the power of understanding images as superpositions of spatial frequency components.</p>
-    </div>
-
-    <div style="text-align: center; margin: 40px 0;">
-        <a href="index.html" class="back-btn">Back to Portfolio</a>
-    </div>
-</body>
-</html>
+        <h3
