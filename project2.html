@@ -343,66 +343,97 @@ def convolve2d_with_2_loops(image, kernel):
             </div>
         </div>
 
-        <h3>1.2 Finite Difference Operator</h3>
-        <p>I applied finite difference operators D_x = [1, -1] and D_y = [[1], [-1]] to the cameraman image using <span class="code">scipy.signal.convolve2d</span>. These simple operators compute partial derivatives by measuring intensity changes between adjacent pixels.</p>
+         <h3>1.2 Finite Difference Operator</h3>
+        <p>I applied finite difference operators D_x = [[-1, 1]] and D_y = [[-1], [1]] to the cameraman image using <span class="code">scipy.signal.convolve2d</span> with symmetric boundary conditions. These simple operators compute partial derivatives by measuring intensity changes between adjacent pixels, where D_x detects vertical edges (intensity changes in the horizontal direction) and D_y detects horizontal edges (intensity changes in the vertical direction).</p>
+
+        <p>The gradient magnitude is computed as <span class="code">magnitude = np.sqrt(I_x² + I_y²)</span>, producing a grayscale image where edges and sharp regions appear bright while flat regions appear dark. To ensure consistent thresholding, I normalized the gradient magnitude to [0,1] range by dividing by the maximum value.</p>
 
         <div class="full-width-image">
             <img src="Figure_3.png" alt="Finite difference results">
-            <div class="result-caption">Partial Derivatives and Gradient Magnitude</div>
+            <div class="result-caption">Partial Derivatives ∂I/∂x, ∂I/∂y, and Gradient Magnitude</div>
         </div>
 
-        <p>The gradient magnitude is computed as: <span class="code">magnitude = np.sqrt(dx² + dy²)</span>. This produces a grayscale image where edges and sharp regions appear bright (high magnitude) while flat regions appear dark (low magnitude).</p>
-
         <h3>Edge Detection Through Binarization</h3>
-        <p>To create a clean edge image, I binarized the gradient magnitude using a threshold. The challenge is balancing edge preservation with noise suppression:</p>
+        <p>To create a clean edge image, I binarized the normalized gradient magnitude using a threshold. The threshold parameter (0 ≤ thresh ≤ 1) sets all values above the threshold to 1, and the rest to 0. The challenge is balancing edge preservation with noise suppression:</p>
+
+        <ul>
+            <li><strong>Lower threshold</strong> → captures more detail but introduces noise artifacts</li>
+            <li><strong>Higher threshold</strong> → eliminates noise but loses important edge information</li>
+            <li><strong>Too low threshold</strong> → introduces non-existent edges and scattered noise pixels</li>
+        </ul>
 
         <div class="full-width-image">
             <img src="Figure_4.png" alt="Binarization threshold comparison">
-            <div class="result-caption">Threshold Comparison and Final Edge Image</div>
+            <div class="result-caption">Threshold Comparison and Binary Edge Maps</div>
         </div>
 
         <div class="note">
-            <strong>Threshold Selection Rationale:</strong> I chose a threshold of 0.25 as the optimal balance. Lower thresholds capture more detail but introduce noise artifacts, particularly visible as scattered white pixels in uniform regions. Higher thresholds eliminate noise but lose important edge information, such as fine details in the cameraman's clothing and equipment. The medium threshold preserves the main structural edges while suppressing most background noise.
+            <strong>Threshold Selection Rationale:</strong> After testing multiple thresholds (0.05, 0.10, 0.15, 0.20, 0.25, 0.30), I chose a <strong>threshold of 0.15</strong> as the optimal balance. This preserves the main structural edges of the cameraman (profile, equipment, tripod legs) while suppressing most background noise, resulting in approximately 15% edge pixels in the final binary map. Lower thresholds capture more detail but introduce scattered noise pixels in uniform regions, while higher thresholds eliminate noise but lose important edge information such as fine details in the cameraman's clothing and equipment.
         </div>
+
+        <h3>Filters and Gradient Magnitude Analysis</h3>
+        <p>The results confirm our understanding that D_x emphasizes vertical edges (such as the cameraman's profile and equipment edges) while D_y emphasizes horizontal edges (like the camera body and tripod legs). The combined gradient magnitude effectively captures the overall edge structure, providing a foundation for the subsequent binarization step. The symmetric boundary conditions help preserve edge information near image borders compared to zero-padding approaches.</p>
 
         <h3>1.3 Derivative of Gaussian (DoG) Filter</h3>
         <p>The finite difference operators in Part 1.2 produced noisy results that were difficult to interpret. Gaussian filters provide a cleaner approach by smoothing the image before differentiation, reducing noise while preserving important edge information.</p>
 
-        <h3>What Differences Do You See?</h3>
-        <p>I implemented two equivalent methods: (1) Gaussian smoothing followed by finite differences, and (2) single convolution with pre-computed DoG filters. The Gaussian-smoothed approach produces significantly cleaner results compared to raw finite differences.</p>
+        <p>I constructed a normalized 2D Gaussian kernel using the outer product method with kernel size 7×7 and σ=1.0. The Gaussian function provides smoothing that reduces high-frequency noise while preserving the overall structure of edges at the appropriate scale.</p>
+
+        <h3>Method 1: Two-Step Process (Smooth then Differentiate)</h3>
+        <p>I first smooth the image with the normalized 2D Gaussian and then apply finite differences:</p>
+
+        <div class="formula">
+            <strong>Two-Step DoG Process:</strong><br>
+            I<sub>blur</sub> = I ∗ G<br>
+            I<sub>x</sub><sup>(2)</sup> = (I ∗ G) ∗ D<sub>x</sub><br>
+            I<sub>y</sub><sup>(2)</sup> = (I ∗ G) ∗ D<sub>y</sub><br>
+            |∇I|<sup>(2)</sup> = √((I<sub>x</sub><sup>(2)</sup>)² + (I<sub>y</sub><sup>(2)</sup>)²)
+        </div>
+
+        <h3>Method 2: Single Convolution (Derivative of Gaussian)</h3>
+        <p>I form Derivative-of-Gaussian (DoG) filters in one step by convolving the Gaussian kernel with the difference operators, then apply them directly:</p>
+
+        <div class="formula">
+            <strong>Single-Step DoG Process:</strong><br>
+            DoG<sub>x</sub> = G ∗ D<sub>x</sub><br>
+            DoG<sub>y</sub> = G ∗ D<sub>y</sub><br>
+            I<sub>x</sub><sup>(dog)</sup> = I ∗ DoG<sub>x</sub><br>
+            I<sub>y</sub><sup>(dog)</sup> = I ∗ DoG<sub>y</sub><br>
+            |∇I|<sup>(dog)</sup> = √((I<sub>x</sub><sup>(dog)</sup>)² + (I<sub>y</sub><sup>(dog)</sup>²)
+        </div>
 
         <div class="full-width-image">
             <img src="Figure_5.png" alt="DoG filters visualization">
-            <div class="result-caption">DoG Filter Visualization: Gaussian, DoG_x, and DoG_y</div>
+            <div class="result-caption">DoG Filter Visualization: Gaussian Kernel, DoG_x, and DoG_y Filters (displayed as signed images)</div>
         </div>
 
-        <p>The upper-left shows the original image and its Gaussian-smoothed version. The Gaussian filter slightly alters the image by making it blurrier, averaging neighborhood pixel values. The upper-right displays D_x and D_y filters applied to the Gaussian-smoothed image, revealing much cleaner edge detection with enhanced detail extraction compared to the previous finite difference method.</p>
-
-        <h3>Single Convolution Verification</h3>
-        <p>I created DoG filters by convolving the Gaussian with D_x and D_y operators, then applied these combined filters directly to the original image. This achieves the same result as the two-step process but with computational efficiency:</p>
+        <h3>Mathematical Equivalence Verification</h3>
+        <p>By associativity of convolution, I ∗ (G ∗ D<sub>x</sub>) = (I ∗ G) ∗ D<sub>x</sub> (and similarly for D<sub>y</sub>), so the one-step DoG and two-step smooth-then-differentiate pipelines match. I verified this numerically by computing near-zero RMSE between I<sub>x</sub><sup>(2)</sup> vs. I<sub>x</sub><sup>(dog)</sup>, I<sub>y</sub><sup>(2)</sup> vs. I<sub>y</sub><sup>(dog)</sup>, and their gradient magnitudes, with maximum differences on the order of 1e-15 (machine precision).</p>
 
         <div class="full-width-image">
             <img src="Figure_6.png" alt="DoG method comparison">
-            <div class="result-caption">Method Comparison: Original vs Smoothed vs DoG</div>
+            <div class="result-caption">Method Comparison: Original vs Smoothed vs DoG (demonstrating mathematical equivalence)</div>
         </div>
 
-        <p>The bottom portion shows D_x and D_y applied directly to the Gaussian filters themselves, illustrating how these operations affect the Gaussian kernel. The bottom-right shows the DoG filters applied to the image in a single convolution step, which produces identical results to the two-step method.</p>
+        <p>The visualization demonstrates that the Gaussian filter slightly alters the image by making it blurrier through neighborhood averaging. Compared to raw differences, the pre-smoothed gradients are visibly less noisy and produce cleaner edge maps that better suppress texture noise and speckle while preserving real boundaries.</p>
 
-        <h3>Edge Quality Comparison</h3>
-        <p>The DoG approach provides superior edge detection compared to finite differences:</p>
+        <h3>Edge Quality Comparison and Thresholding</h3>
+        <p>Comparing DoG results with the original finite difference approach reveals significant improvements in edge detection quality. The binarized edge maps from DoG require a higher threshold to avoid thick edges, yet they achieve better noise suppression:</p>
 
         <div class="full-width-image">
             <img src="Figure_7.png" alt="Edge detection comparison">
-            <div class="result-caption">Edge Detection: No Smoothing vs DoG</div>
+            <div class="result-caption">Edge Detection Quality: No Smoothing vs DoG Method</div>
         </div>
 
         <div class="note">
-            <strong>Key Insights:</strong>
-            <br>• Gaussian smoothing preserves global structure while reducing noise artifacts
-            <br>• DoG filters emphasize edges while ignoring slow intensity variations
-            <br>• Single convolution (DoG) produces identical results to two-step method with better efficiency
-            <br>• Trade-off: Improved noise robustness at the cost of some fine detail due to smoothing
-            <br>• Compared to finite differences: DoG provides better scale sensitivity and noise robustness, while finite differences offer sharper but noisier edge detection
+            <strong>Key Insights from DoG Analysis:</strong>
+            <br>• <strong>Noise reduction:</strong> DoG significantly reduces noise artifacts while preserving important edge structure
+            <br>• <strong>Mathematical equivalence:</strong> Single convolution (DoG) produces numerically identical results to two-step method with better computational efficiency
+            <br>• <strong>Cleaner gradients:</strong> Pre-smoothed gradients are visibly less noisy and background texture/speckle are suppressed
+            <br>• <strong>Threshold adjustment:</strong> DoG gradient magnitude typically requires higher thresholds to maintain thin edges without reintroducing noise
+            <br>• <strong>Trade-off analysis:</strong> Very fine, low-contrast details can be slightly attenuated due to smoothing effect
+            <br>• <strong>Frequency selectivity:</strong> Finite differences emphasize all high frequencies (including noise), while DoG emphasizes salient edges by first smoothing, yielding more stable, perceptually better edge maps
+            <br>• <strong>Scale sensitivity:</strong> DoG provides better scale-aware edge detection with improved robustness to lighting variations
         </div>
 
         <h2>Part 2: Fun with Frequencies</h2>
