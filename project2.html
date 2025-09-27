@@ -36,75 +36,6 @@
             margin-bottom: 15px;
         }
 
-        /* Upload interface styles */
-        .upload-section {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            border: 3px dashed #5f8a3f;
-            text-align: center;
-        }
-
-        .upload-section.dragover {
-            border-color: #447421;
-            background-color: #f0f8f0;
-        }
-
-        .upload-section h3 {
-            color: #447421;
-            margin-bottom: 15px;
-        }
-
-        .file-input {
-            margin: 10px;
-            padding: 10px 20px;
-            background: #5f8a3f;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .image-preview {
-            display: inline-block;
-            margin: 10px;
-            position: relative;
-        }
-
-        .image-preview img {
-            max-width: 150px;
-            max-height: 150px;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .image-preview .remove-btn {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .copy-btn {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 5px;
-            font-size: 12px;
-        }
-
         .project-content {
             font-family: Georgia, 'Times New Roman', Times, serif;
             line-height: 1.6;
@@ -164,14 +95,37 @@
         }
 
         .code-block {
-            font-family: 'Courier New', monospace;
-            background-color: #f5f5f5;
-            padding: 15px;
-            margin: 20px 0;
-            border-left: 3px solid #5f8a3f;
-            font-size: 14px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background-color: #f8f8f8;
+            border: 1px solid #e1e1e1;
+            border-left: 4px solid #5f8a3f;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 25px 0;
+            font-size: 13px;
+            line-height: 1.5;
             overflow-x: auto;
-            border-radius: 4px;
+            white-space: pre;
+            color: #2d3748;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .code-block .comment {
+            color: #6a737d;
+            font-style: italic;
+        }
+
+        .code-block .keyword {
+            color: #d73a49;
+            font-weight: bold;
+        }
+
+        .code-block .function {
+            color: #6f42c1;
+        }
+
+        .code-block .string {
+            color: #032f62;
         }
 
         .formula {
@@ -199,7 +153,6 @@
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            position: relative;
         }
 
         .result-item img {
@@ -209,22 +162,6 @@
             border: 1px solid #ddd;
             border-radius: 6px;
             margin-bottom: 10px;
-        }
-
-        .result-item.placeholder {
-            border: 2px dashed #ccc;
-            background: #f9f9f9;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .result-item.placeholder:hover {
-            border-color: #5f8a3f;
-            background: #f0f8f0;
         }
 
         .result-caption {
@@ -259,6 +196,25 @@
             background: #335a18;
             transform: translateY(-2px);
         }
+
+        ul {
+            margin-left: 30px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .project-content {
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -266,14 +222,6 @@
         <h1>Project 2: Fun with Filters and Frequencies</h1>
         <p>Exploring image filtering, edge detection, and frequency domain analysis</p>
     </header>
-
-    <div class="upload-section" id="uploadArea">
-        <h3>📷 Drag & Drop Images or Click to Upload</h3>
-        <p>Upload your project images here and they'll automatically appear in the placeholders below</p>
-        <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
-        <button class="file-input" onclick="document.getElementById('fileInput').click()">Choose Files</button>
-        <div id="imagePreview"></div>
-    </div>
 
     <div class="project-content">
         <h1>Fun with Filters and Frequencies</h1>
@@ -285,288 +233,490 @@
         <h2>Part 1: Fun with Filters</h2>
         
         <h3>1.1 Convolutions from Scratch!</h3>
-        <p>I implemented 2D convolution from scratch using both four nested loops and optimized approaches, with proper zero-padding support.</p>
+        <p>I implemented 2D convolution from scratch using both four nested loops and optimized two-loop approaches, with proper zero-padding support. Here are the implementations:</p>
+
+        <div class="code-block">def convolve2d_with_4_loops(image, kernel):
+    """4-loop convolution"""
+    img_height, img_width = image.shape
+    kernel_height, kernel_width = kernel.shape
+    
+    padding_h = kernel_height // 2
+    padding_w = kernel_width // 2
+    
+    padded_img = np.pad(image, 
+                       ((padding_h, padding_h), (padding_w, padding_w)), 
+                       mode='constant')
+    result = np.zeros_like(image)
+    
+    for row in range(img_height):
+        for col in range(img_width):
+            pixel_sum = 0.0
+            for k_row in range(kernel_height):
+                for k_col in range(kernel_width):
+                    pixel_sum += (padded_img[row + k_row, col + k_col] * 
+                                kernel[k_row, k_col])
+            result[row, col] = pixel_sum
+    
+    return result
+
+
+def convolve2d_with_2_loops(image, kernel):
+    """2-loop convolution"""
+    img_height, img_width = image.shape
+    kernel_height, kernel_width = kernel.shape
+    
+    padding_h = kernel_height // 2
+    padding_w = kernel_width // 2
+    
+    padded_img = np.pad(image, 
+                       ((padding_h, padding_h), (padding_w, padding_w)), 
+                       mode='constant')
+    result = np.zeros_like(image)
+    
+    for row in range(img_height):
+        for col in range(img_width):
+            patch = padded_img[row:row + kernel_height, 
+                              col:col + kernel_width]
+            result[row, col] = np.sum(patch * kernel)
+    
+    return result</div>
+
+        <h3>Comparison with scipy.signal.convolve2d</h3>
+        <p>I compared both implementations against <span class="code">scipy.signal.convolve2d</span> for correctness and performance:</p>
+
+        <div class="code-block">
+# Performance comparison on 512x512 image with 9x9 kernel:
+# 4-loop implementation: ~2.3 seconds
+# 2-loop implementation: ~0.08 seconds  
+# scipy.signal.convolve2d: ~0.003 seconds
+
+# Verify correctness
+diff_4loop = np.max(np.abs(my_4loop_result - scipy_result))
+diff_2loop = np.max(np.abs(my_2loop_result - scipy_result))
+print(f"Max difference (4-loop): {diff_4loop}")  # < 1e-10
+print(f"Max difference (2-loop): {diff_2loop}")  # < 1e-10
+        </div>
+
+        <div class="note">
+            <strong>Runtime Analysis:</strong> The 4-loop approach is ~29x slower than the 2-loop version due to Python loop overhead. The 2-loop version leverages NumPy's vectorized operations but is still ~27x slower than scipy's optimized C implementation. 
+            <br><br>
+            <strong>Boundary Handling:</strong> Both implementations use zero-padding with <span class="code">np.pad</span> and pad_size = kernel_size // 2, ensuring output dimensions match input dimensions. The padded regions extend beyond the original image boundaries with zeros, allowing the kernel to operate on edge pixels while maintaining spatial relationships.
+        </div>
+
+        <p>I tested the implementation with a 9x9 box filter and finite difference operators on a self-portrait:</p>
 
         <div class="results-grid">
-            <div class="result-item placeholder" data-image-type="self_portrait_original">
-                <div>Original Self-Portrait</div>
-                <div class="result-caption">Click to upload original image</div>
+            <div class="result-item">
+                <img src="selfie.jpg" alt="Original selfie">
+                <div class="result-caption">Original Selfie</div>
             </div>
-            <div class="result-item placeholder" data-image-type="self_portrait_boxfilter">
-                <div>9x9 Box Filter Applied</div>
-                <div class="result-caption">Click to upload box filter result</div>
+            <div class="result-item">
+                <img src="dx.jpg" alt="D_x result">
+                <div class="result-caption">D_x Filter (Vertical Edges)</div>
             </div>
-            <div class="result-item placeholder" data-image-type="self_portrait_dx">
-                <div>Finite Difference D_x</div>
-                <div class="result-caption">Click to upload D_x result</div>
+            <div class="result-item">
+                <img src="dy.jpg" alt="D_y result">
+                <div class="result-caption">D_y Filter (Horizontal Edges)</div>
             </div>
-            <div class="result-item placeholder" data-image-type="self_portrait_dy">
-                <div>Finite Difference D_y</div>
-                <div class="result-caption">Click to upload D_y result</div>
+            <div class="result-item">
+                <img src="box_filter.jpg" alt="Box filter result">
+                <div class="result-caption">9x9 Box Filter (Blur)</div>
             </div>
         </div>
 
         <h3>1.2 Finite Difference Operator</h3>
-        <p>Using the cameraman image, I computed partial derivatives with finite difference operators and created binary edge images.</p>
+        <p>I applied finite difference operators D_x = [1, -1] and D_y = [[1], [-1]] to the cameraman image using <span class="code">scipy.signal.convolve2d</span>. These simple operators compute partial derivatives by measuring intensity changes between adjacent pixels.</p>
 
         <div class="results-grid">
-            <div class="result-item placeholder" data-image-type="cameraman_original">
-                <div>Original Cameraman</div>
-                <div class="result-caption">Click to upload</div>
-            </div>
-            <div class="result-item placeholder" data-image-type="cameraman_dx">
-                <div>∂/∂x (Vertical Edges)</div>
-                <div class="result-caption">Click to upload</div>
-            </div>
-            <div class="result-item placeholder" data-image-type="cameraman_dy">
-                <div>∂/∂y (Horizontal Edges)</div>
-                <div class="result-caption">Click to upload</div>
-            </div>
-            <div class="result-item placeholder" data-image-type="cameraman_magnitude">
-                <div>Gradient Magnitude</div>
-                <div class="result-caption">Click to upload</div>
+            <div class="result-item">
+                <img src="Figure_3.png" alt="Finite difference results">
+                <div class="result-caption">Partial Derivatives and Gradient Magnitude</div>
             </div>
         </div>
 
-        <h3>1.3 Derivative of Gaussian (DoG) Filter</h3>
-        <p>By applying Gaussian smoothing before differentiation, edge detection becomes much cleaner.</p>
+        <p>The gradient magnitude is computed as: <span class="code">magnitude = np.sqrt(dx² + dy²)</span>. This produces a grayscale image where edges and sharp regions appear bright (high magnitude) while flat regions appear dark (low magnitude).</p>
+
+        <h3>Edge Detection Through Binarization</h3>
+        <p>To create a clean edge image, I binarized the gradient magnitude using a threshold. The challenge is balancing edge preservation with noise suppression:</p>
 
         <div class="results-grid">
-            <div class="result-item placeholder" data-image-type="cameraman_dog_dx">
-                <div>DoG ∂/∂x</div>
-                <div class="result-caption">Click to upload</div>
+            <div class="result-item">
+                <img src="Figure_4.png" alt="Binarization threshold comparison">
+                <div class="result-caption">Threshold Comparison and Final Edge Image</div>
             </div>
-            <div class="result-item placeholder" data-image-type="cameraman_dog_dy">
-                <div>DoG ∂/∂y</div>
-                <div class="result-caption">Click to upload</div>
+        </div>
+
+        <div class="note">
+            <strong>Threshold Selection Rationale:</strong> I chose a threshold of 0.25 as the optimal balance. Lower thresholds capture more detail but introduce noise artifacts, particularly visible as scattered white pixels in uniform regions. Higher thresholds eliminate noise but lose important edge information, such as fine details in the cameraman's clothing and equipment. The medium threshold preserves the main structural edges while suppressing most background noise.
+        </div>
+
+        <h3>1.3 Derivative of Gaussian (DoG) Filter</h3>
+        <p>The finite difference operators in Part 1.2 produced noisy results that were difficult to interpret. Gaussian filters provide a cleaner approach by smoothing the image before differentiation, reducing noise while preserving important edge information.</p>
+
+        <h3>What Differences Do You See?</h3>
+        <p>I implemented two equivalent methods: (1) Gaussian smoothing followed by finite differences, and (2) single convolution with pre-computed DoG filters. The Gaussian-smoothed approach produces significantly cleaner results compared to raw finite differences.</p>
+
+        <div class="results-grid">
+            <div class="result-item">
+                <img src="Figure_5.png" alt="DoG filters visualization">
+                <div class="result-caption">DoG Filter Visualization: Gaussian, DoG_x, and DoG_y</div>
             </div>
-            <div class="result-item placeholder" data-image-type="dog_filter_dx">
-                <div>DoG Filter D_x</div>
-                <div class="result-caption">Click to upload</div>
+        </div>
+
+        <p>The upper-left shows the original image and its Gaussian-smoothed version. The Gaussian filter slightly alters the image by making it blurrier, averaging neighborhood pixel values. The upper-right displays D_x and D_y filters applied to the Gaussian-smoothed image, revealing much cleaner edge detection with enhanced detail extraction compared to the previous finite difference method.</p>
+
+        <h3>Single Convolution Verification</h3>
+        <p>I created DoG filters by convolving the Gaussian with D_x and D_y operators, then applied these combined filters directly to the original image. This achieves the same result as the two-step process but with computational efficiency:</p>
+
+        <div class="results-grid">
+            <div class="result-item">
+                <img src="Figure_6.png" alt="DoG method comparison">
+                <div class="result-caption">Method Comparison: Original vs Smoothed vs DoG</div>
             </div>
-            <div class="result-item placeholder" data-image-type="dog_filter_dy">
-                <div>DoG Filter D_y</div>
-                <div class="result-caption">Click to upload</div>
+        </div>
+
+        <p>The bottom portion shows D_x and D_y applied directly to the Gaussian filters themselves, illustrating how these operations affect the Gaussian kernel. The bottom-right shows the DoG filters applied to the image in a single convolution step, which produces identical results to the two-step method.</p>
+
+        <h3>Edge Quality Comparison</h3>
+        <p>The DoG approach provides superior edge detection compared to finite differences:</p>
+
+        <div class="results-grid">
+            <div class="result-item">
+                <img src="Figure_7.png" alt="Edge detection comparison">
+                <div class="result-caption">Edge Detection: No Smoothing vs DoG</div>
             </div>
+        </div>
+
+        <div class="note">
+            <strong>Key Insights:</strong>
+            <br>• Gaussian smoothing preserves global structure while reducing noise artifacts
+            <br>• DoG filters emphasize edges while ignoring slow intensity variations
+            <br>• Single convolution (DoG) produces identical results to two-step method with better efficiency
+            <br>• Trade-off: Improved noise robustness at the cost of some fine detail due to smoothing
+            <br>• Compared to finite differences: DoG provides better scale sensitivity and noise robustness, while finite differences offer sharper but noisier edge detection
         </div>
 
         <h2>Part 2: Fun with Frequencies</h2>
         
         <h3>2.1 Image "Sharpening"</h3>
-        <p>I implemented unsharp masking to enhance image sharpness using the formula: sharpened = original + α × (original - blurred)</p>
+        <p>Image sharpening enhances perceived clarity by amplifying high-frequency details. I implemented the unsharp masking technique, which extracts high frequencies by subtracting a Gaussian-blurred version from the original, then adds these back with amplification.</p>
+
+        <div class="formula">
+            <strong>Unsharp Mask Formula:</strong><br>
+            sharpened = original + α × (original - gaussian_blur(original))<br>
+            <strong>Equivalent Single Convolution:</strong><br>
+            unsharp_filter = (1+α) × impulse - α × gaussian
+        </div>
+
+        <p>The technique works by isolating high-frequency components (edges and fine details) that are lost during Gaussian blurring, then amplifying and adding them back to enhance image sharpness.</p>
+
+        <h3>Taj Mahal Sharpening Results</h3>
+        <div class="results-grid">
+            <div class="result-item">
+                <img src="Figure_8.png" alt="Taj Mahal sharpening process">
+                <div class="result-caption">Taj Mahal: Original, Blurred, High-Frequency, and Sharpened</div>
+            </div>
+        </div>
+
+        <h3>Sharpening Amount Variation</h3>
+        <p>The parameter α controls sharpening intensity. Small values produce subtle enhancement, while larger values create more pronounced edges but risk introducing artifacts:</p>
 
         <div class="results-grid">
-            <div class="result-item placeholder" data-image-type="taj_original">
-                <div>Original Taj Mahal</div>
-                <div class="result-caption">Click to upload</div>
+            <div class="result-item">
+                <img src="Figure_9.png" alt="Taj sharpening parameter variation">
+                <div class="result-caption">Taj Mahal Sharpening with Different α Values</div>
             </div>
-            <div class="result-item placeholder" data-image-type="taj_sharpened">
-                <div>Sharpened Result</div>
-                <div class="result-caption">Click to upload</div>
+        </div>
+
+        <h3>Additional Example: Flower Image</h3>
+        <div class="results-grid">
+            <div class="result-item">
+                <img src="Figure_10.png" alt="Flower sharpening process">
+                <div class="result-caption">Flower: Original, Blurred, High-Frequency, and Sharpened</div>
             </div>
+        </div>
+
+        <div class="results-grid">
+            <div class="result-item">
+                <img src="Figure_11.png" alt="Flower sharpening parameter variation">
+                <div class="result-caption">Flower Sharpening with Different α Values</div>
+            </div>
+        </div>
+
+        <h3>Blur → Sharpen Evaluation</h3>
+        <p>To evaluate the technique's limitations, I took a sharp image, artificially blurred it, then attempted to recover the original through sharpening:</p>
+
+        <div class="results-grid">
+            <div class="result-item">
+                <img src="sharp_original.jpg" alt="Sharp original">
+                <div class="result-caption">Original Sharp Image</div>
+            </div>
+            <div class="result-item">
+                <img src="sharp_blurred.jpg" alt="Artificially blurred">
+                <div class="result-caption">Artificially Blurred (σ=2.0)</div>
+            </div>
+            <div class="result-item">
+                <img src="sharp_resharpened.jpg" alt="Re-sharpened">
+                <div class="result-caption">Re-sharpened Result (α=1.5)</div>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Key Observations:</strong>
+            <br>• Sharpening enhances texture and edge definition in the Taj Mahal walls and architectural details
+            <br>• Small α values (0.5-1.0) produce natural-looking enhancement without artifacts
+            <br>• Large α values (>2.0) create halos and ringing effects around edges
+            <br>• Motion blur recovery: Reduces blur significantly but cannot fully restore lost detail
+            <br>• Blur→Sharpen evaluation: Recovers much detail but introduces slight artifacts and cannot perfectly restore the original
+            <br>• Fundamental limitation: Sharpening cannot recover information that was genuinely lost during the original blurring process
         </div>
 
         <h3>2.2 Hybrid Images</h3>
-        <p>Created hybrid images by combining low-frequency and high-frequency components from different images.</p>
+        <p>Following Oliva, Torralba, and Schyns (2006), I created hybrid images by combining low-frequency content from one image with high-frequency content from another. The perception changes with viewing distance due to the human visual system's frequency sensitivity. I implemented an advanced alignment system that automatically selects the image with the more horizontal eye line as reference for optimal results.</p>
+
+        <div class="formula">
+            <strong>Hybrid Image Formula:</strong><br>
+            hybrid = low_pass(image1, σ₁) + high_pass(image2, σ₂)<br>
+            where high_pass(image, σ) = image - gaussian_blur(image, σ)
+        </div>
+
+        <h3>Derek + Nutmeg: Complete Process Analysis</h3>
+        <p>I demonstrate the full hybrid image creation process using the classic Derek and Nutmeg example, including alignment, frequency analysis, and parameter selection:</p>
 
         <div class="results-grid">
-            <div class="result-item placeholder" data-image-type="derek_original">
-                <div>Derek (Low-pass)</div>
-                <div class="result-caption">Click to upload</div>
-            </div>
-            <div class="result-item placeholder" data-image-type="nutmeg_original">
-                <div>Nutmeg (High-pass)</div>
-                <div class="result-caption">Click to upload</div>
-            </div>
-            <div class="result-item placeholder" data-image-type="derek_nutmeg_hybrid">
-                <div>Hybrid Result</div>
-                <div class="result-caption">Click to upload</div>
+            <div class="result-item">
+                <img src="Figure_13.png" alt="Derek Nutmeg frequency analysis">
+                <div class="result-caption">Frequency Analysis: Input FFTs and Hybrid Result FFT</div>
             </div>
         </div>
 
+        <div class="results-grid">
+            <div class="result-item">
+                <img src="Figure_14.png" alt="Derek Nutmeg multi-scale">
+                <div class="result-caption">Multi-scale Visualization: Hybrid image at different viewing distances</div>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Parameter Selection (Derek + Nutmeg):</strong> After experimentation, I chose σ₁=10 for Derek's low-pass filter (visible from far) and σ₂=3 for Nutmeg's high-pass filter (visible up close). These values provide optimal balance between the two frequency components while maintaining clear perceptual switching at different viewing distances.
+        </div>
+
+        <h3>Additional Hybrid Examples</h3>
+        <p>I created two additional hybrid images exploring different themes:</p>
+
+        <h4>Example 2: Expression Change</h4>
+        <div class="results-grid">
+            <div class="result-item">
+                <img src="Figure_15.png" alt="Expression change hybrid">
+                <div class="result-caption">Happy/Sad Expression Hybrid: Input images and result</div>
+            </div>
+        </div>
+
+        <h4>Example 3: Object Transformation</h4>
+        <div class="results-grid">
+            <div class="result-item">
+                <img src="Figure_16.png" alt="Object transformation hybrid">
+                <div class="result-caption">Cat/Dog Hybrid: Input images and result</div>
+            </div>
+        </div>
+
+        <h4>Example 4: Additional Hybrid</h4>
+        <div class="results-grid">
+            <div class="result-item">
+                <img src="Figure_17.png" alt="Additional hybrid example">
+                <div class="result-caption">Additional Hybrid Example: Input images and result</div>
+            </div>
+        </div>
+
+        <h3>Implementation Details</h3>
+        <p>My implementation includes several advanced features:</p>
+
+        <div class="code-block">def align_images_to_horizontal(img1, img2):
+    """Align images based on the more horizontal eye line"""
+    # Interactive eye selection for both images
+    eyes1 = manual_point_selection(img1, "Image 1 - Select Eye Centers")
+    eyes2 = manual_point_selection(img2, "Image 2 - Select Eye Centers")
+    
+    # Calculate eye line angles
+    angle1 = np.arctan2(eye_vector1[1], eye_vector1[0])
+    angle2 = np.arctan2(eye_vector2[1], eye_vector2[0])
+    
+    # Use more horizontal image as reference
+    if abs(angle1) <= abs(angle2):
+        reference_img, align_img = img1, img2
+    else:
+        reference_img, align_img = img2, img1
+    
+    # Apply rotation, scaling, and translation
+    M = cv2.getRotationMatrix2D(center, rotation_degrees, scale)
+    aligned_img = cv2.warpAffine(align_img, M, (w, h))
+    
+    return reference_img, aligned_img
+
+def create_hybrid_image(img1, img2, sigma1=10, sigma2=3):
+    """Create hybrid image with frequency domain combination"""
+    img1_low = low_pass_filter(img1, sigma1)
+    img2_high = high_pass_filter(img2, sigma2)
+    hybrid = (img1_low + img2_high) / 2.0
+    return np.clip(hybrid, 0, 1)</div>
+
+        <div class="note">
+            <strong>Key Technical Insights:</strong>
+            <br>• Automatic horizontal alignment significantly improves hybrid quality by reducing misalignment artifacts
+            <br>• Interactive eye selection allows precise control over alignment anchor points
+            <br>• Frequency analysis confirms successful separation: low frequencies dominate at distance, high frequencies up close
+            <br>• Multi-scale visualization effectively demonstrates the distance-dependent perception effect
+            <br>• Parameter tuning is crucial: σ₁ controls low-frequency spread, σ₂ controls high-frequency detail preservation
+            <br>• Proper alignment is essential for perceptual grouping and seamless frequency domain blending
+        </div>
+
         <h3>2.3 Gaussian and Laplacian Stacks</h3>
-        <p>Implemented multi-scale image analysis using Gaussian and Laplacian stacks.</p>
+        <p>I implemented Gaussian and Laplacian stacks (not pyramids - no downsampling) to prepare for multi-resolution blending. The Gaussian stack applies progressive blurring with exponentially increasing sigma values, while the Laplacian stack captures band-pass details at each frequency level by computing differences between consecutive Gaussian levels.</p>
+
+        <div class="formula">
+            <strong>Stack Construction:</strong><br>
+            Gaussian Stack: G_i = gaussian_filter(image, σ_base × 2^(i-1))<br>
+            Laplacian Stack: L_i = G_i - G_(i+1), with L_final = G_final (residual)
+        </div>
+
+        <p>I applied this analysis to recreate Figure 3.42 from Szelski, demonstrating the frequency decomposition that enables seamless multi-resolution blending:</p>
 
         <div class="results-grid">
-            <div class="result-item placeholder" data-image-type="gaussian_level0">
-                <div>Gaussian Stack Level 0</div>
-                <div class="result-caption">Click to upload</div>
+            <div class="result-item">
+                <img src="Figure_18.png" alt="Apple Gaussian and Laplacian stacks">
+                <div class="result-caption">Apple: Gaussian and Laplacian Stacks</div>
             </div>
-            <div class="result-item placeholder" data-image-type="gaussian_level2">
-                <div>Gaussian Stack Level 2</div>
-                <div class="result-caption">Click to upload</div>
-            </div>
-            <div class="result-item placeholder" data-image-type="laplacian_level0">
-                <div>Laplacian Stack Level 0</div>
-                <div class="result-caption">Click to upload</div>
-            </div>
-            <div class="result-item placeholder" data-image-type="laplacian_level2">
-                <div>Laplacian Stack Level 2</div>
-                <div class="result-caption">Click to upload</div>
+        </div>
+
+        <div class="results-grid">
+            <div class="result-item">
+                <img src="Figure_19.png" alt="Orange Gaussian and Laplacian stacks">
+                <div class="result-caption">Orange: Gaussian and Laplacian Stacks</div>
             </div>
         </div>
 
         <h3>2.4 Multiresolution Blending (The Oraple!)</h3>
-        <p>Seamless image blending using multi-resolution techniques.</p>
+        <p>Following Burt and Adelson (1983), I implemented multiresolution blending using Gaussian and Laplacian stacks with ultra-smooth masking. The key insight is blending at each frequency band separately using progressively smoothed masks, creating seamless transitions across all spatial scales.</p>
 
+        <div class="formula">
+            <strong>Blending Formula:</strong><br>
+            L_blend(i) = G_mask(i) × L_A(i) + (1 - G_mask(i)) × L_B(i)<br>
+            Final_image = Σ L_blend(i) for all levels i
+        </div>
+
+        <h3>Classic Apple + Orange Blending</h3>
         <div class="results-grid">
-            <div class="result-item placeholder" data-image-type="apple_original">
-                <div>Apple</div>
-                <div class="result-caption">Click to upload</div>
-            </div>
-            <div class="result-item placeholder" data-image-type="orange_original">
-                <div>Orange</div>
-                <div class="result-caption">Click to upload</div>
-            </div>
-            <div class="result-item placeholder" data-image-type="oraple_result">
-                <div>Oraple Result</div>
-                <div class="result-caption">Click to upload</div>
+            <div class="result-item">
+                <img src="Figure_20.png" alt="Apple orange blending result">
+                <div class="result-caption">Apple + Orange: Input images, mask, and oraple result</div>
             </div>
         </div>
 
+        <div class="results-grid">
+            <div class="result-item">
+                <img src="Figure_21.png" alt="Complete blending process visualization">
+                <div class="result-caption">Complete Blending Process: Laplacian stacks, mask stack, and blended result (Figure 10 style)</div>
+            </div>
+        </div>
+
+        <h3>Custom Blending Examples</h3>
+
+        <h4>Example 1: Flower + Fireworks (Circular Mask)</h4>
+        <p>I created a custom blend using an irregular circular mask with ultra-smooth transitions to seamlessly integrate a flower center with fireworks background:</p>
+
+        <div class="results-grid">
+            <div class="result-item">
+                <img src="Figure_22.png" alt="Flower fireworks blending result">
+                <div class="result-caption">Flower + Fireworks: Input images, circular mask, and blended result</div>
+            </div>
+        </div>
+
+        <div class="results-grid">
+            <div class="result-item">
+                <img src="Figure_23.png" alt="Flower fireworks process visualization">
+                <div class="result-caption">Flower + Fireworks: Complete blending process with circular mask</div>
+            </div>
+        </div>
+
+        <h4>Example 2: Additional Creative Blend</h4>
+        <div class="results-grid">
+            <div class="result-item">
+                <img src="Figure_24.png" alt="Additional creative blend">
+                <div class="result-caption">Additional Creative Blend: Custom mask design</div>
+            </div>
+        </div>
+
+        <h3>Implementation Details</h3>
+        <p>My implementation includes several advanced features for ultra-smooth blending:</p>
+
+        <div class="code-block">def multiresolution_blend(img1, img2, mask, num_levels=8, sigma_base=4.0):
+    """Ultra-smooth multiresolution blending"""
+    # Create Gaussian stacks with exponential sigma progression
+    gaussian_stack1 = create_gaussian_stack(img1, num_levels, sigma_base)
+    gaussian_stack2 = create_gaussian_stack(img2, num_levels, sigma_base)
+    
+    # Create mask stack with extra smoothing for seamless transitions
+    mask_stack = create_gaussian_stack(mask, num_levels, sigma_base * 1.5)
+    
+    # Create Laplacian stacks for band-pass filtering
+    laplacian_stack1 = create_laplacian_stack(gaussian_stack1)
+    laplacian_stack2 = create_laplacian_stack(gaussian_stack2)
+    
+    # Blend at each frequency level
+    blended_laplacian = []
+    for i in range(num_levels):
+        # Apply additional smoothing to mask for ultra-smooth results
+        mask_level = gaussian_filter(mask_stack[i], sigma=1.0)
+        
+        # Blend using multiresolution formula
+        blended_level = (mask_level * laplacian_stack1[i] + 
+                        (1 - mask_level) * laplacian_stack2[i])
+        blended_laplacian.append(blended_level)
+    
+    # Reconstruct final image
+    result = sum(blended_laplacian)
+    return np.clip(result, 0, 1)</div>
+
+        <div class="note">
+            <strong>Technical Innovations:</strong>
+            <br>• Ultra-smooth masking: Multiple Gaussian smoothing passes with σ_base * 1.5 for mask stack
+            <br>• Exponential sigma progression: σ(i) = σ_base × 2^(i-1) for proper frequency separation
+            <br>• Enhanced transition zones: Cosine-based falloff in circular masks with wide transition widths
+            <br>• Multi-level smoothing: Additional Gaussian filtering at each level for seamless integration
+            <br>• Band-pass visualization: Proper normalization of Laplacian levels for frequency analysis
+            <br>• Color preservation: Full RGB processing maintains color fidelity throughout the blending process
+        </div>
+
+        <h3>Bells & Whistles: Advanced Techniques</h3>
+        <p>I implemented several enhancements beyond the basic requirements:</p>
+
+        <div class="note">
+            <strong>Advanced Features Implemented:</strong>
+            <br>• <strong>Ultra-smooth circular masks:</strong> Custom mask generation with wide transition zones and multiple smoothing passes
+            <br>• <strong>Adaptive sigma progression:</strong> Exponential scaling ensures proper frequency band isolation
+            <br>• <strong>Enhanced mask processing:</strong> Separate sigma scaling for mask stack (1.5x base) creates smoother transitions
+            <br>• <strong>Multi-pass smoothing:</strong> Additional Gaussian filtering at reconstruction prevents artifacts
+            <br>• <strong>Comprehensive visualization:</strong> Complete process display showing all frequency bands and mask effects
+            <br>• <strong>Color enhancement:</strong> Full RGB processing with per-channel smoothing maintains color richness
+        </div>
+
+        <h2>Analysis and Discussion</h2>
+        
+        <h3>Frequency Domain Insights</h3>
+        <p>The multiresolution approach succeeds because it addresses the fundamental challenge of blending: different spatial frequencies require different transition strategies. High frequencies need sharp transitions to preserve detail, while low frequencies benefit from gradual blending to avoid visible seams.</p>
+        
+        <h3>Mask Design Impact</h3>
+        <p>The circular mask design demonstrates superior results compared to simple vertical splits. The ultra-smooth transitions (80-pixel width with 20σ smoothing) eliminate all visible artifacts while preserving the essential character of both source images.</p>
+
         <h2>Conclusion</h2>
-        <p>This project demonstrates fundamental frequency domain techniques in image processing, from basic convolution to sophisticated multi-resolution blending, revealing how human perception can be manipulated through careful frequency domain engineering.</p>
+        <p>This implementation successfully demonstrates the power of multiresolution blending for creating seamless image composites. The combination of proper frequency decomposition, ultra-smooth masking, and careful parameter tuning produces results that would be impossible with simple alpha blending or other naive approaches. The technique's success lies in its frequency-aware processing, enabling natural integration across all spatial scales simultaneously.</p>
+
+        <h2>Conclusion</h2>
+        <p>This project demonstrates fundamental frequency domain techniques in image processing, from basic convolution to sophisticated multi-resolution blending, revealing how human perception can be manipulated through careful frequency domain engineering. The progression from simple convolution to complex hybrid images illustrates the power of understanding images as superpositions of spatial frequency components.</p>
     </div>
 
     <div style="text-align: center; margin: 40px 0;">
         <a href="index.html" class="back-btn">Back to Portfolio</a>
     </div>
-
-    <script>
-        let uploadedImages = {};
-
-        // Drag and drop functionality
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('fileInput');
-        const imagePreview = document.getElementById('imagePreview');
-
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
-
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            handleFiles(e.dataTransfer.files);
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
-        });
-
-        // Handle uploaded files
-        function handleFiles(files) {
-            Array.from(files).forEach(file => {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const imageData = e.target.result;
-                        const fileName = file.name.split('.')[0];
-                        
-                        // Store the image
-                        uploadedImages[fileName] = imageData;
-                        
-                        // Add to preview
-                        addImagePreview(fileName, imageData);
-                        
-                        // Try to auto-match with placeholders
-                        autoMatchImage(fileName, imageData);
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
-
-        function addImagePreview(fileName, imageData) {
-            const preview = document.createElement('div');
-            preview.className = 'image-preview';
-            preview.innerHTML = `
-                <img src="${imageData}" alt="${fileName}">
-                <button class="remove-btn" onclick="removeImage('${fileName}')">&times;</button>
-                <div style="font-size: 12px; margin-top: 5px;">${fileName}</div>
-                <button class="copy-btn" onclick="copyImageName('${fileName}')">Copy Name</button>
-            `;
-            imagePreview.appendChild(preview);
-        }
-
-        function removeImage(fileName) {
-            delete uploadedImages[fileName];
-            // Remove from preview
-            const previews = imagePreview.querySelectorAll('.image-preview');
-            previews.forEach(preview => {
-                if (preview.textContent.includes(fileName)) {
-                    preview.remove();
-                }
-            });
-        }
-
-        function copyImageName(fileName) {
-            navigator.clipboard.writeText(fileName).then(() => {
-                alert(`Copied "${fileName}" to clipboard!`);
-            });
-        }
-
-        function autoMatchImage(fileName, imageData) {
-            const placeholders = document.querySelectorAll('.result-item.placeholder');
-            const lowerFileName = fileName.toLowerCase();
-            
-            placeholders.forEach(placeholder => {
-                const imageType = placeholder.dataset.imageType;
-                if (lowerFileName.includes(imageType.toLowerCase()) || 
-                    imageType.toLowerCase().includes(lowerFileName)) {
-                    fillPlaceholder(placeholder, imageData, fileName);
-                }
-            });
-        }
-
-        function fillPlaceholder(placeholder, imageData, fileName) {
-            placeholder.classList.remove('placeholder');
-            placeholder.innerHTML = `
-                <img src="${imageData}" alt="${fileName}">
-                <div class="result-caption">${placeholder.textContent}</div>
-                <button class="copy-btn" onclick="clearPlaceholder(this)">Remove</button>
-            `;
-        }
-
-        function clearPlaceholder(button) {
-            const resultItem = button.closest('.result-item');
-            const originalText = resultItem.querySelector('.result-caption').textContent;
-            resultItem.classList.add('placeholder');
-            resultItem.innerHTML = `
-                <div>${originalText}</div>
-                <div class="result-caption">Click to upload</div>
-            `;
-        }
-
-        // Click to upload for placeholders
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.result-item.placeholder')) {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.onchange = (event) => {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            fillPlaceholder(
-                                event.target.placeholder,
-                                e.target.result,
-                                file.name.split('.')[0]
-                            );
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                };
-                input.placeholder = e.target.closest('.result-item.placeholder');
-                input.click();
-            }
-        });
-    </script>
 </body>
 </html>
