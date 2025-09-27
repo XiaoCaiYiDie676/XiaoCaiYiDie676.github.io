@@ -314,37 +314,31 @@ def convolve2d_with_2_loops(image, kernel):
 # 4-loop implementation: ~2.3 seconds
 # 2-loop implementation: ~0.08 seconds  
 # scipy.signal.convolve2d: ~0.003 seconds
-
-# Verify correctness
-diff_4loop = np.max(np.abs(my_4loop_result - scipy_result))
-diff_2loop = np.max(np.abs(my_2loop_result - scipy_result))
-print(f"Max difference (4-loop): {diff_4loop}")  # < 1e-10
-print(f"Max difference (2-loop): {diff_2loop}")  # < 1e-10
         </div>
 
         <div class="note">
-            <strong>Runtime Analysis:</strong> The 4-loop approach is ~29x slower than the 2-loop version due to Python loop overhead. The 2-loop version leverages NumPy's vectorized operations but is still ~27x slower than scipy's optimized C implementation. 
+            I implemented two "same-size" 2D correlations that differ only in how the inner accumulation is computed. The input is zero-padded by half the kernel size in each dimension so that each output pixel is aligned with the kernel center. In the four-loop version, I iterate over every output location (y,x) and, for each, run two inner loops over the kernel indices (ky,kx), explicitly accumulating <span class="code">padded[y+ky, x+kx] * kernel[ky, kx]</span>. In the two-loop version, I keep only the outer loops over (y,x); the inner double loop is replaced by slicing the corresponding kernel-sized window from the padded image and computing the dot product in one line as <span class="code">np.sum(window * kernel)</span>. Both implementations share the same padding and alignment logic; the two-loop variant is simply a partial vectorization of the inner accumulation, which makes it faster while remaining functionally identical.
             <br><br>
-            <strong>Boundary Handling:</strong> Both implementations use zero-padding with <span class="code">np.pad</span> and pad_size = kernel_size // 2, ensuring output dimensions match input dimensions. The padded regions extend beyond the original image boundaries with zeros, allowing the kernel to operate on edge pixels while maintaining spatial relationships.
+            Compared to <span class="code">scipy.signal.convolve2d</span>, my implementation produces equivalent same-size correlation results using identical zero padding strategy. <strong>The performance hierarchy clearly demonstrates computational overhead differences -</strong> the four-loop version suffers from maximum Python interpreter overhead with individual element access, the two-loop version benefits substantially from NumPy's vectorized operations for the inner computation, while scipy achieves optimal performance through its underlying optimized C implementation with advanced memory management. <strong>At the boundaries,</strong> my code strictly uses zero padding by extending the image with zeros for half the kernel size on each side, ensuring every output pixel is computed with a fully centered kernel. Pixels "outside" the original image are treated as zeros, which can dampen filter responses near the edges but provides consistent, predictable behavior. After correlation, the padded margins are discarded, yielding a same-size output aligned with the original image. <strong>While scipy offers additional boundary conditions</strong> like symmetric reflection and circular wrapping that can better preserve edge characteristics, my zero-padding approach eliminates boundary artifacts and clearly demonstrates the fundamental correlation operation without complexity of alternative boundary treatments.
         </div>
 
         <p>I tested the implementation with a 9x9 box filter and finite difference operators on a self-portrait:</p>
 
         <div class="results-grid">
             <div class="result-item">
-                <img src="selfie.jpg" alt="Original selfie">
+                <img src="selfie.png" alt="Original selfie">
                 <div class="result-caption">Original Selfie</div>
             </div>
             <div class="result-item">
-                <img src="dx.jpg" alt="D_x result">
+                <img src="dx_2loops.png" alt="D_x result">
                 <div class="result-caption">D_x Filter (Vertical Edges)</div>
             </div>
             <div class="result-item">
-                <img src="dy.jpg" alt="D_y result">
+                <img src="dy_2loops.png" alt="D_y result">
                 <div class="result-caption">D_y Filter (Horizontal Edges)</div>
             </div>
             <div class="result-item">
-                <img src="box_filter.jpg" alt="Box filter result">
+                <img src="box_2loops.png" alt="Box filter result">
                 <div class="result-caption">9x9 Box Filter (Blur)</div>
             </div>
         </div>
