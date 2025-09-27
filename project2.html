@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 2: Fun with Filters and Frequencies</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #5f8a3f, #447421);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+        }
+
+        /* Upload interface styles */
+        .upload-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 3px dashed #5f8a3f;
+            text-align: center;
+        }
+
+        .upload-section.dragover {
+            border-color: #447421;
+            background-color: #f0f8f0;
+        }
+
+        .upload-section h3 {
+            color: #447421;
+            margin-bottom: 15px;
+        }
+
+        .file-input {
+            margin: 10px;
+            padding: 10px 20px;
+            background: #5f8a3f;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .image-preview {
+            display: inline-block;
+            margin: 10px;
+            position: relative;
+        }
+
+        .image-preview img {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .image-preview .remove-btn {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .project-content {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .project-content h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-align: left;
+            color: #000;
+        }
+
+        .author {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .project-content h2 {
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            color: #447421;
+            border-bottom: 2px solid #5f8a3f;
+            padding-bottom: 8px;
+        }
+
+        .project-content h3 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            color: #000;
+        }
+
+        .project-content p {
+            margin-bottom: 16px;
+            text-align: justify;
+            font-size: 16px;
+        }
+
+        .code {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            font-size: 14px;
+            border-radius: 3px;
+        }
+
+        .code-block {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 3px solid #5f8a3f;
+            font-size: 14px;
+            overflow-x: auto;
+            border-radius: 4px;
+        }
+
+        .formula {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            text-align: center;
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f0f8ff;
+            border-left: 4px solid #5f8a3f;
+            border-radius: 6px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .result-item {
+            text-align: center;
+            font-size: 14px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .result-item img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .result-item.placeholder {
+            border: 2px dashed #ccc;
+            background: #f9f9f9;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .result-item.placeholder:hover {
+            border-color: #5f8a3f;
+            background: #f0f8f0;
+        }
+
+        .result-caption {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .note {
+            background: #f0f8ff;
+            padding: 18px;
+            border-left: 4px solid #5f8a3f;
+            margin: 25px 0;
+            border-radius: 6px;
+            line-height: 1.7;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #447421;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-weight: 500;
+            margin-top: 30px;
+        }
+        
+        .back-btn:hover {
+            background: #335a18;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Project 2: Fun with Filters and Frequencies</h1>
+        <p>Exploring image filtering, edge detection, and frequency domain analysis</p>
+    </header>
+
+    <div class="upload-section" id="uploadArea">
+        <h3>📷 Drag & Drop Images or Click to Upload</h3>
+        <p>Upload your project images here and they'll automatically appear in the placeholders below</p>
+        <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
+        <button class="file-input" onclick="document.getElementById('fileInput').click()">Choose Files</button>
+        <div id="imagePreview"></div>
+    </div>
+
+    <div class="project-content">
+        <h1>Fun with Filters and Frequencies</h1>
+        <div class="author">Yichen Cai</div>
+
+        <h2>Introduction</h2>
+        <p>This project explores fundamental concepts in image processing through filtering and frequency domain analysis. We implement 2D convolutions from scratch, apply finite difference and Derivative of Gaussian filters for edge detection, create hybrid images by combining frequency components, and perform multi-resolution blending using Gaussian and Laplacian stacks.</p>
+
+        <h2>Part 1: Fun with Filters</h2>
+        
+        <h3>1.1 Convolutions from Scratch!</h3>
+        <p>I implemented 2D convolution from scratch using both four nested loops and optimized approaches, with proper zero-padding support.</p>
+
+        <div class="results-grid">
+            <div class="result-item placeholder" data-image-type="self_portrait_original">
+                <div>Original Self-Portrait</div>
+                <div class="result-caption">Click to upload original image</div>
+            </div>
+            <div class="result-item placeholder" data-image-type="self_portrait_boxfilter">
+                <div>9x9 Box Filter Applied</div>
+                <div class="result-caption">Click to upload box filter result</div>
+            </div>
+            <div class="result-item placeholder" data-image-type="self_portrait_dx">
+                <div>Finite Difference D_x</div>
+                <div class="result-caption">Click to upload D_x result</div>
+            </div>
+            <div class="result-item placeholder" data-image-type="self_portrait_dy">
+                <div>Finite Difference D_y</div>
+                <div class="result-caption">Click to upload D_y result</div>
+            </div>
+        </div>
+
+        <h3>1.2 Finite Difference Operator</h3>
+        <p>Using the cameraman image, I computed partial derivatives with finite difference operators and created binary edge images.</p>
+
+        <div class="results-grid">
+            <div class="result-item placeholder" data-image-type="cameraman_original">
+                <div>Original Cameraman</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+            <div class="result-item placeholder" data-image-type="cameraman_dx">
+                <div>∂/∂x (Vertical Edges)</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+            <div class="result-item placeholder" data-image-type="cameraman_dy">
+                <div>∂/∂y (Horizontal Edges)</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+            <div class="result-item placeholder" data-image-type="cameraman_magnitude">
+                <div>Gradient Magnitude</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+        </div>
+
+        <h3>1.3 Derivative of Gaussian (DoG) Filter</h3>
+        <p>By applying Gaussian smoothing before differentiation, edge detection becomes much cleaner.</p>
+
+        <div class="results-grid">
+            <div class="result-item placeholder" data-image-type="cameraman_dog_dx">
+                <div>DoG ∂/∂x</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+            <div class="result-item placeholder" data-image-type="cameraman_dog_dy">
+                <div>DoG ∂/∂y</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+            <div class="result-item placeholder" data-image-type="dog_filter_dx">
+                <div>DoG Filter D_x</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+            <div class="result-item placeholder" data-image-type="dog_filter_dy">
+                <div>DoG Filter D_y</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+        </div>
+
+        <h2>Part 2: Fun with Frequencies</h2>
+        
+        <h3>2.1 Image "Sharpening"</h3>
+        <p>I implemented unsharp masking to enhance image sharpness using the formula: sharpened = original + α × (original - blurred)</p>
+
+        <div class="results-grid">
+            <div class="result-item placeholder" data-image-type="taj_original">
+                <div>Original Taj Mahal</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+            <div class="result-item placeholder" data-image-type="taj_sharpened">
+                <div>Sharpened Result</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+        </div>
+
+        <h3>2.2 Hybrid Images</h3>
+        <p>Created hybrid images by combining low-frequency and high-frequency components from different images.</p>
+
+        <div class="results-grid">
+            <div class="result-item placeholder" data-image-type="derek_original">
+                <div>Derek (Low-pass)</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+            <div class="result-item placeholder" data-image-type="nutmeg_original">
+                <div>Nutmeg (High-pass)</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+            <div class="result-item placeholder" data-image-type="derek_nutmeg_hybrid">
+                <div>Hybrid Result</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+        </div>
+
+        <h3>2.3 Gaussian and Laplacian Stacks</h3>
+        <p>Implemented multi-scale image analysis using Gaussian and Laplacian stacks.</p>
+
+        <div class="results-grid">
+            <div class="result-item placeholder" data-image-type="gaussian_level0">
+                <div>Gaussian Stack Level 0</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+            <div class="result-item placeholder" data-image-type="gaussian_level2">
+                <div>Gaussian Stack Level 2</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+            <div class="result-item placeholder" data-image-type="laplacian_level0">
+                <div>Laplacian Stack Level 0</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+            <div class="result-item placeholder" data-image-type="laplacian_level2">
+                <div>Laplacian Stack Level 2</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+        </div>
+
+        <h3>2.4 Multiresolution Blending (The Oraple!)</h3>
+        <p>Seamless image blending using multi-resolution techniques.</p>
+
+        <div class="results-grid">
+            <div class="result-item placeholder" data-image-type="apple_original">
+                <div>Apple</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+            <div class="result-item placeholder" data-image-type="orange_original">
+                <div>Orange</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+            <div class="result-item placeholder" data-image-type="oraple_result">
+                <div>Oraple Result</div>
+                <div class="result-caption">Click to upload</div>
+            </div>
+        </div>
+
+        <h2>Conclusion</h2>
+        <p>This project demonstrates fundamental frequency domain techniques in image processing, from basic convolution to sophisticated multi-resolution blending, revealing how human perception can be manipulated through careful frequency domain engineering.</p>
+    </div>
+
+    <div style="text-align: center; margin: 40px 0;">
+        <a href="index.html" class="back-btn">Back to Portfolio</a>
+    </div>
+
+    <script>
+        let uploadedImages = {};
+
+        // Drag and drop functionality
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const imagePreview = document.getElementById('imagePreview');
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        // Handle uploaded files
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const imageData = e.target.result;
+                        const fileName = file.name.split('.')[0];
+                        
+                        // Store the image
+                        uploadedImages[fileName] = imageData;
+                        
+                        // Add to preview
+                        addImagePreview(fileName, imageData);
+                        
+                        // Try to auto-match with placeholders
+                        autoMatchImage(fileName, imageData);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        function addImagePreview(fileName, imageData) {
+            const preview = document.createElement('div');
+            preview.className = 'image-preview';
+            preview.innerHTML = `
+                <img src="${imageData}" alt="${fileName}">
+                <button class="remove-btn" onclick="removeImage('${fileName}')">&times;</button>
+                <div style="font-size: 12px; margin-top: 5px;">${fileName}</div>
+                <button class="copy-btn" onclick="copyImageName('${fileName}')">Copy Name</button>
+            `;
+            imagePreview.appendChild(preview);
+        }
+
+        function removeImage(fileName) {
+            delete uploadedImages[fileName];
+            // Remove from preview
+            const previews = imagePreview.querySelectorAll('.image-preview');
+            previews.forEach(preview => {
+                if (preview.textContent.includes(fileName)) {
+                    preview.remove();
+                }
+            });
+        }
+
+        function copyImageName(fileName) {
+            navigator.clipboard.writeText(fileName).then(() => {
+                alert(`Copied "${fileName}" to clipboard!`);
+            });
+        }
+
+        function autoMatchImage(fileName, imageData) {
+            const placeholders = document.querySelectorAll('.result-item.placeholder');
+            const lowerFileName = fileName.toLowerCase();
+            
+            placeholders.forEach(placeholder => {
+                const imageType = placeholder.dataset.imageType;
+                if (lowerFileName.includes(imageType.toLowerCase()) || 
+                    imageType.toLowerCase().includes(lowerFileName)) {
+                    fillPlaceholder(placeholder, imageData, fileName);
+                }
+            });
+        }
+
+        function fillPlaceholder(placeholder, imageData, fileName) {
+            placeholder.classList.remove('placeholder');
+            placeholder.innerHTML = `
+                <img src="${imageData}" alt="${fileName}">
+                <div class="result-caption">${placeholder.textContent}</div>
+                <button class="copy-btn" onclick="clearPlaceholder(this)">Remove</button>
+            `;
+        }
+
+        function clearPlaceholder(button) {
+            const resultItem = button.closest('.result-item');
+            const originalText = resultItem.querySelector('.result-caption').textContent;
+            resultItem.classList.add('placeholder');
+            resultItem.innerHTML = `
+                <div>${originalText}</div>
+                <div class="result-caption">Click to upload</div>
+            `;
+        }
+
+        // Click to upload for placeholders
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.result-item.placeholder')) {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            fillPlaceholder(
+                                event.target.placeholder,
+                                e.target.result,
+                                file.name.split('.')[0]
+                            );
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+                input.placeholder = e.target.closest('.result-item.placeholder');
+                input.click();
+            }
+        });
+    </script>
+</body>
+</html>
