@@ -508,31 +508,6 @@ def convolve2d_with_2_loops(image, kernel):
         <p>The comparison demonstrates that unsharp masking can significantly improve the perceived sharpness of a blurry image by enhancing edge definition and texture details. However, it's important to understand the fundamental limitations of this approach.</p>
 
         <div class="note">
-            <strong>Why Sharpening Cannot Fully Restore Blurry Images:</strong>
-            <br>• <strong>Information Loss:</strong> When an image becomes blurry (through motion blur, defocus, or camera shake), high-frequency information is genuinely lost or significantly attenuated. This information cannot be magically recovered through post-processing.
-            <br>• <strong>Irreversible Process:</strong> Blurring is essentially a low-pass filtering operation that removes or reduces high-frequency components. Since this process is irreversible, no amount of sharpening can perfectly restore the original detail that was eliminated.
-            <br>• <strong>Enhancement vs Recovery:</strong> Unsharp masking enhances the existing edges and details that remain in the blurred image, but it cannot recreate fine details that were completely lost during the blurring process.
-            <br>• <strong>Artifact Introduction:</strong> Aggressive sharpening attempts to compensate for lost detail can introduce artifacts like halos, ringing, and noise amplification, which further degrade image quality.
-            <br>• <strong>Physical Limitations:</strong> The original blur may have been caused by fundamental optical limitations, depth of field effects, or motion that created complex, non-uniform blur patterns that simple linear sharpening cannot address.
-            <br>• <strong>Best Practice:</strong> Unsharp masking works best as an enhancement tool for slightly soft images rather than a restoration technique for severely blurred content.
-        </div>
-
-        <div class="results-grid">
-            <div class="result-item">
-                <img src="sharp_original.jpg" alt="Sharp original">
-                <div class="result-caption">Original Sharp Image</div>
-            </div>
-            <div class="result-item">
-                <img src="sharp_blurred.jpg" alt="Artificially blurred">
-                <div class="result-caption">Artificially Blurred (σ=2.0)</div>
-            </div>
-            <div class="result-item">
-                <img src="sharp_resharpened.jpg" alt="Re-sharpened">
-                <div class="result-caption">Re-sharpened Result (α=1.5)</div>
-            </div>
-        </div>
-
-        <div class="note">
             <strong>Key Observations and Analysis:</strong>
             <br>• <strong>Effective enhancement:</strong> Unsharp masking successfully enhances texture and edge definition in both the Taj Mahal walls and architectural details
             <br>• <strong>Parameter sensitivity:</strong> Small α values (0.3-0.6) produce natural-looking enhancement without artifacts, while large α values (1.5-2.0) create pronounced edges but risk halos and ringing effects
