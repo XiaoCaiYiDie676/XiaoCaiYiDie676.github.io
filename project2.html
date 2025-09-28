@@ -522,52 +522,55 @@ def convolve2d_with_2_loops(image, kernel):
         <h3>2.2 Hybrid Images</h3>
         <p>Following Oliva, Torralba, and Schyns (2006), I created hybrid images by combining low-frequency content from one image with high-frequency content from another. The perception changes with viewing distance due to the human visual system's frequency sensitivity.</p>
 
-        <h3>Advanced Horizontal Eye Alignment</h3>
-        <p>I implemented a sophisticated alignment system that automatically determines which image has the more horizontal eye line and uses it as the reference. Through interactive point selection, users mark the left and right eye centers on both images. The system calculates eye line angles and selects the image with the smaller absolute angle deviation from horizontal as the reference, then applies rotation, scaling, and translation to align the other image accordingly.</p>
+        <h3>Implementation Process and Advanced Alignment</h3>
+        <p>I build hybrid images by first aligning the two inputs using interactive point-pair alignment to ensure corresponding semantic parts overlay well, then separating frequencies and recombining. My sophisticated horizontal eye alignment system automatically determines which image has the more horizontal eye line and uses it as the reference, applying rotation, scaling, and translation to achieve optimal correspondence.</p>
 
-        <p>The frequency separation process uses the following mathematical approach:</p>
+        <p>The frequency separation process follows this mathematical formulation:</p>
 
         <div class="formula">
             <strong>Hybrid Image Construction:</strong><br>
-            Low-frequency component: A_LP = A ∗ G_σlow<br>
-            High-frequency component: B_HP = B - (B ∗ G_σhigh)<br>
+            Low-frequency layer: A_LP = A ∗ G_σlow<br>
+            High-frequency layer: B_HP = B - (B ∗ G_σhigh)<br>
             Final hybrid: HY = (A_LP + B_HP) / 2<br>
-            where the components are averaged for optimal balance
+            where components are averaged for intensity balance
         </div>
 
-        <p>The low-frequency layer comes from Gaussian blurring the first image, while the high-frequency layer is extracted by subtracting a blurred version from the second image. The final hybrid averages both filtered components to ensure proper intensity balance.</p>
+        <p>The low-frequency layer comes from a Gaussian blur of the first image A. The high-frequency layer comes from a high-pass of the second image B, which is equivalent to convolving B with the impulse minus Gaussian kernel H = δ - G_σhigh. I then form the hybrid image by averaging the filtered components, ensuring proper intensity distribution.</p>
 
-        <h3>Parameter Selection and Alignment Strategy</h3>
-        <p>I use fixed parameters σlow=10 and σhigh=3, chosen empirically to ensure nearby viewing favors the high-frequency image's details while distant viewing preserves the low-frequency image's structure. The horizontal alignment significantly improves hybrid quality by ensuring facial features correspond properly between images.</p>
+        <h3>Parameter Selection and Cutoff Justification</h3>
+        <p>I empirically choose cutoffs σlow=10 and σhigh=3 so that nearby viewing favors the high-frequency image's details while distant viewing preserves the low-frequency image's structure. The σlow=10 parameter creates sufficient blur to eliminate fine details while preserving overall facial structure and lighting. The σhigh=3 parameter retains sharp edges and texture details while removing broader structural information. This combination ensures clear perceptual switching between close and distant viewing.</p>
 
-        <h3>Derek + Nutmeg: Complete Process Analysis</h3>
-        <p>I demonstrate the full hybrid image creation process using the classic Derek and Nutmeg example, including horizontal alignment, frequency analysis, and multi-scale visualization:</p>
+        <h3>Favorite Result: Complete Frequency Analysis</h3>
+        <p>For my favorite hybrid result, I provide comprehensive frequency analysis by plotting the log-magnitude Fourier spectra of each processing stage. This includes the two input images, the filtered images (low-pass and high-pass components), and the final hybrid result:</p>
 
+        
         <div class="full-width-image">
-            <img src="Figure_13.png" alt="Derek Nutmeg frequency analysis">
-            <div class="result-caption">Frequency Analysis: Input Images and Hybrid Result with Log-Magnitude FFT Spectra</div>
+            <img src="Figure_99.png" alt="Complete frequency analysis">
+            <div class="result-caption">Complete Frequency Analysis: Input Images, Filtered Components (LP, HP), and Hybrid Result with Log-Magnitude FFT Spectra</div>
         </div>
 
-        <p>The frequency analysis shows log-magnitude Fourier spectra for the input images and final hybrid result. The visualization demonstrates how the hybrid combines frequency characteristics from both sources, with low-frequency energy preserved from the first image and high-frequency details contributed by the second image.</p>
 
-        <div class="full-width-image">
-            <img src="Figure_14.png" alt="Derek Nutmeg multi-scale">
-            <div class="result-caption">Multi-scale Visualization: Hybrid image at different simulated viewing distances</div>
-        </div>
+        <p>The frequency analysis clearly demonstrates the separation process: the low-pass filtered image shows energy concentrated near the origin (DC component and low frequencies), while the high-pass filtered image shows energy distributed in the periphery (high frequencies). The final hybrid combines both frequency domains, with the log-magnitude spectrum computed as np.log(np.abs(np.fft.fftshift(np.fft.fft2(gray_image)))).</p>
 
-        <p>The multi-scale visualization simulates different viewing distances by downsampling and upsampling the hybrid image. At close viewing (scale=1.0), high-frequency details dominate, while at distant viewing (scale=0.125), the low-frequency structure becomes more apparent.</p>
 
+        <p>At close viewing (scale=1.0), high-frequency details from the second image dominate perception. At distant viewing (scale=0.125), the low-frequency structure from the first image becomes more apparent. This validates that the chosen cutoff frequencies achieve the desired perceptual switching effect.</p>
+
+        <h3>Cutoff Selection Rationale</h3>
         <div class="note">
-            <strong>Horizontal Alignment Innovation:</strong> The automatic selection of the more horizontal eye line as reference (determined by smaller absolute angle deviation) ensures optimal alignment results. This approach minimizes rotation artifacts and preserves facial geometry better than arbitrary reference selection. The system applies rotation around the left eye anchor point, followed by scaling to match eye distances and translation to align eye positions.
+            <strong>Why σlow=10 and σhigh=3:</strong>
+            <br>• <strong>σlow=10:</strong> Creates substantial blur that eliminates facial details and textures while preserving overall head shape, lighting patterns, and gross facial structure. This ensures the low-frequency component provides recognizable but non-detailed information visible from distance.
+            <br>• <strong>σhigh=3:</strong> Retains sharp edges, fine facial features, and texture details while removing broader structural information. This preserves the essential high-frequency content that makes the second image recognizable up close.
+            <br>• <strong>Frequency separation:</strong> The 7× ratio between cutoffs (10/3 ≈ 3.3) provides sufficient frequency band separation to minimize overlap between low and high frequency components.
+            <br>• <strong>Perceptual validation:</strong> These parameters ensure clear switching between the two images as viewing distance changes, with minimal ambiguous intermediate states.
         </div>
 
         <h3>Additional Hybrid Examples</h3>
-        <p>I created additional hybrid images exploring different themes and subjects:</p>
+        <p>I created additional hybrid images exploring different subjects and parameter combinations:</p>
 
         <h4>Example 2: Object Transformation</h4>
         <div class="full-width-image">
             <img src="Figure_16.png" alt="Object transformation hybrid">
-            <div class="result-caption">Cat/Dog Hybrid: Input images and frequency-separated result</div>
+            <div class="result-caption">spiderman/andrew Hybrid: Input images and frequency-separated result</div>
         </div>
 
         <h4>Example 3: Additional Hybrid</h4>
@@ -576,19 +579,17 @@ def convolve2d_with_2_loops(image, kernel):
             <div class="result-caption">Additional Hybrid Example: Input images and result</div>
         </div>
 
-        <h3>Technical Implementation Details</h3>
-        <p>My implementation includes several advanced features for robust hybrid image generation:</p>
-
+        <h3>Technical Implementation Features</h3>
         <div class="note">
-            <strong>Advanced Implementation Features:</strong>
-            <br>• <strong>Intelligent alignment:</strong> Automatic horizontal eye line detection and reference selection based on angle analysis
-            <br>• <strong>Interactive point selection:</strong> User-guided eye center marking for precise alignment control
-            <br>• <strong>Geometric transformation:</strong> Combined rotation, scaling, and translation for optimal feature correspondence
-            <br>• <strong>Reflection padding:</strong> BORDER_REFLECT_101 mode prevents black/white artifacts during alignment
-            <br>• <strong>Frequency analysis:</strong> Log-magnitude FFT visualization confirms frequency domain characteristics
-            <br>• <strong>Multi-scale validation:</strong> Downsampling simulation accurately demonstrates distance-dependent perception
-            <br>• <strong>Aspect ratio preservation:</strong> Padding-based resizing maintains image proportions without distortion
+            <strong>Advanced Implementation Capabilities:</strong>
+            <br>• <strong>Intelligent alignment:</strong> Automatic horizontal eye line detection with interactive point selection for optimal feature correspondence
+            <br>• <strong>Comprehensive frequency analysis:</strong> Log-magnitude FFT visualization of all processing stages including filtered components
+            <br>• <strong>Empirical parameter tuning:</strong> Systematic cutoff selection based on perceptual switching requirements
+            <br>• <strong>Multi-scale validation:</strong> Downsampling simulation accurately demonstrates distance-dependent perception effects
+            <br>• <strong>Robust geometric transformation:</strong> Combined rotation, scaling, and translation with reflection padding to prevent artifacts
+            <br>• <strong>Energy distribution verification:</strong> FFT analysis confirms low-pass energy concentration near origin and high-pass energy in periphery
         </div>
+
 
         <h3>2.3 Gaussian and Laplacian Stacks</h3>
         <p>I implemented Gaussian and Laplacian stacks (not pyramids - no downsampling) to prepare for multi-resolution blending. The Gaussian stack applies progressive blurring with exponentially increasing sigma values, while the Laplacian stack captures band-pass details at each frequency level by computing differences between consecutive Gaussian levels.</p>
