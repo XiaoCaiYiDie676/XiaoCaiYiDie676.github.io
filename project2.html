@@ -526,7 +526,7 @@ def convolve2d_with_2_loops(image, kernel):
         <p>I build hybrid images by first aligning the two inputs using interactive point-pair alignment to ensure corresponding semantic parts overlay well, then separating frequencies and recombining. My sophisticated horizontal eye alignment system automatically determines which image has the more horizontal eye line and uses it as the reference, applying rotation, scaling, and translation to achieve optimal correspondence.</p>
 
         <p>The frequency separation process follows this mathematical formulation:</p>
-
+     
         <div class="formula">
             <strong>Hybrid Image Construction:</strong><br>
             Low-frequency layer: A_LP = A ∗ G_σlow<br>
@@ -542,7 +542,10 @@ def convolve2d_with_2_loops(image, kernel):
 
         <h3>Favorite Result: Complete Frequency Analysis</h3>
         <p>For my favorite hybrid result, I provide comprehensive frequency analysis by plotting the log-magnitude Fourier spectra of each processing stage. This includes the two input images, the filtered images (low-pass and high-pass components), and the final hybrid result:</p>
-        
+        <div class="result-item">
+            <img src="Figure_100.png" alt=" ">
+            <div class="result-caption">result</div>
+        </div>
          <div class="result-item">
             <img src="hybrid_hgfhg.jpg" alt=" ">
             <div class="result-caption">result</div>
