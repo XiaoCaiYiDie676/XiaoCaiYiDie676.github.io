@@ -441,14 +441,26 @@ def convolve2d_with_2_loops(image, kernel):
         <h3>2.1 Image "Sharpening"</h3>
         <p>Image sharpening enhances perceived clarity by amplifying high-frequency details. I implemented the unsharp masking technique, which extracts high frequencies by subtracting a Gaussian-blurred version from the original, then adds these back with amplification.</p>
 
+        <h3>Unsharp Masking Theory and Implementation</h3>
+        <p>I implement classical unsharp masking by first low-pass filtering the image with a normalized Gaussian G to get I<sub>blur</sub> = I ∗ G, extracting high frequencies H = I - I<sub>blur</sub>, and then boosting them. The two-step sharpened result is:</p>
+
         <div class="formula">
-            <strong>Unsharp Mask Formula:</strong><br>
-            sharpened = original + α × (original - gaussian_blur(original))<br>
-            <strong>Equivalent Single Convolution:</strong><br>
-            unsharp_filter = (1+α) × impulse - α × gaussian
+            <strong>Two-Step Unsharp Masking:</strong><br>
+            I<sub>blur</sub> = I ∗ G<br>
+            H = I - I<sub>blur</sub> (high frequencies)<br>
+            I<sub>sharp</sub><sup>(2)</sup> = I + αH = I + α(I - I ∗ G)
         </div>
 
-        <p>The technique works by isolating high-frequency components (edges and fine details) that are lost during Gaussian blurring, then amplifying and adding them back to enhance image sharpness.</p>
+        <p>I also fold this into a single convolution with the unsharp kernel K, where K = (1+α)δ - αG, yielding I<sub>sharp</sub><sup>(1)</sup> = I ∗ K. I construct this by setting K = -αG and adding (1+α) to the center coefficient (ensuring ΣK = 1 for brightness preservation).</p>
+
+        <div class="formula">
+            <strong>Single Convolution Unsharp Mask:</strong><br>
+            K = (1+α)δ - αG<br>
+            I<sub>sharp</sub><sup>(1)</sup> = I ∗ K<br>
+            where δ is the impulse function (center spike)
+        </div>
+
+        <p>The technique works by isolating high-frequency components (edges and fine details) that are lost during Gaussian blurring, then amplifying and adding them back to enhance image sharpness. The parameter α controls sharpening intensity, while σ in G controls which frequencies are treated as "detail."</p>
 
         <h3>Taj Mahal Sharpening Results</h3>
         <div class="full-width-image">
@@ -456,27 +468,54 @@ def convolve2d_with_2_loops(image, kernel):
             <div class="result-caption">Taj Mahal: Original, Blurred, High-Frequency, and Sharpened</div>
         </div>
 
+        <p>The visualization demonstrates each step of the unsharp masking process. The blurred version shows the low-frequency content, the high-frequency image reveals the extracted details (edges and textures), and the final sharpened result combines both with amplified high frequencies.</p>
+
         <h3>Sharpening Amount Variation</h3>
-        <p>The parameter α controls sharpening intensity. Small values produce subtle enhancement, while larger values create more pronounced edges but risk introducing artifacts:</p>
+        <p>The parameter α controls sharpening intensity. Small values produce subtle enhancement, while larger values create more pronounced edges but risk introducing artifacts such as halos and ringing effects:</p>
 
         <div class="full-width-image">
             <img src="Figure_9.png" alt="Taj sharpening parameter variation">
-            <div class="result-caption">Taj Mahal Sharpening with Different α Values</div>
+            <div class="result-caption">Taj Mahal Sharpening: α = 0.3, 0.6, 1.5, 2.0</div>
         </div>
 
         <h3>Additional Example: Flower Image</h3>
+        <p>I applied the same unsharp masking technique to a flower image to demonstrate the method's versatility across different image types and content:</p>
+
         <div class="full-width-image">
-            <img src="Figure_10.png" alt="Flower sharpening process">
+            <img src="Figure_10.png" alt="Flower image sharpening process">
             <div class="result-caption">Flower: Original, Blurred, High-Frequency, and Sharpened</div>
         </div>
 
         <div class="full-width-image">
-            <img src="Figure_11.png" alt="Flower sharpening parameter variation">
-            <div class="result-caption">Flower Sharpening with Different α Values</div>
+            <img src="Figure_11.png" alt="Flower image sharpening parameter variation">
+            <div class="result-caption">Flower Sharpening: Different α Values</div>
         </div>
 
-        <h3>Blur → Sharpen Evaluation</h3>
-        <p>To evaluate the technique's limitations, I took a sharp image, artificially blurred it, then attempted to recover the original through sharpening:</p>
+        <h3>Blurry Image Sharpening</h3>
+        <p>I picked a naturally blurry image and applied unsharp masking to demonstrate the technique's effectiveness on real-world blur:</p>
+
+        <div class="results-grid">
+            <div class="result-item">
+                <img src="blurry.jpg" alt="Original blurry image">
+                <div class="result-caption">Original Blurry Image</div>
+            </div>
+            <div class="result-item">
+                <img src="taj.sharpened.jpg" alt="Sharpened image">
+                <div class="result-caption">Sharpened Result</div>
+            </div>
+        </div>
+
+        <p>The comparison demonstrates that unsharp masking can significantly improve the perceived sharpness of a blurry image by enhancing edge definition and texture details. However, it's important to understand the fundamental limitations of this approach.</p>
+
+        <div class="note">
+            <strong>Why Sharpening Cannot Fully Restore Blurry Images:</strong>
+            <br>• <strong>Information Loss:</strong> When an image becomes blurry (through motion blur, defocus, or camera shake), high-frequency information is genuinely lost or significantly attenuated. This information cannot be magically recovered through post-processing.
+            <br>• <strong>Irreversible Process:</strong> Blurring is essentially a low-pass filtering operation that removes or reduces high-frequency components. Since this process is irreversible, no amount of sharpening can perfectly restore the original detail that was eliminated.
+            <br>• <strong>Enhancement vs Recovery:</strong> Unsharp masking enhances the existing edges and details that remain in the blurred image, but it cannot recreate fine details that were completely lost during the blurring process.
+            <br>• <strong>Artifact Introduction:</strong> Aggressive sharpening attempts to compensate for lost detail can introduce artifacts like halos, ringing, and noise amplification, which further degrade image quality.
+            <br>• <strong>Physical Limitations:</strong> The original blur may have been caused by fundamental optical limitations, depth of field effects, or motion that created complex, non-uniform blur patterns that simple linear sharpening cannot address.
+            <br>• <strong>Best Practice:</strong> Unsharp masking works best as an enhancement tool for slightly soft images rather than a restoration technique for severely blurred content.
+        </div>
 
         <div class="results-grid">
             <div class="result-item">
@@ -494,14 +533,16 @@ def convolve2d_with_2_loops(image, kernel):
         </div>
 
         <div class="note">
-            <strong>Key Observations:</strong>
-            <br>• Sharpening enhances texture and edge definition in the Taj Mahal walls and architectural details
-            <br>• Small α values (0.5-1.0) produce natural-looking enhancement without artifacts
-            <br>• Large α values (>2.0) create halos and ringing effects around edges
-            <br>• Motion blur recovery: Reduces blur significantly but cannot fully restore lost detail
-            <br>• Blur→Sharpen evaluation: Recovers much detail but introduces slight artifacts and cannot perfectly restore the original
-            <br>• Fundamental limitation: Sharpening cannot recover information that was genuinely lost during the original blurring process
+            <strong>Key Observations and Analysis:</strong>
+            <br>• <strong>Effective enhancement:</strong> Unsharp masking successfully enhances texture and edge definition in both the Taj Mahal walls and architectural details
+            <br>• <strong>Parameter sensitivity:</strong> Small α values (0.3-0.6) produce natural-looking enhancement without artifacts, while large α values (1.5-2.0) create pronounced edges but risk halos and ringing effects
+            <br>• <strong>Frequency control:</strong> The σ parameter in the Gaussian determines which spatial frequencies are considered "detail" - smaller σ sharpens finer details, larger σ affects broader features
+            <br>• <strong>Brightness preservation:</strong> The normalized kernel (ΣK = 1) maintains overall image brightness while enhancing local contrast
+            <br>• <strong>Blur recovery limitation:</strong> While sharpening reduces blur significantly and recovers much detail, it cannot perfectly restore information that was genuinely lost during the original blurring process
+            <br>• <strong>Artifact trade-offs:</strong> Increasing α strengthens edges and textures but introduces halos, overshoot, and noise amplification, requiring careful parameter tuning
+            <br>• <strong>Perceptual improvement:</strong> Adding scaled high-frequency residuals makes images perceptually sharper while keeping overall brightness stable
         </div>
+
 
         <h3>2.2 Hybrid Images</h3>
         <p>Following Oliva, Torralba, and Schyns (2006), I created hybrid images by combining low-frequency content from one image with high-frequency content from another. The perception changes with viewing distance due to the human visual system's frequency sensitivity. I implemented an advanced alignment system that automatically selects the image with the more horizontal eye line as reference for optimal results.</p>
