@@ -545,64 +545,74 @@ def convolve2d_with_2_loops(image, kernel):
 
 
         <h3>2.2 Hybrid Images</h3>
-        <p>Following Oliva, Torralba, and Schyns (2006), I created hybrid images by combining low-frequency content from one image with high-frequency content from another. The perception changes with viewing distance due to the human visual system's frequency sensitivity. I implemented an advanced alignment system that automatically selects the image with the more horizontal eye line as reference for optimal results.</p>
+        <p>Following Oliva, Torralba, and Schyns (2006), I created hybrid images by combining low-frequency content from one image with high-frequency content from another. The perception changes with viewing distance due to the human visual system's frequency sensitivity.</p>
+
+        <h3>Advanced Horizontal Eye Alignment</h3>
+        <p>I implemented a sophisticated alignment system that automatically determines which image has the more horizontal eye line and uses it as the reference. Through interactive point selection, users mark the left and right eye centers on both images. The system calculates eye line angles and selects the image with the smaller absolute angle deviation from horizontal as the reference, then applies rotation, scaling, and translation to align the other image accordingly.</p>
+
+        <p>The frequency separation process uses the following mathematical approach:</p>
 
         <div class="formula">
-            <strong>Hybrid Image Formula:</strong><br>
-            hybrid = low_pass(image1, σ₁) + high_pass(image2, σ₂)<br>
-            where high_pass(image, σ) = image - gaussian_blur(image, σ)
+            <strong>Hybrid Image Construction:</strong><br>
+            Low-frequency component: A_LP = A ∗ G_σlow<br>
+            High-frequency component: B_HP = B - (B ∗ G_σhigh)<br>
+            Final hybrid: HY = (A_LP + B_HP) / 2<br>
+            where the components are averaged for optimal balance
         </div>
 
+        <p>The low-frequency layer comes from Gaussian blurring the first image, while the high-frequency layer is extracted by subtracting a blurred version from the second image. The final hybrid averages both filtered components to ensure proper intensity balance.</p>
+
+        <h3>Parameter Selection and Alignment Strategy</h3>
+        <p>I use fixed parameters σlow=10 and σhigh=3, chosen empirically to ensure nearby viewing favors the high-frequency image's details while distant viewing preserves the low-frequency image's structure. The horizontal alignment significantly improves hybrid quality by ensuring facial features correspond properly between images.</p>
+
         <h3>Derek + Nutmeg: Complete Process Analysis</h3>
-        <p>I demonstrate the full hybrid image creation process using the classic Derek and Nutmeg example, including alignment, frequency analysis, and parameter selection:</p>
+        <p>I demonstrate the full hybrid image creation process using the classic Derek and Nutmeg example, including horizontal alignment, frequency analysis, and multi-scale visualization:</p>
 
         <div class="full-width-image">
             <img src="Figure_13.png" alt="Derek Nutmeg frequency analysis">
-            <div class="result-caption">Frequency Analysis: Input FFTs and Hybrid Result FFT</div>
+            <div class="result-caption">Frequency Analysis: Input Images and Hybrid Result with Log-Magnitude FFT Spectra</div>
         </div>
+
+        <p>The frequency analysis shows log-magnitude Fourier spectra for the input images and final hybrid result. The visualization demonstrates how the hybrid combines frequency characteristics from both sources, with low-frequency energy preserved from the first image and high-frequency details contributed by the second image.</p>
 
         <div class="full-width-image">
             <img src="Figure_14.png" alt="Derek Nutmeg multi-scale">
-            <div class="result-caption">Multi-scale Visualization: Hybrid image at different viewing distances</div>
+            <div class="result-caption">Multi-scale Visualization: Hybrid image at different simulated viewing distances</div>
         </div>
 
+        <p>The multi-scale visualization simulates different viewing distances by downsampling and upsampling the hybrid image. At close viewing (scale=1.0), high-frequency details dominate, while at distant viewing (scale=0.125), the low-frequency structure becomes more apparent.</p>
+
         <div class="note">
-            <strong>Parameter Selection (Derek + Nutmeg):</strong> After experimentation, I chose σ₁=10 for Derek's low-pass filter (visible from far) and σ₂=3 for Nutmeg's high-pass filter (visible up close). These values provide optimal balance between the two frequency components while maintaining clear perceptual switching at different viewing distances.
+            <strong>Horizontal Alignment Innovation:</strong> The automatic selection of the more horizontal eye line as reference (determined by smaller absolute angle deviation) ensures optimal alignment results. This approach minimizes rotation artifacts and preserves facial geometry better than arbitrary reference selection. The system applies rotation around the left eye anchor point, followed by scaling to match eye distances and translation to align eye positions.
         </div>
 
         <h3>Additional Hybrid Examples</h3>
-        <p>I created two additional hybrid images exploring different themes:</p>
+        <p>I created additional hybrid images exploring different themes and subjects:</p>
 
-        <h4>Example 2: Expression Change</h4>
-        <div class="full-width-image">
-            <img src="Figure_15.png" alt="Expression change hybrid">
-            <div class="result-caption">Happy/Sad Expression Hybrid: Input images and result</div>
-        </div>
-
-        <h4>Example 3: Object Transformation</h4>
+        <h4>Example 2: Object Transformation</h4>
         <div class="full-width-image">
             <img src="Figure_16.png" alt="Object transformation hybrid">
-            <div class="result-caption">Cat/Dog Hybrid: Input images and result</div>
+            <div class="result-caption">Cat/Dog Hybrid: Input images and frequency-separated result</div>
         </div>
 
-        <h4>Example 4: Additional Hybrid</h4>
+        <h4>Example 3: Additional Hybrid</h4>
         <div class="full-width-image">
             <img src="Figure_17.png" alt="Additional hybrid example">
             <div class="result-caption">Additional Hybrid Example: Input images and result</div>
         </div>
 
-        <h3>Implementation Details</h3>
-        <p>My implementation includes several advanced features:</p>
+        <h3>Technical Implementation Details</h3>
+        <p>My implementation includes several advanced features for robust hybrid image generation:</p>
 
-        
         <div class="note">
-            <strong>Key Technical Insights:</strong>
-            <br>• Automatic horizontal alignment significantly improves hybrid quality by reducing misalignment artifacts
-            <br>• Interactive eye selection allows precise control over alignment anchor points
-            <br>• Frequency analysis confirms successful separation: low frequencies dominate at distance, high frequencies up close
-            <br>• Multi-scale visualization effectively demonstrates the distance-dependent perception effect
-            <br>• Parameter tuning is crucial: σ₁ controls low-frequency spread, σ₂ controls high-frequency detail preservation
-            <br>• Proper alignment is essential for perceptual grouping and seamless frequency domain blending
+            <strong>Advanced Implementation Features:</strong>
+            <br>• <strong>Intelligent alignment:</strong> Automatic horizontal eye line detection and reference selection based on angle analysis
+            <br>• <strong>Interactive point selection:</strong> User-guided eye center marking for precise alignment control
+            <br>• <strong>Geometric transformation:</strong> Combined rotation, scaling, and translation for optimal feature correspondence
+            <br>• <strong>Reflection padding:</strong> BORDER_REFLECT_101 mode prevents black/white artifacts during alignment
+            <br>• <strong>Frequency analysis:</strong> Log-magnitude FFT visualization confirms frequency domain characteristics
+            <br>• <strong>Multi-scale validation:</strong> Downsampling simulation accurately demonstrates distance-dependent perception
+            <br>• <strong>Aspect ratio preservation:</strong> Padding-based resizing maintains image proportions without distortion
         </div>
 
         <h3>2.3 Gaussian and Laplacian Stacks</h3>
