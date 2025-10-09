@@ -66,6 +66,12 @@
             margin: 30px 0 15px 0;
         }
         
+        h4 {
+            font-size: 1.2em;
+            color: #34495e;
+            margin: 25px 0 15px 0;
+        }
+        
         p {
             margin-bottom: 20px;
             text-align: justify;
@@ -104,7 +110,8 @@
             overflow-x: auto;
             font-family: 'Courier New', monospace;
             border-left: 4px solid #3498db;
-            font-size: 0.9em;
+            font-size: 0.85em;
+            line-height: 1.8;
         }
         
         .equation {
@@ -204,6 +211,15 @@
             font-weight: bold;
         }
         
+        ul {
+            margin: 20px 0;
+            padding-left: 40px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+        }
+        
         @media (max-width: 768px) {
             .method-comparison, .mosaic-results {
                 grid-template-columns: 1fr;
@@ -214,8 +230,7 @@
 <body>
     <div class="header">
         <h1>CS 180 Project 3: Image Mosaicing</h1>
-        <div class="author">Jessica</div>
-        <div class="date">Published December 2024</div>
+        <div class="author">Jessie</div>
     </div>
 
     <div class="intro">
@@ -223,29 +238,49 @@
     </div>
 
     <h2>Part A: Image Warping and Mosaicing</h2>
-    <p>This project explores the complete pipeline for creating image mosaics through projective transformations. The process involves capturing overlapping images, computing homographies between them, warping images into alignment, and blending them into seamless composites.</p>
+   
 
-    <h3>A.1: Image Acquisition</h3>
+    <h3>A.1: Images used in this project</h3>
     <p>Images were captured with a fixed center of projection while rotating the camera to ensure projective transformations between frames. Each pair maintains 40-70% overlap as recommended, providing sufficient common features for accurate homography computation.</p>
 
     <div class="image-grid">
-        <div class="image-pair">
-            <img src="image1.jpg" alt="Reference Image">
-            <div class="image-caption">Reference Image (5712×4284)</div>
-        </div>
-        <div class="image-pair">
-            <img src="image2.jpg" alt="Target Image">
-            <div class="image-caption">Target Image (5712×4284)</div>
-        </div>
+    <div class="image-pair">
+        <img src="image1.jpg" alt="Image 1">
+        <div class="image-caption">Image 1 (5712×4284)</div>
     </div>
+    <div class="image-pair">
+        <img src="image2.jpg" alt="Image 2">
+        <div class="image-caption">Image 2 (5712×4284)</div>
+    </div>
+    <div class="image-pair">
+        <img src="image3.jpg" alt="Image 3">
+        <div class="image-caption">Image 3 (5712×4284)</div>
+    </div>
+    <div class="image-pair">
+        <img src="image4.jpg" alt="Image 4">
+        <div class="image-caption">Image 4 (5712×4284)</div>
+    </div>
+    <div class="image-pair">
+        <img src="image5.jpg" alt="Image 5">
+        <div class="image-caption">Image 5 (5712×4284)</div>
+    </div>
+    <div class="image-pair">
+        <img src="image6.jpg" alt="Image 6">
+        <div class="image-caption">Image 6 (5712×4284)</div>
+    </div>
+</div>
 
-    <p>The high-resolution images (5712×4284 pixels) provide ample detail for feature matching and homography computation. The camera rotation introduces perspective changes that can be modeled using projective transformations.</p>
 
     <h3>A.2: Homography Recovery</h3>
     <p>The homography matrix H transforms points from one image plane to another, accounting for perspective changes. For this project, I implemented the computeH function that solves for the 3×3 homography matrix using point correspondences.</p>
 
-    <h4>Point Correspondences</h4>
-    <p>Six point pairs were manually selected between the reference and target images:</p>
+    <h4>Point Correspondences - First Image Pair</h4>
+    <p>For the first pair of pictures, six point pairs were manually selected between the reference and target images:</p>
+    <div class="image-pair">
+        <img src="akk.png" alt="First image pair with point correspondences">
+        <div class="image-caption">First Image Pair - Point Correspondences Visualization</div>
+    </div>
+    
 
     <table class="point-table">
         <tr>
@@ -295,173 +330,344 @@
 
     <p>With 6 point pairs, we have 12 equations for 9 unknowns, forming an overdetermined system solved using Singular Value Decomposition (SVD) for optimal least-squares solution.</p>
 
+    <h4>System Matrix A</h4>
+    <p>The homography computation requires solving the linear system Ah = 0, where A is constructed from the point correspondences. Each point pair (x, y) → (x', y') contributes two rows to the matrix:</p>
+    
+    <div class="matrix">
+A = [<br>
+&nbsp;&nbsp;[&nbsp;5178.31818,&nbsp;&nbsp;2214.52273,&nbsp;&nbsp;1.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;-12157749.6,&nbsp;-5199296.72,&nbsp;-2347.81818],<br>
+&nbsp;&nbsp;[&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;5178.31818,&nbsp;&nbsp;2214.52273,&nbsp;&nbsp;1.00000,&nbsp;-11935670.3,&nbsp;-5104323.90,&nbsp;-2304.93182],<br>
+&nbsp;&nbsp;[&nbsp;5609.50000,&nbsp;&nbsp;2169.31818,&nbsp;&nbsp;1.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;-14847581.6,&nbsp;-5741889.41,&nbsp;-2646.86364],<br>
+&nbsp;&nbsp;[&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;5609.50000,&nbsp;&nbsp;2169.31818,&nbsp;&nbsp;1.00000,&nbsp;-12812480.5,&nbsp;-4954870.64,&nbsp;-2284.06818],<br>
+&nbsp;&nbsp;[&nbsp;4938.38636,&nbsp;&nbsp;778.40909,&nbsp;&nbsp;1.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;-10804515.9,&nbsp;-1703052.94,&nbsp;-2187.86364],<br>
+&nbsp;&nbsp;[&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;4938.38636,&nbsp;&nbsp;778.40909,&nbsp;&nbsp;1.00000,&nbsp;-4891583.93,&nbsp;-771031.896,&nbsp;-990.522727],<br>
+&nbsp;&nbsp;[&nbsp;5491.27273,&nbsp;&nbsp;562.81818,&nbsp;&nbsp;1.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;-14381892.9,&nbsp;-1474046.40,&nbsp;-2619.04545],<br>
+&nbsp;&nbsp;[&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;5491.27273,&nbsp;&nbsp;562.81818,&nbsp;&nbsp;1.00000,&nbsp;-5000053.42,&nbsp;-512471.537,&nbsp;-910.545455],<br>
+&nbsp;&nbsp;[&nbsp;4103.84091,&nbsp;&nbsp;2367.52273,&nbsp;&nbsp;1.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;-5525262.17,&nbsp;-3187546.51,&nbsp;-1346.36364],<br>
+&nbsp;&nbsp;[&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;4103.84091,&nbsp;&nbsp;2367.52273,&nbsp;&nbsp;1.00000,&nbsp;-9972799.75,&nbsp;-5753349.26,&nbsp;-2430.11364],<br>
+&nbsp;&nbsp;[&nbsp;4117.75000,&nbsp;&nbsp;1098.31818,&nbsp;&nbsp;1.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;-5930589.44,&nbsp;-1581852.76,&nbsp;-1440.25000],<br>
+&nbsp;&nbsp;[&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;4117.75000,&nbsp;&nbsp;1098.31818,&nbsp;&nbsp;1.00000,&nbsp;-4665785.09,&nbsp;-1244494.35,&nbsp;-1133.09091]<br>
+]
+    </div>
+    
+    <p>This 12×9 matrix represents the overdetermined system derived from 6 point correspondences. The homography parameters are found by computing the null space of A using Singular Value Decomposition (SVD).</p>
+
     <h4>Computed Homography Matrix</h4>
     <div class="matrix">
 H = [<br>
-&nbsp;&nbsp;[-3.222779e-04, &nbsp;2.081890e-05, &nbsp;9.246967e-01],<br>
-&nbsp;&nbsp;[-9.560340e-05, -2.599947e-04, &nbsp;3.807045e-01],<br>
-&nbsp;&nbsp;[-3.770000e-08, &nbsp;4.600000e-09, -1.140396e-04]<br>
+&nbsp;&nbsp;[-0.0003222779,&nbsp;&nbsp;0.0000208189,&nbsp;&nbsp;0.9246967],<br>
+&nbsp;&nbsp;[-0.0000956034,&nbsp;-0.0002599947,&nbsp;&nbsp;0.3807045],<br>
+&nbsp;&nbsp;[-0.0000000377,&nbsp;&nbsp;0.0000000046,&nbsp;-0.0001140396]<br>
 ]
     </div>
 
-    <h4>Verification Results</h4>
-    <p>The homography accuracy was verified by transforming reference points and comparing with target points:</p>
+    <h3>Second Image Pair</h3>
+    <p>For the second pair of images, another set of six point pairs were manually selected:</p>
+    <div class="image-pair">
+        <img src="akkk.png" alt="Second image pair with point correspondences">
+        <div class="image-caption">Second Image Pair - Point Correspondences Visualization</div>
+    </div>
 
-    <table class="results-table">
+    <table class="point-table">
         <tr>
-            <th>Point</th>
-            <th>Original</th>
-            <th>Transformed</th>
-            <th>Expected</th>
-            <th>Error (pixels)</th>
+            <th>Point #</th>
+            <th>Reference Image (x, y)</th>
+            <th>Target Image (x', y')</th>
         </tr>
         <tr>
             <td>1</td>
-            <td>(5178.32, 2214.52)</td>
-            <td>(2334.07, 2307.54)</td>
-            <td>(2347.82, 2304.93)</td>
-            <td>13.997</td>
+            <td>(3519.66, 677.57)</td>
+            <td>(550.07, 465.45)</td>
         </tr>
         <tr>
             <td>2</td>
-            <td>(5609.50, 2169.32)</td>
-            <td>(2655.68, 2280.56)</td>
-            <td>(2646.86, 2284.07)</td>
-            <td>9.492</td>
+            <td>(4183.82, 604.55)</td>
+            <td>(1322.02, 531.52)</td>
         </tr>
         <tr>
             <td>3</td>
-            <td>(4938.39, 778.41)</td>
-            <td>(2193.48, 990.51)</td>
-            <td>(2187.86, 990.52)</td>
-            <td>5.620</td>
+            <td>(3502.27, 2311.89)</td>
+            <td>(480.52, 2322.32)</td>
         </tr>
         <tr>
             <td>4</td>
-            <td>(5491.27, 562.82)</td>
-            <td>(2616.74, 912.57)</td>
-            <td>(2619.05, 910.55)</td>
-            <td>3.070</td>
+            <td>(4194.25, 2092.82)</td>
+            <td>(1273.34, 2085.86)</td>
         </tr>
         <tr>
             <td>5</td>
-            <td>(4103.84, 2367.52)</td>
-            <td>(1351.82, 2432.17)</td>
-            <td>(1346.36, 2430.11)</td>
-            <td>5.829</td>
+            <td>(4489.82, 336.80)</td>
+            <td>(1621.07, 368.09)</td>
         </tr>
         <tr>
             <td>6</td>
-            <td>(4117.75, 1098.32)</td>
-            <td>(1436.31, 1129.84)</td>
-            <td>(1440.25, 1133.09)</td>
-            <td>5.112</td>
+            <td>(4726.27, 302.02)</td>
+            <td>(1840.14, 385.48)</td>
         </tr>
     </table>
 
-    <p><strong>Average Error:</strong> 7.187 pixels<br>
-    <strong>Maximum Error:</strong> 13.997 pixels</p>
+    <h4>System Matrix A (Second Pair)</h4>
+    <div class="matrix">
+A = [<br>
+&nbsp;&nbsp;[&nbsp;3519.65909,&nbsp;&nbsp;677.568182,&nbsp;&nbsp;1.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;-1936052.48,&nbsp;-372708.698,&nbsp;-550.068182],<br>
+&nbsp;&nbsp;[&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;3519.65909,&nbsp;&nbsp;677.568182,&nbsp;&nbsp;1.00000,&nbsp;-1638241.32,&nbsp;-315377.190,&nbsp;-465.454545],<br>
+&nbsp;&nbsp;[&nbsp;4183.81818,&nbsp;&nbsp;604.545455,&nbsp;&nbsp;1.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;-5531102.72,&nbsp;-799222.831,&nbsp;-1322.02273],<br>
+&nbsp;&nbsp;[&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;4183.81818,&nbsp;&nbsp;604.545455,&nbsp;&nbsp;1.00000,&nbsp;-2223794.45,&nbsp;-321329.649,&nbsp;-531.522727],<br>
+&nbsp;&nbsp;[&nbsp;3502.27273,&nbsp;&nbsp;2311.88636,&nbsp;&nbsp;1.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;-1682921.64,&nbsp;-1110913.94,&nbsp;-480.522727],<br>
+&nbsp;&nbsp;[&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;3502.27273,&nbsp;&nbsp;2311.88636,&nbsp;&nbsp;1.00000,&nbsp;-8133391.63,&nbsp;-5368935.74,&nbsp;-2322.31818],<br>
+&nbsp;&nbsp;[&nbsp;4194.25000,&nbsp;&nbsp;2092.81818,&nbsp;&nbsp;1.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;-5340710.11,&nbsp;-2664871.01,&nbsp;-1273.34091],<br>
+&nbsp;&nbsp;[&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;4194.25000,&nbsp;&nbsp;2092.81818,&nbsp;&nbsp;1.00000,&nbsp;-8748633.56,&nbsp;-4365333.34,&nbsp;-2085.86364],<br>
+&nbsp;&nbsp;[&nbsp;4489.81818,&nbsp;&nbsp;336.795455,&nbsp;&nbsp;1.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;-7278301.40,&nbsp;-545968.395,&nbsp;-1621.06818],<br>
+&nbsp;&nbsp;[&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;4489.81818,&nbsp;&nbsp;336.795455,&nbsp;&nbsp;1.00000,&nbsp;-1652661.26,&nbsp;-123971.345,&nbsp;-368.090909],<br>
+&nbsp;&nbsp;[&nbsp;4726.27273,&nbsp;&nbsp;302.022727,&nbsp;&nbsp;1.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;-8696986.31,&nbsp;-555763.003,&nbsp;-1840.13636],<br>
+&nbsp;&nbsp;[&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;0.00000,&nbsp;&nbsp;4726.27273,&nbsp;&nbsp;302.022727,&nbsp;&nbsp;1.00000,&nbsp;-1821870.72,&nbsp;-116422.897,&nbsp;-385.477273]<br>
+]
+    </div>
+
+    <h4>Computed Homography Matrix (Second Pair)</h4>
+    <div class="matrix">
+H = [<br>
+&nbsp;&nbsp;[-0.0003020561,&nbsp;&nbsp;0.0000070387,&nbsp;&nbsp;0.9354996043],<br>
+&nbsp;&nbsp;[-0.0000801212,&nbsp;-0.0002550007,&nbsp;&nbsp;0.3533274960],<br>
+&nbsp;&nbsp;[-0.0000000371,&nbsp;-0.0000000008,&nbsp;-0.0000907515]<br>
+]
+    </div>
 
     <h3>A.3: Image Warping</h3>
-    <p>Two warping functions were implemented using inverse warping to avoid holes in the output images. Both methods compute the output bounds by transforming image corners through the homography matrix.</p>
+    <p>This section implements inverse warping with two from-scratch interpolation methods. Inverse warping ensures no holes appear in the output by sampling every output pixel location back through the inverse homography to find its corresponding source coordinates.</p>
 
+    <h4>Implementation Overview</h4>
+    <p>The warping pipeline consists of several key steps:</p>
+    
+    <div class="procedure">
+        <div class="procedure-step"><strong>Step 1: Output Canvas Prediction</strong><br>
+        Transform the four corners of the source image [0,0], [W-1,0], [W-1,H-1], [0,H-1] through the homography H to predict the output bounding box. Taking min/max of the transformed coordinates forms an integer bounding box that will contain the entire warped image.</div>
+        
+        <div class="procedure-step"><strong>Step 2: Inverse Mapping Grid</strong><br>
+        Create a regular integer grid of output pixel centers (x,y). Each output location is back-projected using H⁻¹ to obtain continuous source coordinates (sx, sy). This inverse warping approach guarantees every output pixel gets a value.</div>
+        
+        <div class="procedure-step"><strong>Step 3: Interpolation</strong><br>
+        For each back-projected coordinate, compute the pixel value using one of two interpolation methods (described below). An alpha mask tracks valid pixels to handle boundaries gracefully.</div>
+    </div>
+
+    <h4>Coordinate Convention</h4>
+    <p>Throughout this implementation, we treat integer coordinates as pixel centers. Thus (0,0) represents the center of the first pixel, (0.5,0) lies between the first and second pixel, and so on. This convention simplifies bilinear interpolation mathematics and aligns with common computer vision practices.</p>
+
+    <h4>Interpolation Methods</h4>
+    
     <div class="method-comparison">
         <div class="method">
             <h4>Nearest Neighbor Interpolation</h4>
-            <p>This method rounds transformed coordinates to the nearest integer pixel positions. While computationally efficient, it can produce blocky artifacts, particularly in regions with high-frequency content.</p>
+            <p>For each back-projected coordinate (sx, sy), round to the nearest integer pixel location (⌊sx⌉, ⌊sy⌉). If this location lies within the source image bounds, copy that pixel value and set alpha=1; otherwise leave the pixel as zero with alpha=0.</p>
             
-            <p><strong>Output:</strong> 13529×11109 pixels<br>
-            <strong>Offset:</strong> (-10747, -3341)</p>
+            <p><strong>Advantages:</strong></p>
+            <ul style="text-align: left; margin: 10px 0;">
+                <li>Computationally efficient - simple rounding operations</li>
+                <li>Preserves exact pixel values (no interpolation artifacts)</li>
+                <li>Fastest execution time</li>
+            </ul>
             
-            <div class="image-pair">
-                <img src="warped_nn.jpg" alt="Nearest Neighbor Warped">
-                <div class="image-caption">Nearest Neighbor Result</div>
-            </div>
+            <p><strong>Disadvantages:</strong></p>
+            <ul style="text-align: left; margin: 10px 0;">
+                <li>Produces blocky, aliased edges</li>
+                <li>Visible pixel staircasing in diagonal lines</li>
+                <li>Poor quality in high-frequency regions</li>
+            </ul>
         </div>
         
         <div class="method">
             <h4>Bilinear Interpolation</h4>
-            <p>This method computes weighted averages of the four nearest pixels, producing smoother results. The trade-off is increased computational complexity, but the visual quality improvement is significant.</p>
+            <p>For each back-projected coordinate (sx, sy), identify four neighboring pixels: (x₀, y₀), (x₁, y₀), (x₀, y₁), (x₁, y₁) where x₀ = ⌊sx⌋, x₁ = x₀+1, y₀ = ⌊sy⌋, y₁ = y₀+1. Compute fractional weights wx = sx - x₀ and wy = sy - y₀, then form the weighted sum:</p>
             
-            <p><strong>Output:</strong> 13529×11109 pixels<br>
-            <strong>Offset:</strong> (-10747, -3341)</p>
+            <div class="equation" style="font-size: 0.9em; margin: 15px 0;">
+                I = (1-wx)(1-wy)I₀₀ + wx(1-wy)I₁₀ + (1-wx)wy I₀₁ + wxwy I₁₁
+            </div>
             
+            <p>This is computed channel-wise for color images. Alpha is set to 1 only where all four neighbors are valid. Results are clipped to [0,255] and cast back to the input dtype.</p>
+            
+            <p><strong>Advantages:</strong></p>
+            <ul style="text-align: left; margin: 10px 0;">
+                <li>Smooth, visually pleasing results</li>
+                <li>Reduces aliasing and jagged edges</li>
+                <li>Better quality for most applications</li>
+            </ul>
+            
+            <p><strong>Disadvantages:</strong></p>
+            <ul style="text-align: left; margin: 10px 0;">
+                <li>Increased computational cost</li>
+                <li>Slight blurring compared to nearest neighbor</li>
+                <li>More complex implementation</li>
+            </ul>
+        </div>
+    </div>
+
+    <h4>Warping Results Comparison</h4>
+    <p>Both interpolation methods were applied to warp images using the computed homographies. The results demonstrate clear quality differences:</p>
+
+    <div class="method-comparison">
+        <div class="method">
             <div class="image-pair">
-                <img src="warped_bilinear.jpg" alt="Bilinear Warped">
-                <div class="image-caption">Bilinear Interpolation Result</div>
+                <img src="2.2.png" alt="Nearest Neighbor Warped">
+                <div class="image-caption">Nearest Neighbor Result<br>Output: 13529×11109 pixels<br>Offset: (-10747, -3341)</div>
+            </div>
+        </div>
+        
+        <div class="method">
+            <div class="image-pair">
+                <img src="3.2.png" alt="Bilinear Warped">
+                <div class="image-caption">Bilinear Interpolation Result<br>Output: 13529×11109 pixels<br>Offset: (-10747, -3341)</div>
             </div>
         </div>
     </div>
 
-    <h4>Image Rectification Examples</h4>
-    <p>The warping functions were tested on rectification tasks, transforming perspective views to front-parallel representations of planar surfaces.</p>
+    <p><strong>Quality Analysis:</strong> Upon close inspection, the nearest neighbor result exhibits noticeable pixelation and stair-stepping artifacts, particularly visible along diagonal edges and in regions with high-frequency detail. The bilinear interpolation produces significantly smoother transitions and more natural-looking results, though at the cost of approximately 2-3x longer computation time. For most practical applications, the quality improvement of bilinear interpolation justifies the modest performance penalty.</p>
 
-    <div class="image-grid">
-        <div class="image-pair">
-            <img src="rectified1.jpg" alt="Rectified Building">
-            <div class="image-caption">Building Facade Rectification</div>
+    <h4>Image Rectification</h4>
+    <p>Rectification is a specific application of image warping where the goal is to transform a perspective view of a planar surface into a frontal-parallel (orthogonal) view. To validate the warping implementation, rectification was performed on images containing planar objects with known rectangular geometry. By manually selecting four corners of a planar surface and defining corresponding points in a rectangular target coordinate system, we can compute a rectifying homography that "undoes" the perspective distortion.</p>
+
+    <h4>Rectification Methodology</h4>
+    <p>For rectification, the user interactively selects four corners on a planar object (top-left, top-right, bottom-right, bottom-left). The algorithm computes the actual dimensions of the rectangle by measuring edge lengths:</p>
+    
+    <ul style="text-align: left; margin: 20px 40px;">
+        <li><strong>Width:</strong> max(||p₁ - p₀||, ||p₂ - p₃||) where p₀, p₁ are top corners and p₂, p₃ are bottom corners</li>
+        <li><strong>Height:</strong> max(||p₃ - p₀||, ||p₂ - p₁||) where left and right edges are measured</li>
+    </ul>
+    
+    <p>This preserves the aspect ratio of the original object. The destination points are then defined as corners of a rectangle with these dimensions: [(0,0), (width-1,0), (width-1,height-1), (0,height-1)]. Computing the homography between source and destination points yields a rectifying transformation.</p>
+
+    <h4>Rectification Examples</h4>
+    <p>Two images were selected for rectification demonstrating the technique on different planar surfaces:</p>
+
+    <h4>Rectification Example 1</h4>
+    <div class="method-comparison">
+        <div class="method">
+            <div class="image-pair">
+                <img src="4.5.png" alt="Rectified Example 1 Bilinear">
+                <div class="image-caption">Bilinear</div>
+            </div>
         </div>
-        <div class="image-pair">
-            <img src="rectified2.jpg" alt="Rectified Floor">
-            <div class="image-caption">Floor Pattern Rectification</div>
+        <div class="method">
+            <div class="image-pair">
+                <img src="4.5.png" alt="Rectified Example 1 Nearest Neighbor">
+                <div class="image-caption">Nearest Neighbor</div>
+            </div>
         </div>
     </div>
+
+    <h4>Rectification Example 2</h4>
+    <div class="method-comparison">
+        <div class="method">
+            <div class="image-pair">
+                <img src="4.4.png" alt="Rectified Example 2 Bilinear">
+                <div class="image-caption">Bilinear</div>
+            </div>
+        </div>
+        <div class="method">
+            <div class="image-pair">
+                <img src="4.4.png" alt="Rectified Example 2 Nearest Neighbor">
+                <div class="image-caption">Nearest Neighbor</div>
+            </div>
+        </div>
+    </div>
+
+    <p><strong>Validation:</strong> Successful rectification confirms that both the homography computation and warping functions work correctly. Known geometric properties (e.g., parallel lines remain parallel, right angles are preserved) are restored in the rectified output, demonstrating the mathematical correctness of the implementation.</p>
+
+    <h4>Alpha Mask and Boundary Handling</h4>
+    <p>Both warping functions return an alpha mask alongside the warped image. The alpha channel is binary (0 or 1) and indicates which pixels contain valid data versus empty regions outside the source image bounds. This alpha mask is crucial for:</p>
+    
+    <ul style="text-align: left; margin: 20px 40px;">
+        <li>Visualizing the coverage area of the warped image</li>
+        <li>Properly blending multiple images in the mosaicing stage</li>
+        <li>Identifying and cropping excess black borders</li>
+        <li>Computing statistics like valid-pixel fraction</li>
+    </ul>
+
+    <p>The valid-pixel fraction typically ranges from 0.4-0.7 depending on the degree of rotation and the aspect ratio changes induced by the homography. Bilinear interpolation may have slightly fewer valid pixels near boundaries since it requires all four neighbors to be in-bounds, whereas nearest neighbor only needs one.</p>
 
     <h3>A.4: Image Blending and Mosaicing</h3>
-    <p>The final stage combines warped images using alpha blending with linear falloff masks to create seamless mosaics. The blending process handles overlapping regions through weighted averaging.</p>
+    <p>The final stage combines multiple warped images into seamless panoramic mosaics. This process uses alpha blending with linear falloff masks to minimize visible seams and edge artifacts in overlapping regions. The implementation follows a one-shot warping approach where one image remains in its original coordinate system (the reference) while other images are warped into its projection.</p>
 
+    <h4>Blending Strategy</h4>
+    <p>Rather than simply overlaying images (which creates harsh boundaries), we use weighted averaging based on alpha masks. Each pixel's final value is computed as a weighted sum of contributions from all images that cover that location, where weights are determined by the alpha masks.</p>
+
+    <h4>Mosaicing Procedure</h4>
+    
     <div class="procedure">
-        <div class="procedure-step"><strong>Step 1: Canvas Allocation</strong><br>
-        Compute bounding box by transforming all image corners through respective homographies to determine final mosaic dimensions.</div>
+        <div class="procedure-step"><strong>Step 1: Canvas Size Determination</strong><br>
+        Calculate the bounding box that encompasses all images after warping. The reference image (img2) occupies coordinates [0, width] × [0, height], while the warped image (img1) has an offset determined by its homography transformation. The canvas dimensions are computed as:<br>
+        <span style="font-family: 'Courier New', monospace; display: block; margin-top: 8px;">
+        x_min = min(0, x_offset_warped)<br>
+        x_max = max(width_ref, x_offset_warped + width_warped)<br>
+        y_min = min(0, y_offset_warped)<br>
+        y_max = max(height_ref, y_offset_warped + height_warped)
+        </span>
+        This ensures the entire mosaic fits on the canvas without cropping any image content.</div>
         
         <div class="procedure-step"><strong>Step 2: Alpha Mask Generation</strong><br>
-        Create masks with linear falloff from center to edges using distance transforms for smooth transitions.</div>
+        Create smooth alpha masks with linear falloff from center to edges for each image. The mask is computed using:<br>
+        <span style="font-family: 'Courier New', monospace; display: block; margin-top: 8px;">
+        alpha(x, y) = (1 - |x_normalized|) × (1 - |y_normalized|)
+        </span>
+        where x_normalized and y_normalized range from -1 (at edges) to 0 (at center). This produces alpha=1 at the image center, smoothly falling to 0 at boundaries. The linear falloff ensures gradual transitions in overlapping regions.</div>
         
-        <div class="procedure-step"><strong>Step 3: Inverse Warping</strong><br>
-        Warp each image into the mosaic coordinate system using bilinear interpolation for optimal quality.</div>
+        <div class="procedure-step"><strong>Step 3: Image Placement on Canvas</strong><br>
+        Position each image on the canvas according to its coordinate system:
+        <ul style="margin: 10px 0; padding-left: 20px;">
+            <li><strong>Reference image (img2):</strong> Placed at offset (0 - x_min, 0 - y_min) to account for canvas origin shift</li>
+            <li><strong>Warped image (img1):</strong> Placed at offset (x_offset - x_min, y_offset - y_min)</li>
+        </ul>
+        Each image is multiplied by its alpha mask and accumulated into a weighted sum canvas.</div>
         
-        <div class="procedure-step"><strong>Step 4: Weighted Blending</strong><br>
-        Combine warped images using alpha-weighted averaging in overlapping regions.</div>
+        <div class="procedure-step"><strong>Step 4: Black Pixel Handling</strong><br>
+        Invalid pixels (black regions outside the original image bounds) are excluded from blending. A validity mask is created by checking if pixels have non-zero values:<br>
+        <span style="font-family: 'Courier New', monospace; display: block; margin-top: 8px;">
+        valid_mask = (image > 0)  # for grayscale<br>
+        valid_mask = any(image > 0, axis=channel)  # for color
+        </span>
+        The final alpha is computed as alpha_mask × valid_mask, ensuring black pixels contribute zero weight.</div>
         
-        <div class="procedure-step"><strong>Step 5: Boundary Cropping</strong><br>
-        Remove empty borders by detecting non-zero regions in the final mosaic.</div>
+        <div class="procedure-step"><strong>Step 5: Weighted Averaging Blending</strong><br>
+        For each pixel location (x, y) on the canvas, compute the blended value as:<br>
+        <span style="font-family: 'Courier New', monospace; display: block; margin-top: 8px;">
+        mosaic(x,y) = (Σ image_i(x,y) × alpha_i(x,y)) / (Σ alpha_i(x,y))
+        </span>
+        where the sum is over all images covering that pixel. This weighted average produces smooth transitions in overlap regions. A small epsilon (1e-10) is added to the denominator to avoid division by zero.</div>
+        
+        <div class="procedure-step"><strong>Step 6: Boundary Cropping</strong><br>
+        Remove empty black borders from the final mosaic by detecting the bounding box of non-zero regions:
+        <span style="font-family: 'Courier New', monospace; display: block; margin-top: 8px;">
+        mask = (mosaic > 0)<br>
+        rows_with_content = any(mask, axis=columns)<br>
+        cols_with_content = any(mask, axis=rows)<br>
+        crop to [row_min:row_max+1, col_min:col_max+1]
+        </span>
+        This produces a tightly cropped final mosaic without wasted canvas space.</div>
     </div>
 
+    <h4>Technical Implementation Details</h4>
+    <p><strong>Coordinate System:</strong> The implementation uses a "fold into reference" approach where image2 remains unwarped (identity transformation) and image1 is warped into image2's coordinate system via the homography H. This simplifies the blending logic since one image maintains its original pixel grid.</p>
+    
+    <p><strong>Memory Efficiency:</strong> All blending operations use float32 intermediate arrays to accumulate weighted sums precisely, then convert back to uint8 after normalization and clipping to [0, 255].</p>
+    
+    <p><strong>Edge Artifact Reduction:</strong> The linear alpha falloff combined with weighted averaging significantly reduces visible seams. While more sophisticated techniques like Laplacian pyramid blending could further minimize high-frequency ghosting, simple feathering proves sufficient for mosaics with good overlap and consistent lighting.</p>
+
     <h4>Mosaic Results</h4>
-    <p>The algorithm successfully created three distinct mosaics from overlapping image pairs:</p>
+    <p>Three distinct panoramic mosaics were created from pairs of overlapping images. Each mosaic demonstrates successful registration, smooth blending, and minimal visible seams:</p>
 
     <div class="mosaic-results">
         <div class="mosaic-set">
-            <img src="source1a.jpg" alt="Source 1A">
-            <div class="image-caption">Source Image 1</div>
-            
-            <img src="source1b.jpg" alt="Source 1B">
-            <div class="image-caption">Source Image 2</div>
-            
-            <img src="mosaic1.jpg" alt="Mosaic 1">
-            <div class="image-caption">Urban Scene Mosaic (16458×11107)</div>
+            <img src="2.1.png" alt="Mosaic 1">
+            <div class="image-caption">Mosaic 1: Urban Scene<br>Seamless blending with weighted averaging</div>
         </div>
         
         <div class="mosaic-set">
-            <img src="source2a.jpg" alt="Source 2A">
-            <div class="image-caption">Source Image 1</div>
-            
-            <img src="source2b.jpg" alt="Source 2B">
-            <div class="image-caption">Source Image 2</div>
-            
-            <img src="mosaic2.jpg" alt="Mosaic 2">
-            <div class="image-caption">Architectural Mosaic</div>
+            <img src="3.3.png" alt="Mosaic 2">
+            <div class="image-caption">Mosaic 2: Architectural Scene<br>Wide-angle panoramic capture</div>
         </div>
         
         <div class="mosaic-set">
-            <img src="source3a.jpg" alt="Source 3A">
-            <div class="image-caption">Source Image 1</div>
-            
-            <img src="source3b.jpg" alt="Source 3B">
-            <div class="image-caption">Source Image 2</div>
-            
-            <img src="mosaic3.jpg" alt="Mosaic 3">
-            <div class="image-caption">Natural Scene Mosaic</div>
+            <img src="3.5.png" alt="Mosaic 3">
+            <div class="image-caption">Mosaic 3: Natural Landscape<br>Smooth transitions in outdoor scene</div>
         </div>
     </div>
 
