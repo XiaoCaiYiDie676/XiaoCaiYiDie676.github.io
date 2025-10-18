@@ -220,8 +220,20 @@
             margin-bottom: 10px;
         }
         
+        .highlight-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
         @media (max-width: 768px) {
             .method-comparison, .mosaic-results {
+                grid-template-columns: 1fr;
+            }
+            
+            .image-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -238,38 +250,36 @@
     </div>
 
     <h2>Part A: Image Warping and Mosaicing</h2>
-   
 
     <h3>A.1: Images used in this project</h3>
     <p>Images were captured with a fixed center of projection while rotating the camera to ensure projective transformations between frames. Each pair maintains 40-70% overlap as recommended, providing sufficient common features for accurate homography computation.</p>
 
     <div class="image-grid">
-    <div class="image-pair">
-        <img src="image1.jpg" alt="Image 1">
-        <div class="image-caption">Image 1 (5712×4284)</div>
+        <div class="image-pair">
+            <img src="image1.jpg" alt="Image 1">
+            <div class="image-caption">Image 1 (5712×4284)</div>
+        </div>
+        <div class="image-pair">
+            <img src="image2.jpg" alt="Image 2">
+            <div class="image-caption">Image 2 (5712×4284)</div>
+        </div>
+        <div class="image-pair">
+            <img src="image3.jpg" alt="Image 3">
+            <div class="image-caption">Image 3 (5712×4284)</div>
+        </div>
+        <div class="image-pair">
+            <img src="image4.jpg" alt="Image 4">
+            <div class="image-caption">Image 4 (5712×4284)</div>
+        </div>
+        <div class="image-pair">
+            <img src="image5.jpg" alt="Image 5">
+            <div class="image-caption">Image 5 (5712×4284)</div>
+        </div>
+        <div class="image-pair">
+            <img src="image6.jpg" alt="Image 6">
+            <div class="image-caption">Image 6 (5712×4284)</div>
+        </div>
     </div>
-    <div class="image-pair">
-        <img src="image2.jpg" alt="Image 2">
-        <div class="image-caption">Image 2 (5712×4284)</div>
-    </div>
-    <div class="image-pair">
-        <img src="image3.jpg" alt="Image 3">
-        <div class="image-caption">Image 3 (5712×4284)</div>
-    </div>
-    <div class="image-pair">
-        <img src="image4.jpg" alt="Image 4">
-        <div class="image-caption">Image 4 (5712×4284)</div>
-    </div>
-    <div class="image-pair">
-        <img src="image5.jpg" alt="Image 5">
-        <div class="image-caption">Image 5 (5712×4284)</div>
-    </div>
-    <div class="image-pair">
-        <img src="image6.jpg" alt="Image 6">
-        <div class="image-caption">Image 6 (5712×4284)</div>
-    </div>
-</div>
-
 
     <h3>A.2: Homography Recovery</h3>
     <p>The homography matrix H transforms points from one image plane to another, accounting for perspective changes. For this project, I implemented the computeH function that solves for the 3×3 homography matrix using point correspondences.</p>
@@ -280,7 +290,6 @@
         <img src="akk.png" alt="First image pair with point correspondences">
         <div class="image-caption">First Image Pair - Point Correspondences Visualization</div>
     </div>
-    
 
     <table class="point-table">
         <tr>
@@ -460,67 +469,7 @@ H = [<br>
             <h4>Nearest Neighbor Interpolation</h4>
             <p>For each back-projected coordinate (sx, sy), round to the nearest integer pixel location (⌊sx⌉, ⌊sy⌉). If this location lies within the source image bounds, copy that pixel value and set alpha=1; otherwise leave the pixel as zero with alpha=0.</p>
             
-            <p><strong>Advantages:</strong></p>
-            <ul style="text-align: left; margin: 10px 0;">
-                <li>Computationally efficient - simple rounding operations</li>
-                <li>Preserves exact pixel values (no interpolation artifacts)</li>
-                <li>Fastest execution time</li>
-            </ul>
-            
-            <p><strong>Disadvantages:</strong></p>
-            <ul style="text-align: left; margin: 10px 0;">
-                <li>Produces blocky, aliased edges</li>
-                <li>Visible pixel staircasing in diagonal lines</li>
-                <li>Poor quality in high-frequency regions</li>
-            </ul>
-        </div>
-        
-        <div class="method">
-            <h4>Bilinear Interpolation</h4>
-            <p>For each back-projected coordinate (sx, sy), identify four neighboring pixels: (x₀, y₀), (x₁, y₀), (x₀, y₁), (x₁, y₁) where x₀ = ⌊sx⌋, x₁ = x₀+1, y₀ = ⌊sy⌋, y₁ = y₀+1. Compute fractional weights wx = sx - x₀ and wy = sy - y₀, then form the weighted sum:</p>
-            
-            <div class="equation" style="font-size: 0.9em; margin: 15px 0;">
-                I = (1-wx)(1-wy)I₀₀ + wx(1-wy)I₁₀ + (1-wx)wy I₀₁ + wxwy I₁₁
-            </div>
-            
-            <p>This is computed channel-wise for color images. Alpha is set to 1 only where all four neighbors are valid. Results are clipped to [0,255] and cast back to the input dtype.</p>
-            
-            <p><strong>Advantages:</strong></p>
-            <ul style="text-align: left; margin: 10px 0;">
-                <li>Smooth, visually pleasing results</li>
-                <li>Reduces aliasing and jagged edges</li>
-                <li>Better quality for most applications</li>
-            </ul>
-            
-            <p><strong>Disadvantages:</strong></p>
-            <ul style="text-align: left; margin: 10px 0;">
-                <li>Increased computational cost</li>
-                <li>Slight blurring compared to nearest neighbor</li>
-                <li>More complex implementation</li>
-            </ul>
-        </div>
-    </div>
-
-    <h4>Warping Results Comparison</h4>
-    <p>Both interpolation methods were applied to warp images using the computed homographies. The results demonstrate clear quality differences:</p>
-
-    <div class="method-comparison">
-        <div class="method">
-            <div class="image-pair">
-                <img src="2.2.png" alt="Nearest Neighbor Warped">
-                <div class="image-caption">Nearest Neighbor Result<br>Output: 13529×11109 pixels<br>Offset: (-10747, -3341)</div>
-            </div>
-        </div>
-        
-        <div class="method">
-            <div class="image-pair">
-                <img src="3.2.png" alt="Bilinear Warped">
-                <div class="image-caption">Bilinear Interpolation Result<br>Output: 13529×11109 pixels<br>Offset: (-10747, -3341)</div>
-            </div>
-        </div>
-    </div>
-
-    <p><strong>Quality Analysis:</strong> Upon close inspection, the nearest neighbor result exhibits noticeable pixelation and stair-stepping artifacts, particularly visible along diagonal edges and in regions with high-frequency detail. The bilinear interpolation produces significantly smoother transitions and more natural-looking results, though at the cost of approximately 2-3x longer computation time. For most practical applications, the quality improvement of bilinear interpolation justifies the modest performance penalty.</p>
+            <p><strong>Quality Analysis:</strong> Upon close inspection, the nearest neighbor result exhibits noticeable pixelation and stair-stepping artifacts, particularly visible along diagonal edges and in regions with high-frequency detail. The bilinear interpolation produces significantly smoother transitions and more natural-looking results, though at the cost of approximately 2-3x longer computation time. For most practical applications, the quality improvement of bilinear interpolation justifies the modest performance penalty.</p>
 
     <h4>Image Rectification</h4>
     <p>Rectification is a specific application of image warping where the goal is to transform a perspective view of a planar surface into a frontal-parallel (orthogonal) view. To validate the warping implementation, rectification was performed on images containing planar objects with known rectangular geometry. By manually selecting four corners of a planar surface and defining corresponding points in a rectangular target coordinate system, we can compute a rectifying homography that "undoes" the perspective distortion.</p>
@@ -654,7 +603,6 @@ H = [<br>
     <h4>Mosaic Results</h4>
     <p>Three distinct panoramic mosaics were created from pairs of overlapping images. Each mosaic demonstrates successful registration, smooth blending, and minimal visible seams:</p>
 
-    
     <div style="display: flex; flex-direction: column; gap: 40px; margin: 30px 0;">
         <div style="text-align: center;">
             <img src="2.1.png" alt="Mosaic 1" style="max-width: 100%; height: auto; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
@@ -670,173 +618,6 @@ H = [<br>
             <img src="3.5.png" alt="Mosaic 3" style="max-width: 100%; height: auto; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
             <div class="image-caption">Mosaic 3: Natural Landscape<br>Smooth transitions in outdoor scene</div>
         </div>
-    </div>
-
-    <h2>Implementation Details</h2>
-    
-    <h3>Technical Approach</h3>
-    <p>The implementation follows a systematic pipeline: point correspondence selection, homography computation via SVD, inverse warping with two interpolation methods, and alpha blending with linear masks. All components were implemented from scratch without using high-level computer vision libraries.</p>
-
-    <h3>Challenges and Solutions</h3>
-    <ul>
-        <li><strong>Large Image Handling:</strong> Implemented efficient coordinate transformation using meshgrid operations</li>
-        <li><strong>Numerical Stability:</strong> Used SVD for robust homography computation with overdetermined systems</li>
-        <li><strong>Seam Reduction:</strong> Developed alpha masks with linear falloff for smooth blending</li>
-        <li><strong>Memory Management:</strong> Optimized warping algorithms to handle high-resolution images</li>
-    </ul>
-
-    <h2>Conclusion</h2>
-    <p>This project successfully demonstrates the complete image mosaicing pipeline from image capture to final composite. The implementation achieves sub-pixel accuracy in homography computation and produces visually seamless mosaics through careful warping and blending. The comparison between interpolation methods shows the trade-offs between computational efficiency and visual quality, with bilinear interpolation providing superior results for most applications.</p>
-
-    <p>The techniques developed here form the foundation for more advanced computer vision applications, including panoramic photography, augmented reality, and 3D reconstruction from multiple views.</p>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS 180 Project 3: Image Mosaicing</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Georgia', serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            background-color: #fefefe;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 50px;
-            border-bottom: 2px solid #2c3e50;
-            padding-bottom: 30px;
-        }
-        
-        h1 {
-            font-size: 2.2em;
-            color: #2c3e50;
-            margin-bottom: 10px;
-            font-weight: normal;
-        }
-        
-        .author {
-            font-size: 1.2em;
-            color: #7f8c8d;
-            margin-bottom: 5px;
-        }
-        
-        h2 {
-            font-size: 1.8em;
-            color: #2c3e50;
-            margin: 50px 0 20px 0;
-            border-bottom: 1px solid #bdc3c7;
-            padding-bottom: 10px;
-        }
-        
-        h3 {
-            font-size: 1.4em;
-            color: #34495e;
-            margin: 30px 0 15px 0;
-        }
-        
-        h4 {
-            font-size: 1.2em;
-            color: #34495e;
-            margin: 25px 0 15px 0;
-        }
-        
-        p {
-            margin-bottom: 20px;
-            text-align: justify;
-        }
-        
-        .image-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
-        
-        .image-pair {
-            text-align: center;
-        }
-        
-        .image-pair img {
-            max-width: 100%;
-            height: auto;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .image-caption {
-            font-style: italic;
-            color: #7f8c8d;
-            margin-top: 8px;
-            font-size: 0.9em;
-        }
-        
-        .procedure {
-            background-color: #f8f9fa;
-            padding: 25px;
-            border-radius: 5px;
-            margin: 30px 0;
-            border-left: 4px solid #27ae60;
-        }
-        
-        .procedure-step {
-            margin-bottom: 15px;
-            padding-left: 20px;
-        }
-        
-        .procedure-step:last-child {
-            margin-bottom: 0;
-        }
-        
-        ul {
-            margin: 20px 0;
-            padding-left: 40px;
-        }
-        
-        li {
-            margin-bottom: 10px;
-        }
-        
-        .highlight-box {
-            background-color: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 5px;
-        }
-        
-        .equation {
-            text-align: center;
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            font-family: 'Cambria', serif;
-        }
-        
-        @media (max-width: 768px) {
-            .image-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>CS 180 Project 3: Image Mosaicing</h1>
-        <div class="author">Jessie</div>
     </div>
 
     <h2>Part B: Feature Matching and Autostitching</h2>
@@ -1020,6 +801,83 @@ H = [<br>
         <strong>What I Learned:</strong> The most valuable insight from this project was understanding how computer vision algorithms compose into robust end-to-end systems. Each component - Harris detection, ANMS, descriptor matching, RANSAC - has limitations individually, but their integration creates a remarkably reliable pipeline. RANSAC's ability to find correct geometry despite 25-40% outliers was particularly striking, demonstrating the power of robust estimation. The automatic approach not only matches manual quality but often exceeds it by using more correspondences and avoiding selection bias. Success in practical computer vision comes from thoughtful algorithm integration rather than relying on any single technique.
     </div>
 
+    <h2>Implementation Details</h2>
+    
+    <h3>Technical Approach</h3>
+    <p>The implementation follows a systematic pipeline: point correspondence selection, homography computation via SVD, inverse warping with two interpolation methods, and alpha blending with linear masks. All components were implemented from scratch without using high-level computer vision libraries.</p>
+
+    <h3>Challenges and Solutions</h3>
+    <ul>
+        <li><strong>Large Image Handling:</strong> Implemented efficient coordinate transformation using meshgrid operations</li>
+        <li><strong>Numerical Stability:</strong> Used SVD for robust homography computation with overdetermined systems</li>
+        <li><strong>Seam Reduction:</strong> Developed alpha masks with linear falloff for smooth blending</li>
+        <li><strong>Memory Management:</strong> Optimized warping algorithms to handle high-resolution images</li>
+    </ul>
+
+    <h2>Conclusion</h2>
+    <p>This project successfully demonstrates the complete image mosaicing pipeline from image capture to final composite. The implementation achieves sub-pixel accuracy in homography computation and produces visually seamless mosaics through careful warping and blending. The comparison between interpolation methods shows the trade-offs between computational efficiency and visual quality, with bilinear interpolation providing superior results for most applications.</p>
+
+    <p>The techniques developed here form the foundation for more advanced computer vision applications, including panoramic photography, augmented reality, and 3D reconstruction from multiple views.</p>
 
 </body>
-</html>
+</html>Advantages:</strong></p>
+            <ul style="text-align: left; margin: 10px 0;">
+                <li>Computationally efficient - simple rounding operations</li>
+                <li>Preserves exact pixel values (no interpolation artifacts)</li>
+                <li>Fastest execution time</li>
+            </ul>
+            
+            <p><strong>Disadvantages:</strong></p>
+            <ul style="text-align: left; margin: 10px 0;">
+                <li>Produces blocky, aliased edges</li>
+                <li>Visible pixel staircasing in diagonal lines</li>
+                <li>Poor quality in high-frequency regions</li>
+            </ul>
+        </div>
+        
+        <div class="method">
+            <h4>Bilinear Interpolation</h4>
+            <p>For each back-projected coordinate (sx, sy), identify four neighboring pixels: (x₀, y₀), (x₁, y₀), (x₀, y₁), (x₁, y₁) where x₀ = ⌊sx⌋, x₁ = x₀+1, y₀ = ⌊sy⌋, y₁ = y₀+1. Compute fractional weights wx = sx - x₀ and wy = sy - y₀, then form the weighted sum:</p>
+            
+            <div class="equation" style="font-size: 0.9em; margin: 15px 0;">
+                I = (1-wx)(1-wy)I₀₀ + wx(1-wy)I₁₀ + (1-wx)wy I₀₁ + wxwy I₁₁
+            </div>
+            
+            <p>This is computed channel-wise for color images. Alpha is set to 1 only where all four neighbors are valid. Results are clipped to [0,255] and cast back to the input dtype.</p>
+            
+            <p><strong>Advantages:</strong></p>
+            <ul style="text-align: left; margin: 10px 0;">
+                <li>Smooth, visually pleasing results</li>
+                <li>Reduces aliasing and jagged edges</li>
+                <li>Better quality for most applications</li>
+            </ul>
+            
+            <p><strong>Disadvantages:</strong></p>
+            <ul style="text-align: left; margin: 10px 0;">
+                <li>Increased computational cost</li>
+                <li>Slight blurring compared to nearest neighbor</li>
+                <li>More complex implementation</li>
+            </ul>
+        </div>
+    </div>
+
+    <h4>Warping Results Comparison</h4>
+    <p>Both interpolation methods were applied to warp images using the computed homographies. The results demonstrate clear quality differences:</p>
+
+    <div class="method-comparison">
+        <div class="method">
+            <div class="image-pair">
+                <img src="2.2.png" alt="Nearest Neighbor Warped">
+                <div class="image-caption">Nearest Neighbor Result<br>Output: 13529×11109 pixels<br>Offset: (-10747, -3341)</div>
+            </div>
+        </div>
+        
+        <div class="method">
+            <div class="image-pair">
+                <img src="3.2.png" alt="Bilinear Warped">
+                <div class="image-caption">Bilinear Interpolation Result<br>Output: 13529×11109 pixels<br>Offset: (-10747, -3341)</div>
+            </div>
+        </div>
+    </div>
+
+    <p><strong>
