@@ -41,11 +41,6 @@
             margin-bottom: 5px;
         }
         
-        .date {
-            color: #95a5a6;
-            font-style: italic;
-        }
-        
         .intro {
             font-size: 1.1em;
             margin-bottom: 40px;
@@ -120,14 +115,6 @@
             font-family: 'Cambria', serif;
         }
         
-        .system-equation {
-            background-color: #f8f9fa;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 5px;
-            border-left: 4px solid #e74c3c;
-        }
-        
         .method-comparison {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -139,25 +126,6 @@
             padding: 20px;
             background-color: #f8f9fa;
             border-radius: 5px;
-        }
-        
-        .mosaic-results {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin: 30px 0;
-        }
-        
-        .mosaic-set {
-            text-align: center;
-        }
-        
-        .mosaic-set img {
-            max-width: 100%;
-            height: auto;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-bottom: 10px;
         }
         
         .procedure {
@@ -194,23 +162,6 @@
             font-weight: bold;
         }
         
-        .results-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        
-        .results-table th, .results-table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-        
-        .results-table th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-        
         ul {
             margin: 20px 0;
             padding-left: 40px;
@@ -229,7 +180,7 @@
         }
         
         @media (max-width: 768px) {
-            .method-comparison, .mosaic-results {
+            .method-comparison {
                 grid-template-columns: 1fr;
             }
             
@@ -469,7 +420,62 @@ H = [<br>
             <h4>Nearest Neighbor Interpolation</h4>
             <p>For each back-projected coordinate (sx, sy), round to the nearest integer pixel location (⌊sx⌉, ⌊sy⌉). If this location lies within the source image bounds, copy that pixel value and set alpha=1; otherwise leave the pixel as zero with alpha=0.</p>
             
-            <p><strong>Quality Analysis:</strong> Upon close inspection, the nearest neighbor result exhibits noticeable pixelation and stair-stepping artifacts, particularly visible along diagonal edges and in regions with high-frequency detail. The bilinear interpolation produces significantly smoother transitions and more natural-looking results, though at the cost of approximately 2-3x longer computation time. For most practical applications, the quality improvement of bilinear interpolation justifies the modest performance penalty.</p>
+            <p><strong>Advantages:</strong></p>
+            <ul style="text-align: left; margin: 10px 0;">
+                <li>Computationally efficient - simple rounding operations</li>
+                <li>Preserves exact pixel values (no interpolation artifacts)</li>
+                <li>Fastest execution time</li>
+            </ul>
+            
+            <p><strong>Disadvantages:</strong></p>
+            <ul style="text-align: left; margin: 10px 0;">
+                <li>Produces blocky, aliased edges</li>
+                <li>Visible pixel staircasing in diagonal lines</li>
+                <li>Poor quality in high-frequency regions</li>
+            </ul>
+        </div>
+        
+        <div class="method">
+            <h4>Bilinear Interpolation</h4>
+            <p>For each back-projected coordinate (sx, sy), identify four neighboring pixels: (x₀, y₀), (x₁, y₀), (x₀, y₁), (x₁, y₁) where x₀ = ⌊sx⌋, x₁ = x₀+1, y₀ = ⌊sy⌋, y₁ = y₀+1. Compute fractional weights wx = sx - x₀ and wy = sy - y₀, then form the weighted sum:</p>
+            
+            <div class="equation" style="font-size: 0.9em; margin: 15px 0;">
+                I = (1-wx)(1-wy)I₀₀ + wx(1-wy)I₁₀ + (1-wx)wy I₀₁ + wxwy I₁₁
+            </div>
+            
+            <p>This is computed channel-wise for color images. Alpha is set to 1 only where all four neighbors are valid. Results are clipped to [0,255] and cast back to the input dtype.</p>
+            
+            <p><strong>Advantages:</strong></p>
+            <ul style="text-align: left; margin: 10px 0;">
+                <li>Smooth, visually pleasing results</li>
+                <li>Reduces aliasing and jagged edges</li>
+                <li>Better quality for most applications</li>
+            </ul>
+            
+            <p><strong>Disadvantages:</strong></p>
+            <ul style="text-align: left; margin: 10px 0;">
+                <li>Increased computational cost</li>
+                <li>Slight blurring compared to nearest neighbor</li>
+                <li>More complex implementation</li>
+            </ul>
+        </div>
+    </div>
+
+    <h4>Warping Results Comparison</h4>
+    <p>Both interpolation methods were applied to warp images using the computed homographies. The results demonstrate clear quality differences:</p>
+
+    <div class="image-grid">
+        <div class="image-pair">
+            <img src="2.2.png" alt="Nearest Neighbor Warped">
+            <div class="image-caption">Nearest Neighbor Result<br>Output: 13529×11109 pixels<br>Offset: (-10747, -3341)</div>
+        </div>
+        <div class="image-pair">
+            <img src="3.2.png" alt="Bilinear Warped">
+            <div class="image-caption">Bilinear Interpolation Result<br>Output: 13529×11109 pixels<br>Offset: (-10747, -3341)</div>
+        </div>
+    </div>
+
+    <p><strong>Quality Analysis:</strong> Upon close inspection, the nearest neighbor result exhibits noticeable pixelation and stair-stepping artifacts, particularly visible along diagonal edges and in regions with high-frequency detail. The bilinear interpolation produces significantly smoother transitions and more natural-looking results, though at the cost of approximately 2-3x longer computation time. For most practical applications, the quality improvement of bilinear interpolation justifies the modest performance penalty.</p>
 
     <h4>Image Rectification</h4>
     <p>Rectification is a specific application of image warping where the goal is to transform a perspective view of a planar surface into a frontal-parallel (orthogonal) view. To validate the warping implementation, rectification was performed on images containing planar objects with known rectangular geometry. By manually selecting four corners of a planar surface and defining corresponding points in a rectangular target coordinate system, we can compute a rectifying homography that "undoes" the perspective distortion.</p>
@@ -488,34 +494,26 @@ H = [<br>
     <p>Two images were selected for rectification demonstrating the technique on different planar surfaces:</p>
 
     <h4>Rectification Example 1</h4>
-    <div class="method-comparison">
-        <div class="method">
-            <div class="image-pair">
-                <img src="4.5.png" alt="Rectified Example 1 Bilinear">
-                <div class="image-caption">Bilinear</div>
-            </div>
+    <div class="image-grid">
+        <div class="image-pair">
+            <img src="4.5.png" alt="Rectified Example 1 Bilinear">
+            <div class="image-caption">Bilinear</div>
         </div>
-        <div class="method">
-            <div class="image-pair">
-                <img src="4.5.png" alt="Rectified Example 1 Nearest Neighbor">
-                <div class="image-caption">Nearest Neighbor</div>
-            </div>
+        <div class="image-pair">
+            <img src="4.5.png" alt="Rectified Example 1 Nearest Neighbor">
+            <div class="image-caption">Nearest Neighbor</div>
         </div>
     </div>
 
     <h4>Rectification Example 2</h4>
-    <div class="method-comparison">
-        <div class="method">
-            <div class="image-pair">
-                <img src="4.4.png" alt="Rectified Example 2 Bilinear">
-                <div class="image-caption">Bilinear</div>
-            </div>
+    <div class="image-grid">
+        <div class="image-pair">
+            <img src="4.4.png" alt="Rectified Example 2 Bilinear">
+            <div class="image-caption">Bilinear</div>
         </div>
-        <div class="method">
-            <div class="image-pair">
-                <img src="4.4.png" alt="Rectified Example 2 Nearest Neighbor">
-                <div class="image-caption">Nearest Neighbor</div>
-            </div>
+        <div class="image-pair">
+            <img src="4.4.png" alt="Rectified Example 2 Nearest Neighbor">
+            <div class="image-caption">Nearest Neighbor</div>
         </div>
     </div>
 
@@ -820,64 +818,4 @@ H = [<br>
     <p>The techniques developed here form the foundation for more advanced computer vision applications, including panoramic photography, augmented reality, and 3D reconstruction from multiple views.</p>
 
 </body>
-</html>Advantages:</strong></p>
-            <ul style="text-align: left; margin: 10px 0;">
-                <li>Computationally efficient - simple rounding operations</li>
-                <li>Preserves exact pixel values (no interpolation artifacts)</li>
-                <li>Fastest execution time</li>
-            </ul>
-            
-            <p><strong>Disadvantages:</strong></p>
-            <ul style="text-align: left; margin: 10px 0;">
-                <li>Produces blocky, aliased edges</li>
-                <li>Visible pixel staircasing in diagonal lines</li>
-                <li>Poor quality in high-frequency regions</li>
-            </ul>
-        </div>
-        
-        <div class="method">
-            <h4>Bilinear Interpolation</h4>
-            <p>For each back-projected coordinate (sx, sy), identify four neighboring pixels: (x₀, y₀), (x₁, y₀), (x₀, y₁), (x₁, y₁) where x₀ = ⌊sx⌋, x₁ = x₀+1, y₀ = ⌊sy⌋, y₁ = y₀+1. Compute fractional weights wx = sx - x₀ and wy = sy - y₀, then form the weighted sum:</p>
-            
-            <div class="equation" style="font-size: 0.9em; margin: 15px 0;">
-                I = (1-wx)(1-wy)I₀₀ + wx(1-wy)I₁₀ + (1-wx)wy I₀₁ + wxwy I₁₁
-            </div>
-            
-            <p>This is computed channel-wise for color images. Alpha is set to 1 only where all four neighbors are valid. Results are clipped to [0,255] and cast back to the input dtype.</p>
-            
-            <p><strong>Advantages:</strong></p>
-            <ul style="text-align: left; margin: 10px 0;">
-                <li>Smooth, visually pleasing results</li>
-                <li>Reduces aliasing and jagged edges</li>
-                <li>Better quality for most applications</li>
-            </ul>
-            
-            <p><strong>Disadvantages:</strong></p>
-            <ul style="text-align: left; margin: 10px 0;">
-                <li>Increased computational cost</li>
-                <li>Slight blurring compared to nearest neighbor</li>
-                <li>More complex implementation</li>
-            </ul>
-        </div>
-    </div>
-
-    <h4>Warping Results Comparison</h4>
-    <p>Both interpolation methods were applied to warp images using the computed homographies. The results demonstrate clear quality differences:</p>
-
-    <div class="method-comparison">
-        <div class="method">
-            <div class="image-pair">
-                <img src="2.2.png" alt="Nearest Neighbor Warped">
-                <div class="image-caption">Nearest Neighbor Result<br>Output: 13529×11109 pixels<br>Offset: (-10747, -3341)</div>
-            </div>
-        </div>
-        
-        <div class="method">
-            <div class="image-pair">
-                <img src="3.2.png" alt="Bilinear Warped">
-                <div class="image-caption">Bilinear Interpolation Result<br>Output: 13529×11109 pixels<br>Offset: (-10747, -3341)</div>
-            </div>
-        </div>
-    </div>
-
-    <p><strong>
+</html>
