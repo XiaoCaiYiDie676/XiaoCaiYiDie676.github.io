@@ -635,13 +635,6 @@ H = [<br>
     </div>
     <p>where M is the structure tensor matrix [S<sub>xx</sub>, S<sub>xy</sub>; S<sub>xy</sub>, S<sub>yy</sub>] and κ = 0.04. I normalize R to [0,1] and apply 3×3 non-maximum suppression, keeping only pixels above a quantile threshold (default 0.995) that are local maxima. This initial detection typically yields thousands of corner candidates.</p>
 
-    <h4>Harris Corner Results</h4>
-    <p>The Harris detector produces thousands of corner points across the image, often clustered in regions with rich texture. Below shows the raw Harris corners overlaid on the original image before any spatial filtering:</p>
-
-    <div class="image-pair" style="margin: 30px 0;">
-        <img src="harris_anms_comparison.png" alt="Harris corners before ANMS">
-        <div class="image-caption">Harris Corner Detection Results<br>Dense corner detections before ANMS - note the clustering in textured regions</div>
-    </div>
 
     <h4>Adaptive Non-Maximal Suppression (ANMS)</h4>
     <p>The dense Harris corners are not ideal for matching because they cluster heavily in high-texture areas, providing poor spatial coverage. ANMS addresses this by selecting a well-distributed subset based on suppression radii. For each candidate corner i with Harris response r<sub>i</sub>, I compute its suppression radius:</p>
@@ -650,7 +643,7 @@ H = [<br>
         r<sub>i</sub>* = min<sub>j</sub> ||x<sub>i</sub> - x<sub>j</sub>||
     </div>
     
-    <p>where the minimum is taken over all corners j satisfying r<sub>j</sub> > c·r<sub>i</sub> with robustness constant c = 0.9. If no such stronger corners exist nearby, I fall back to using the nearest neighbor distance. I then select the 1000 corners with the largest suppression radii, ensuring both spatial distribution and strong corner responses.</p>
+    <p>where the minimum is taken over all corners j satisfying r<sub>j</sub> > c·r<sub>i</sub> with robustness constant c = 0.9. If no such stronger corners exist nearby, I fall back to using the nearest neighbor distance. I then select the 500 corners with the largest suppression radii, ensuring both spatial distribution and strong corner responses.</p>
 
     <h4>ANMS Results</h4>
     <p>ANMS successfully transforms the dense, clustered detections into a spatially balanced feature set. Below shows the well-distributed corners after ANMS filtering:</p>
