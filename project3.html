@@ -741,7 +741,7 @@ H = [<br>
     <p>For blending, I use feathered alpha averaging where alpha values smoothly fall off toward image edges. This creates seamless transitions in overlapping regions. I accumulate weighted intensities (canvas += image × alpha) and normalize by the accumulated weights to produce the final blended mosaic. Empty black borders are automatically cropped by detecting the bounding box of non-zero content.</p>
 
     <h4>Comparison: Manual vs Automatic Stitching</h4>
-    <p>Below I compare mosaics created manually (Part A with hand-selected correspondences) versus automatically (Part B with RANSAC). The same image pairs are used for both methods. The warping techniques differ slightly because I updated the code, but you can see that the middle area now has much less blurriness. This improvement comes from the automatic alignment being far more robust than my shaky manual selections.</p>
+    <p>Below I compare mosaics created manually (Part A with hand-selected correspondences) versus automatically (Part B with RANSAC). The same image pairs are used for both methods. The warping techniques differ slightly because I updated the code, but you can see that the middle area now has much less blurriness. This improvement comes from the automatic alignment being.</p>
 
     <div style="margin: 40px 0;">
         <h4>Mosaic Set 1</h4>
