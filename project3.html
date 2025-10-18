@@ -653,44 +653,36 @@ H = [<br>
         <div class="image-caption">ANMS Selected Corners<br>1000 spatially distributed features selected from thousands of detections</div>
     </div>
 
-    <h3>B.2: Feature Descriptor Extraction</h3>
-    
-    <h4>Implementation</h4>
-    <p>For each keypoint selected by ANMS, I extract an 8×8 feature descriptor that captures the local appearance around that point. The extraction process begins by creating a blurred base image: I convert to grayscale in [0,1] and apply a Gaussian blur with σ = 2.0 using a separable filter for efficiency.</p>
+   <h3>B.2: Feature Descriptor Extraction</h3>
 
-    <p>Around each keypoint (x, y), I extract a 40×40 pixel window using bilinear interpolation to handle sub-pixel coordinates accurately. This larger window is crucial - it provides the "blurred" descriptor mentioned in the paper that offers robustness to small localization errors. I discard keypoints within 20 pixels of the image border to ensure the full 40×40 window stays in-bounds.</p>
+<h4>Implementation</h4>
+<p>For each keypoint selected by ANMS, I extract an 8×8 feature descriptor that captures the local appearance around that point. The extraction process uses the grayscale image already converted to [0,1] range earlier in the pipeline.</p>
 
-    <p>Next, I downsample the 40×40 window to an 8×8 descriptor grid. I achieve this by dividing the window into 5×5 non-overlapping cells and computing the average intensity within each cell (average pooling). This gives me a compact 8×8 patch representation.</p>
+<p>Around each keypoint (y, x), I extract a 40×40 pixel window centered at the integer coordinates. This larger window is crucial - it provides the "nice big blurred descriptor" mentioned in the paper that offers robustness to small localization errors. I discard keypoints within 20 pixels of the image border to ensure the full 40×40 window stays in-bounds.</p>
 
-    <p>The final critical step is bias/gain normalization for photometric invariance. I flatten the 8×8 patch into a 64-dimensional vector, then normalize it to have zero mean and unit standard deviation by subtracting the mean and dividing by the standard deviation (with a small epsilon for numerical stability). This normalization makes the descriptor invariant to linear brightness and contrast changes.</p>
+<p>Next, I systematically sample the 40×40 window to create the 8×8 descriptor. Using a sampling spacing of 5 pixels (40/8 = 5), I extract pixel values at regular intervals across the patch. This sampling strategy effectively performs low-frequency sampling as described in the paper.</p>
 
-    <h4>Feature Descriptor Visualization</h4>
-    <p>Below shows several extracted 8×8 feature descriptors sampled from different keypoint locations:</p>
+<p>The final critical step is bias/gain normalization for photometric invariance. I normalize the 8×8 patch to have zero mean and unit standard deviation by subtracting the mean and dividing by the standard deviation (with a small epsilon for numerical stability). This normalization makes the descriptor invariant to affine intensity changes.</p>
 
-    <div class="image-pair" style="margin: 30px 0;">
-        <img src="feature_descriptors_grid.png" alt="Feature descriptors">
-        <div class="image-caption">Sample 8×8 Feature Descriptors<br>Each patch is extracted from a 40×40 window and bias/gain normalized<br>Descriptors are zero-mean, unit-variance for photometric invariance</div>
-    </div>
+<h4>Feature Descriptor Visualization</h4>
+<p>Below shows several extracted 8×8 feature descriptors sampled from different keypoint locations:</p>
 
-    <h3>B.3: Feature Matching</h3>
-    
-    <h4>Matching Implementation</h4>
-    <p>I match the B.2 descriptors by computing all pairwise squared Euclidean distances between the zero-mean/unit-std 64-dimensional vectors from the two images. For computational efficiency, I use the expanded distance formula:</p>
-    
-    <div class="equation">
-        ||a - b||² = ||a||² + ||b||² - 2a<sup>T</sup>b
-    </div>
-    
-    <p>This allows me to precompute the squared norms and perform fast matrix multiplication for the cross terms, avoiding explicit loops over descriptor pairs.</p>
+<div class="image-pair" style="margin: 30px 0;">
+    <img src="feature_descriptors_grid.png" alt="Feature descriptors">
+    <div class="image-caption">Sample 8×8 Feature Descriptors<br>Each patch is sampled from a 40×40 window and bias/gain normalized<br>Descriptors are zero-mean, unit-variance for photometric invariance</div>
+</div>
 
-    <p>For each descriptor in image 1, I find the nearest (d₁) and second-nearest (d₂) neighbors in image 2 using a fast partial sort. I then apply Lowe's ratio test d₁/d₂ < τ with a tunable threshold (default 0.8, following Figure 6b in the paper). This threshold filters out ambiguous matches where multiple similar features exist. I add a small epsilon to guard against small denominators in the ratio computation.</p>
+<h3>B.3: Feature Matching</h3>
 
-    <p>I optionally enforce mutual (cross-check) consistency by requiring that image 2's nearest neighbor of the chosen match also points back to the same image 1 feature. This bidirectional verification significantly reduces false matches.</p>
+<h4>Matching Implementation</h4>
+<p>I match the B.2 descriptors by computing all pairwise Euclidean distances between the zero-mean/unit-std 64-dimensional vectors from the two images. For each descriptor in image 1, I compute distances to all descriptors in image 2 using direct Euclidean distance computation.</p>
 
-    <p>For robustness, I trim both descriptor and keypoint lists to their common minimum length to keep indices properly aligned. The accepted matches are saved to a B3_matches.csv file with columns (i₁, x₁, y₁, i₂, x₂, y₂, dist, ratio) recording the feature indices, coordinates, distance, and ratio value for each correspondence. For visualization, I stack the two images side-by-side horizontally, plot the matched keypoints as circles, and draw connecting lines between correspondences (capped at 300 matches for visual clarity).</p>
+<p>For each descriptor in image 1, I find the nearest (d₁) and second-nearest (d₂) neighbors in image 2 using argsort. I then apply Lowe's ratio test d₁/d₂ < τ with threshold τ = 0.8, following Figure 6b in the paper. This threshold filters out ambiguous matches where multiple similar features exist.</p>
 
-    <h4>Feature Matching Results</h4>
-    <p>After applying Lowe's ratio test, I obtain high-confidence feature correspondences. Below shows the matched features with connecting lines for three different image pairs:</p>
+<p>I include a small epsilon check to guard against division by zero in the ratio computation. The implementation returns all matches that pass the ratio test along with their corresponding distance ratios for analysis.</p>
+
+<h4>Feature Matching Results</h4>
+<p>After applying Lowe's ratio test with threshold 0.8, I obtain high-confidence feature correspondences. The matching visualization shows both images side-by-side with red circles indicating the feature locations and green lines connecting the matched features between images.</p>
 
     <div class="image-grid">
         <div class="image-pair">
