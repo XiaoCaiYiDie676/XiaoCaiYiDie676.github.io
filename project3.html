@@ -689,5 +689,337 @@ H = [<br>
     <p>This project successfully demonstrates the complete image mosaicing pipeline from image capture to final composite. The implementation achieves sub-pixel accuracy in homography computation and produces visually seamless mosaics through careful warping and blending. The comparison between interpolation methods shows the trade-offs between computational efficiency and visual quality, with bilinear interpolation providing superior results for most applications.</p>
 
     <p>The techniques developed here form the foundation for more advanced computer vision applications, including panoramic photography, augmented reality, and 3D reconstruction from multiple views.</p>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS 180 Project 3: Image Mosaicing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #fefefe;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.2em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+        
+        .author {
+            font-size: 1.2em;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        
+        h2 {
+            font-size: 1.8em;
+            color: #2c3e50;
+            margin: 50px 0 20px 0;
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 10px;
+        }
+        
+        h3 {
+            font-size: 1.4em;
+            color: #34495e;
+            margin: 30px 0 15px 0;
+        }
+        
+        h4 {
+            font-size: 1.2em;
+            color: #34495e;
+            margin: 25px 0 15px 0;
+        }
+        
+        p {
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+        
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .image-pair {
+            text-align: center;
+        }
+        
+        .image-pair img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .image-caption {
+            font-style: italic;
+            color: #7f8c8d;
+            margin-top: 8px;
+            font-size: 0.9em;
+        }
+        
+        .procedure {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 5px;
+            margin: 30px 0;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .procedure-step {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+        
+        .procedure-step:last-child {
+            margin-bottom: 0;
+        }
+        
+        ul {
+            margin: 20px 0;
+            padding-left: 40px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+        }
+        
+        .highlight-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .equation {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            font-family: 'Cambria', serif;
+        }
+        
+        @media (max-width: 768px) {
+            .image-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>CS 180 Project 3: Image Mosaicing</h1>
+        <div class="author">Jessie</div>
+    </div>
+
+    <h2>Part B: Feature Matching and Autostitching</h2>
+    
+    <div class="intro">
+        <p>Part B extends the manual mosaicing pipeline with automatic feature detection and matching. Instead of manually selecting correspondence points, this section implements Harris corner detection, Adaptive Non-Maximal Suppression (ANMS), feature descriptor extraction, feature matching with Lowe's ratio test, and RANSAC-based robust homography estimation. The result is a fully automated image stitching system that produces panoramas comparable in quality to manual methods.</p>
+    </div>
+
+    <h3>B.1: Harris Corner Detection and Adaptive Non-Maximal Suppression</h3>
+    
+    <h4>Harris Corner Detection</h4>
+    <p>I begin by detecting interest points using a single-scale Harris corner detector. Starting from a grayscale image normalized to [0,1], I compute image gradients I<sub>x</sub> and I<sub>y</sub> using Sobel operators. From these gradients, I form the second-moment matrix components I<sub>x</sub>², I<sub>y</sub>², and I<sub>x</sub>I<sub>y</sub>. Each of these components is then smoothed with a Gaussian filter (σ = 1.5) to produce S<sub>xx</sub>, S<sub>yy</sub>, and S<sub>xy</sub>.</p>
+
+    <p>The Harris corner response is computed as:</p>
+    <div class="equation">
+        R = det(M) - κ(trace(M))²
+    </div>
+    <p>where M is the structure tensor matrix [S<sub>xx</sub>, S<sub>xy</sub>; S<sub>xy</sub>, S<sub>yy</sub>] and κ = 0.04. I normalize R to [0,1] and apply 3×3 non-maximum suppression, keeping only pixels above a quantile threshold (default 0.995) that are local maxima. This initial detection typically yields thousands of corner candidates.</p>
+
+    <h4>Harris Corner Results</h4>
+    <p>The Harris detector produces thousands of corner points across the image, often clustered in regions with rich texture. Below shows the raw Harris corners overlaid on the original image before any spatial filtering:</p>
+
+    <div class="image-pair" style="margin: 30px 0;">
+        <img src="harris_anms_comparison.png" alt="Harris corners before ANMS">
+        <div class="image-caption">Harris Corner Detection Results<br>Dense corner detections before ANMS - note the clustering in textured regions</div>
+    </div>
+
+    <h4>Adaptive Non-Maximal Suppression (ANMS)</h4>
+    <p>The dense Harris corners are not ideal for matching because they cluster heavily in high-texture areas, providing poor spatial coverage. ANMS addresses this by selecting a well-distributed subset based on suppression radii. For each candidate corner i with Harris response r<sub>i</sub>, I compute its suppression radius:</p>
+    
+    <div class="equation">
+        r<sub>i</sub>* = min<sub>j</sub> ||x<sub>i</sub> - x<sub>j</sub>||
+    </div>
+    
+    <p>where the minimum is taken over all corners j satisfying r<sub>j</sub> > c·r<sub>i</sub> with robustness constant c = 0.9. If no such stronger corners exist nearby, I fall back to using the nearest neighbor distance. I then select the 1000 corners with the largest suppression radii, ensuring both spatial distribution and strong corner responses.</p>
+
+    <h4>ANMS Results</h4>
+    <p>ANMS successfully transforms the dense, clustered detections into a spatially balanced feature set. Below shows the well-distributed corners after ANMS filtering:</p>
+
+    <div class="image-pair" style="margin: 30px 0;">
+        <img src="harris_anms_comparison.png" alt="ANMS selected corners">
+        <div class="image-caption">ANMS Selected Corners<br>1000 spatially distributed features selected from thousands of detections</div>
+    </div>
+
+    <h3>B.2: Feature Descriptor Extraction</h3>
+    
+    <h4>Implementation</h4>
+    <p>For each keypoint selected by ANMS, I extract an 8×8 feature descriptor that captures the local appearance around that point. The extraction process begins by creating a blurred base image: I convert to grayscale in [0,1] and apply a Gaussian blur with σ = 2.0 using a separable filter for efficiency.</p>
+
+    <p>Around each keypoint (x, y), I extract a 40×40 pixel window using bilinear interpolation to handle sub-pixel coordinates accurately. This larger window is crucial - it provides the "blurred" descriptor mentioned in the paper that offers robustness to small localization errors. I discard keypoints within 20 pixels of the image border to ensure the full 40×40 window stays in-bounds.</p>
+
+    <p>Next, I downsample the 40×40 window to an 8×8 descriptor grid. I achieve this by dividing the window into 5×5 non-overlapping cells and computing the average intensity within each cell (average pooling). This gives me a compact 8×8 patch representation.</p>
+
+    <p>The final critical step is bias/gain normalization for photometric invariance. I flatten the 8×8 patch into a 64-dimensional vector, then normalize it to have zero mean and unit standard deviation by subtracting the mean and dividing by the standard deviation (with a small epsilon for numerical stability). This normalization makes the descriptor invariant to linear brightness and contrast changes.</p>
+
+    <h4>Feature Descriptor Visualization</h4>
+    <p>Below shows several extracted 8×8 feature descriptors sampled from different keypoint locations:</p>
+
+    <div class="image-pair" style="margin: 30px 0;">
+        <img src="feature_descriptors_grid.png" alt="Feature descriptors">
+        <div class="image-caption">Sample 8×8 Feature Descriptors<br>Each patch is extracted from a 40×40 window and bias/gain normalized<br>Descriptors are zero-mean, unit-variance for photometric invariance</div>
+    </div>
+
+    <h3>B.3: Feature Matching</h3>
+    
+    <h4>Matching Implementation</h4>
+    <p>I match the B.2 descriptors by computing all pairwise squared Euclidean distances between the zero-mean/unit-std 64-dimensional vectors from the two images. For computational efficiency, I use the expanded distance formula:</p>
+    
+    <div class="equation">
+        ||a - b||² = ||a||² + ||b||² - 2a<sup>T</sup>b
+    </div>
+    
+    <p>This allows me to precompute the squared norms and perform fast matrix multiplication for the cross terms, avoiding explicit loops over descriptor pairs.</p>
+
+    <p>For each descriptor in image 1, I find the nearest (d₁) and second-nearest (d₂) neighbors in image 2 using a fast partial sort. I then apply Lowe's ratio test d₁/d₂ < τ with a tunable threshold (default 0.8, following Figure 6b in the paper). This threshold filters out ambiguous matches where multiple similar features exist. I add a small epsilon to guard against small denominators in the ratio computation.</p>
+
+    <p>I optionally enforce mutual (cross-check) consistency by requiring that image 2's nearest neighbor of the chosen match also points back to the same image 1 feature. This bidirectional verification significantly reduces false matches.</p>
+
+    <p>For robustness, I trim both descriptor and keypoint lists to their common minimum length to keep indices properly aligned. The accepted matches are saved to a B3_matches.csv file with columns (i₁, x₁, y₁, i₂, x₂, y₂, dist, ratio) recording the feature indices, coordinates, distance, and ratio value for each correspondence. For visualization, I stack the two images side-by-side horizontally, plot the matched keypoints as circles, and draw connecting lines between correspondences (capped at 300 matches for visual clarity).</p>
+
+    <h4>Feature Matching Results</h4>
+    <p>After applying Lowe's ratio test, I obtain high-confidence feature correspondences. Below shows the matched features with connecting lines for three different image pairs:</p>
+
+    <div class="image-grid">
+        <div class="image-pair">
+            <img src="features_matches.png" alt="Feature matches - first pair">
+            <div class="image-caption">Feature Matching: First Image Pair<br>Matched keypoints after ratio test (threshold = 0.8)</div>
+        </div>
+        <div class="image-pair">
+            <img src="mosaic2_matches.png" alt="Feature matches - second pair">
+            <div class="image-caption">Feature Matching: Second Image Pair<br>Correspondences established through descriptor similarity</div>
+        </div>
+        <div class="image-pair">
+            <img src="mosaic3_matches.png" alt="Feature matches - third pair">
+            <div class="image-caption">Feature Matching: Third Image Pair<br>High-confidence matches with connecting lines</div>
+        </div>
+    </div>
+
+    <h3>B.4: RANSAC for Robust Homography and Automatic Mosaicing</h3>
+    
+    <h4>4-Point RANSAC Implementation</h4>
+    <p>While feature matching produces many correspondences, outliers are inevitable due to repetitive patterns, occlusions, and descriptor ambiguity. I implement 4-point RANSAC from scratch to robustly estimate the homography despite these outliers.</p>
+
+    <p>In each RANSAC iteration, I randomly sample 4 correspondence pairs from the B.3 matches (P<sub>i</sub> ↔ Q<sub>i</sub>). Four points is the minimum required to solve for a homography. I skip degenerate configurations where the 4 points form quads with near-zero area. For each valid sample, I fit a homography H using the Direct Linear Transform (DLT) method. I tried both normalized DLT and the Ah=b formulation, keeping whichever performs best.</p>
+
+    <p>To score each candidate homography, I compute the reprojection error for all N correspondences. By default, I use the symmetric transfer error:</p>
+    
+    <div class="equation">
+        error = ||HP - Q||² + ||H<sup>-1</sup>Q - P||²
+    </div>
+    
+    <p>This bidirectional error is more robust than one-sided reprojection. A correspondence is classified as an inlier if its error is below 3 pixels. I track the homography with the largest inlier count across iterations (default 3000 iterations maximum).</p>
+
+    <p>The implementation exposes several tunable parameters: --iters (iteration count), --thresh (inlier threshold in pixels), --method (normalized DLT or Ah=b), and --one_sided (use ||HP - Q|| only instead of symmetric error). These allow testing different configurations.</p>
+
+    <p>Once RANSAC converges to the best model, I re-estimate H using all inlier points rather than just the 4-point subset. This least-squares refinement on the consensus set produces a more accurate final homography. The implementation logs inlier statistics and saves per-pair visualizations overlaying green (inlier) vs. red (outlier) matches.</p>
+
+    <h4>Automatic Mosaicing</h4>
+    <p>Using the RANSAC-estimated homography, I produce automatic panoramic mosaics by adapting the warping and blending pipeline from Part A. For mosaicing, I choose one image as the reference and set H<sub>ref</sub> = I (identity transform). Each non-reference image gets its own homography H that aligns it to this reference frame.</p>
+
+    <p>I compute the global canvas bounds by warping all image corners through their respective homographies, then applying translation offsets to ensure all content fits. Each image is inverse-warped to the canvas using bilinear interpolation by default (nearest-neighbor interpolation is available as an option via --nn flag).</p>
+
+    <p>For blending, I use feathered alpha averaging where alpha values smoothly fall off toward image edges. This creates seamless transitions in overlapping regions. I accumulate weighted intensities (canvas += image × alpha) and normalize by the accumulated weights to produce the final blended mosaic. Empty black borders are automatically cropped by detecting the bounding box of non-zero content.</p>
+
+    <h4>Comparison: Manual vs Automatic Stitching</h4>
+    <p>Below I compare mosaics created manually (Part A with hand-selected correspondences) versus automatically (Part B with RANSAC). The same image pairs are used for both methods. The warping techniques differ slightly because I updated the code, but you can see that the middle area now has much less blurriness. This improvement comes from the automatic alignment being far more robust than my shaky manual selections.</p>
+
+    <div style="margin: 40px 0;">
+        <h4>Mosaic Set 1</h4>
+        <div class="image-grid">
+            <div class="image-pair">
+                <img src="apart_mosaic1.png" alt="Manual mosaic 1">
+                <div class="image-caption">Manual Stitching (Part A)<br>Hand-selected correspondence points</div>
+            </div>
+            <div class="image-pair">
+                <img src="mosaic1.png" alt="Automatic mosaic 1">
+                <div class="image-caption">Automatic Stitching (Part B)<br>RANSAC with detected features<br>Notice the reduced blurriness in overlapping regions</div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin: 40px 0;">
+        <h4>Mosaic Set 2</h4>
+        <div class="image-grid">
+            <div class="image-pair">
+                <img src="apart_mosaic2.png" alt="Manual mosaic 2">
+                <div class="image-caption">Manual Stitching (Part A)<br>Hand-selected correspondence points</div>
+            </div>
+            <div class="image-pair">
+                <img src="mosaic2.png" alt="Automatic mosaic 2">
+                <div class="image-caption">Automatic Stitching (Part B)<br>60-100 RANSAC inliers for accurate alignment<br>Sharper blending from better homography estimation</div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin: 40px 0;">
+        <h4>Mosaic Set 3</h4>
+        <div class="image-grid">
+            <div class="image-pair">
+                <img src="apart_mosaic3.png" alt="Manual mosaic 3">
+                <div class="image-caption">Manual Stitching (Part A)<br>Hand-selected correspondence points</div>
+            </div>
+            <div class="image-pair">
+                <img src="Image_20251017192113.jpg" alt="Automatic mosaic 3">
+                <div class="image-caption">Automatic Stitching (Part B)<br>Robust and consistent results<br>Improved alignment quality visible in seam regions</div>
+            </div>
+        </div>
+    </div>
+
+    <h4>Analysis</h4>
+    <p>The automatic pipeline demonstrates clear advantages over manual stitching:</p>
+    <ul>
+        <li><strong>Accuracy:</strong> Using 60-100 inlier points produces more accurate homographies than manual selection of just a few points. The geometric relationship is better captured, especially at image boundaries.</li>
+        <li><strong>Speed:</strong> Automatic processing completes in seconds versus several minutes of manual point selection and verification.</li>
+        <li><strong>Consistency:</strong> The automated approach eliminates human variability - running the pipeline multiple times yields identical results.</li>
+        <li><strong>Robustness:</strong> RANSAC handles 20-40% outlier rates effectively, reliably recovering correct geometry across diverse scenes, lighting conditions, and texture patterns.</li>
+        <li><strong>Scalability:</strong> The automatic pipeline easily extends to processing many image pairs without proportional increases in human effort.</li>
+    </ul>
+
+    <div class="highlight-box">
+        <strong>What I Learned:</strong> The most valuable insight from this project was understanding how computer vision algorithms compose into robust end-to-end systems. Each component - Harris detection, ANMS, descriptor matching, RANSAC - has limitations individually, but their integration creates a remarkably reliable pipeline. RANSAC's ability to find correct geometry despite 25-40% outliers was particularly striking, demonstrating the power of robust estimation. The automatic approach not only matches manual quality but often exceeds it by using more correspondences and avoiding selection bias. Success in practical computer vision comes from thoughtful algorithm integration rather than relying on any single technique.
+    </div>
+
+
 </body>
 </html>
