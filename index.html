@@ -3,688 +3,623 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My CS180 Portfolio</title>
+    <title>CS 180 Project 5: Fun With Diffusion Models!</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
         body {
-            background-color: #f8f9fa;
-            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             line-height: 1.6;
-            padding: 20px;
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
-        }
-        
-        header {
-            text-align: center;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, #3a5f8a, #144a74);
-            color: white;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-        }
-        
-        h1 {
-            font-size: 2.8rem;
-            margin-bottom: 15px;
-        }
-        
-        .intro {
-            max-width: 800px;
-            margin: 0 auto 40px;
-            text-align: center;
-            font-size: 1.2rem;
-            line-height: 1.8;
-            color: #555;
-        }
-        
-        .project-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            max-width: 600px;
-            margin: 0 auto 30px;
-            transition: transform 0.3s;
-        }
-        
-        .project-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .project-img {
-            height: 200px;
-            background: linear-gradient(135deg, #4fc3a1, #3da58a);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 4rem;
-        }
-        
-        .project-content {
-            padding: 25px;
-            text-align: center;
-        }
-        
-        .project-content h2 {
-            color: #144a74;
-            margin-bottom: 15px;
-        }
-        
-        .project-content p {
-            color: #666;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-        
-        .project-link {
-            display: inline-block;
-            padding: 12px 24px;
-            background: #4fc3a1;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            transition: all 0.3s;
-            font-weight: 500;
-        }
-        
-        .project-link:hover {
-            background: #3da58a;
-            transform: translateY(-2px);
-        }
-        
-        footer {
-            text-align: center;
-            padding: 30px;
-            margin-top: 60px;
-            color: #666;
-            font-size: 0.95rem;
-            border-top: 1px solid #ddd;
+            padding: 20px;
+            background: #fff;
+            color: #333;
         }
 
-        /* Project 0 Styles */
-        .project0-section {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            margin: 30px 0;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        }
-        
-        .project0-section h2 {
-            color: #144a74;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #4fc3a1;
-        }
-        
-        .note {
-            background: #f0f8ff;
-            padding: 18px;
-            border-left: 4px solid #3a5f8a;
-            margin-bottom: 25px;
-            border-radius: 6px;
-            line-height: 1.7;
-        }
-        
-        .image-grid {
-            display: grid;
-            gap: 30px;
-            margin: 30px 0;
-        }
-        
-        .grid-2 {
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        }
-        
-        .figure {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .figure img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        .figcaption {
+        h1 {
             text-align: center;
-            font-size: 0.95rem;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            margin-top: 40px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        h3 {
+            margin-top: 30px;
             color: #555;
-            line-height: 1.5;
+        }
+
+        h4 {
+            margin-top: 20px;
+            color: #666;
+        }
+
+        p {
+            margin: 15px 0;
+        }
+
+        .author {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .images {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .images img {
+            margin: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .images-small img {
+            margin: 10px;
+            border: 1px solid #ddd;
             max-width: 500px;
         }
-        
-        .gif-container {
-            text-align: center;
-            margin: 30px 0;
-        }
-        
-        .gif-container img {
-            max-width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
-        }
-        
-        .reflection {
-            background: #f0f8ff;
-            padding: 24px;
-            border-radius: 10px;
-            margin-top: 30px;
-            border-left: 4px solid #3a5f8a;
-        }
-        
-        .reflection h4 {
-            color: #144a74;
-            margin-bottom: 16px;
-            font-size: 1.2rem;
-        }
-        
-        .back-btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background: #144a74;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            transition: all 0.3s;
-            font-weight: 500;
-            margin-top: 20px;
-        }
-        
-        .back-btn:hover {
-            background: #0d3a5c;
-            transform: translateY(-2px);
-        }
 
-        /* Project 1 Styles */
-        .project1-content {
-            font-family: Georgia, 'Times New Roman', Times, serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #fff;
-            padding: 20px;
-        }
-
-        .project1-content h1 {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 8px;
-            text-align: left;
-            color: #000;
-        }
-
-        .project1-content .author {
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 30px;
+        .caption {
             font-style: italic;
+            color: #666;
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
         }
 
-        .project1-content h2 {
-            font-size: 22px;
-            font-weight: bold;
-            margin-top: 35px;
-            margin-bottom: 15px;
-            color: #000;
-        }
-
-        .project1-content h3 {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 25px;
-            margin-bottom: 12px;
-            color: #000;
-        }
-
-        .project1-content p {
-            margin-bottom: 16px;
-            text-align: justify;
-            font-size: 16px;
-        }
-
-        .project1-content .code {
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
             font-family: 'Courier New', monospace;
-            background-color: #f5f5f5;
-            padding: 2px 4px;
-            font-size: 14px;
         }
 
-        .project1-content .code-block {
-            font-family: 'Courier New', monospace;
-            background-color: #f5f5f5;
+        .equation {
+            background: #f9f9f9;
             padding: 15px;
-            margin: 20px 0;
-            border-left: 3px solid #ccc;
-            font-size: 14px;
+            margin: 15px 0;
+            border-left: 3px solid #666;
+            font-family: 'Courier New', monospace;
             overflow-x: auto;
         }
 
-        .project1-content .formula {
-            font-family: 'Times New Roman', serif;
-            font-style: italic;
-            text-align: center;
+        .note {
+            background: #f0f7ff;
+            padding: 15px;
             margin: 15px 0;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border-left: 3px solid #ddd;
+            border-left: 3px solid #0066cc;
         }
 
-        .project1-content .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 30px 0;
         }
 
-        .project1-content .result-item {
-            text-align: center;
-            font-size: 14px;
+        ul {
+            margin: 10px 0;
+            padding-left: 30px;
         }
 
-        .project1-content .result-item img {
-            width: 100%;
-            max-width: 200px;
-            height: auto;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .project1-content .displacement {
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            margin-top: 5px;
-            color: #666;
-        }
-
-        .project1-content ul {
-            margin-left: 30px;
-            margin-bottom: 16px;
-        }
-
-        .project1-content li {
-            margin-bottom: 8px;
-        }
-        
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.2rem;
-            }
-            
-            .project-img {
-                height: 150px;
-                font-size: 3rem;
-            }
-            
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Hidden classes */
-        .hidden {
-            display: none !important;
+        li {
+            margin: 5px 0;
         }
     </style>
 </head>
 <body>
-    <header id="main-header">
-        <h1>Welcome to My CS180 Portfolio!</h1>
-        <p>Showcasing my projects from the CS180 course</p>
-    </header>
 
-    <div id="main-intro" class="intro">
-        <p>This portfolio contains the projects I've completed as part of my CS180 coursework. Each project demonstrates different programming concepts and techniques I've learned throughout the course.</p>
-        <p>Browse through my projects below to see my work in computer vision and image processing.</p>
-    </div>
+<h1>CS 180 Project 5: Fun With Diffusion Models!</h1>
+<p class="author">Fall 2025 • UC Berkeley</p>
 
-    <div id="project0-card" class="project-card">
-        <div class="project-img">
-            <i class="fas fa-camera"></i>
-        </div>
-        <div class="project-content">
-            <h2>Project 0: Becoming Friends with Your Camera</h2>
-            <p>Exploring camera fundamentals through perspective, depth of field, and the famous dolly zoom effect.</p>
-            <a href="#project0" class="project-link" onclick="showProject0(); return false;">View Project 0</a>
-        </div>
-    </div>
+<p>In this project, we explore the power of diffusion models for image generation. We will implement diffusion sampling loops and use them for various tasks such as image denoising, inpainting, and creating optical illusions like visual anagrams and hybrid images.</p>
 
-    <div id="project1-card" class="project-card">
-        <div class="project-img" style="background: linear-gradient(135deg, #8a3f5f, #742144);">
-            <i class="fas fa-image"></i>
-        </div>
-        <div class="project-content">
-            <h2>Project 1: Prokudin-Gorskii Colorization</h2>
-            <p>Reconstructing color photographs from historical Russian Empire glass plates using multi-scale image alignment algorithms.</p>
-            <a href="#project1" class="project-link" onclick="showProject1(); return false;">View Project 1</a>
-        </div>
-    </div>
+<h1>Part A: The Power of Diffusion Models!</h1>
 
-    <div id="project2-card" class="project-card">
-        <div class="project-img" style="background: linear-gradient(135deg, #5f8a3f, #447421);">
-            <i class="fas fa-chart-line"></i>
-        </div>
-        <div class="project-content">
-            <h2>Project 2: Fun with Filters and Frequencies</h2>
-            <p>Exploring image filtering, edge detection, and frequency domain analysis through convolution and Fourier transforms.</p>
-            <a href="project2.html" class="project-link">View Project 2</a>
-        </div>
-    </div>
+<h2>Part 0: Setup</h2>
 
-    <div id="project3-card" class="project-card">
-        <div class="project-img" style="background: linear-gradient(135deg, #ff6b6b, #ffa07a);">
-            <i class="fas fa-chart-line"></i>
-        </div>
-        <div class="project-content">
-            <h2>Project 3: Stitching Photo Mosiacs</h2>
-            <p>Exploring image warping, mosaic</p>
-            <a href="project3.html" class="project-link">View Project 3</a>
-        </div>
-    </div>
+<p>For this project, we are using the <strong>DeepFloyd IF</strong> diffusion model, a two-stage text-to-image model trained by Stability AI. The first stage produces images of size 64×64 and the second stage upsamples to 256×256. We focus on the first stage for this project.</p>
 
+<p>DeepFloyd was trained as a text-to-image model, which takes text prompts as input and outputs images aligned with the text. However, a raw text string cannot be directly used as the model's input — we first need to convert it into a high-dimensional vector (of 4096 dimensions) that the model can understand, known as prompt embeddings.</p>
 
-    <footer id="main-footer">
-        <p>CS180/280A Portfolio - Yichen Cai © 2025</p>
-        <p>Hosted on GitHub Pages</p>
-    </footer>
+<div class="note">
+    <strong>Random Seed:</strong> <code>100</code> — This seed is used throughout all parts of this project for reproducibility.
+</div>
 
-    <!-- Project 0 Content (initially hidden) -->
-    <div id="project0" class="hidden">
-        <div class="project0-section">
-            <h2>Part 1 — Selfie Series</h2>
-            <p class="note">
-                Distances are measured from a <em>reference position</em> that achieves optimal framing. Values below this baseline represent moving toward the subject, while those above indicate increasing distance. To preserve consistent facial proportions when moving backward, I correspondingly adjusted the zoom to compensate.
-            </p>
+<h3>Text Prompts and Generated Images</h3>
 
-            <div class="image-grid grid-2">
-                <div class="figure">
-                    <img src="Image_20250902220431.jpg" >
-                    <div class="figcaption">(−1 feet) Closer than baseline; stronger perspective exaggeration.</div>
-                </div>
-                <div class="figure">
-                    <img src="Image_20250902220437.jpg" >
-                    <div class="figcaption">(0 feet) Baseline position and framing.</div>
-                </div>
-            </div>
+<p>I generated embeddings for several interesting text prompts. Since we will be creating visual anagrams and hybrid images later, I included prompt pairs that would work well together for those tasks. Below are 3 of my chosen prompts, each shown with two different <code>num_inference_steps</code> values to demonstrate how the number of denoising steps affects image quality.</p>
 
-            <div class="reflection">
-                <h4>Reflection — Part 1</h4>
-                <p>
-                    As I moved closer to the subject, their facial features became increasingly pronounced, with the nose appearing substantially larger in relation to the ears. Conversely, increasing the distance resulted in more compressed and balanced facial proportions. This phenomenon occurs because reduced shooting distance amplifies the relative distance variance between facial features—the nose being significantly closer to the lens than the ears. Consequently, the nose and mouth command greater visual prominence, naturally drawing the viewer's attention.
-                </p>
-            </div>
-        </div>
+<h4>Prompt 1: "an oil painting of people around a campfire"</h4>
+<div class="images">
+    <img src="images/part 0 image 1 small.png" alt="20 steps">
+    <img src="images/part 0 image 1 big.png" alt="50 steps">
+</div>
+<p class="caption">Left: num_inference_steps = 20 | Right: num_inference_steps = 50</p>
 
-        <div class="project0-section">
-            <h2>Part 2 — Perspective Comparison</h2>
-            <div class="image-grid grid-2">
-                <div class="figure">
-                    <img src="Image_20250902215133.jpg" alt="Zoomed-in scene shot from far away">
-                    <div class="figcaption">Zoomed from far — scene appears flatter/compressed; parallels remain nearly parallel.</div>
-                </div>
-                <div class="figure">
-                    <img src="Image_20250902215140.jpg" alt="Wide-angle view from near">
-                    <div class="figcaption">No zoom — stronger convergence; foreground/background depth is emphasized.</div>
-                </div>
-            </div>
+<p><strong>Reflection:</strong> This prompt successfully generates images that capture the warm, painterly quality of an oil painting. Both versions show figures gathered around a glowing fire. With 20 steps, the image has a rougher, more impressionistic quality with less defined figures. With 50 steps, the details become sharper — the flames are more distinct, the figures have clearer silhouettes, and the overall composition feels more polished. The warm color palette (oranges, reds, browns) is consistent with the campfire theme.</p>
 
-            <div class="reflection">
-                <h4>Reflection — Part 2</h4>
-                <p>
-                   As observed in the portrait study, adjusting camera position fundamentally alters perspective, while focal length primarily affects image composition without changing spatial relationships. At closer proximity, foreground elements appear dramatically enlarged compared to background features, creating exaggerated depth perception. By increasing shooting distance, the relative scale differences diminish, producing a more balanced, compressed visual representation that appears flatter and more uniform in perspective.
-                </p>
-            </div>
-        </div>
+<h4>Prompt 2: "an oil painting of an old man"</h4>
+<div class="images">
+    <img src="images/part 0 image 2 small.png" alt="20 steps">
+    <img src="images/part 0 image 2 big.png" alt="50 steps">
+</div>
+<p class="caption">Left: num_inference_steps = 20 | Right: num_inference_steps = 50</p>
 
-        <div class="project0-section">
-            <h2>Part 3 — The Dolly Zoom</h2>
-            <div class="gif-container">
-                <img src="a4ximv.gif" alt="Animated dolly zoom GIF">
-            </div>
-            
-            <div class="reflection">
-                <h4>Reflection — Part 3</h4>
-                <p>
-                    The dolly zoom generates a powerful psychological disorientation by dramatically shifting background perspective while keeping the subject's size constant. This cinematic technique creates a surreal, vertigo-inducing experience where the environment appears to expand or contract around a stable focal point. It's remarkable how this seemingly straightforward combination of camera movement and focal adjustment can so profoundly manipulate our perception of three-dimensional space within a two-dimensional medium.
-                </p>
-            </div>
-        </div>
-        
-        <div style="text-align: center; margin: 40px 0;">
-            <a href="#" class="back-btn" onclick="hideProject(); return false;">Back to Portfolio</a>
-        </div>
-    </div>
+<p><strong>Reflection:</strong> This prompt was chosen to pair with the campfire prompt for visual anagrams. The model generates portraits with clear elderly features — wrinkles, aged skin tones, and thoughtful expressions. The "oil painting" style is evident in the brushstroke-like textures. With more inference steps, facial features become more refined and realistic. The model successfully captures the essence of classical portrait painting.</p>
 
-    <!-- Project 1 Content (initially hidden) -->
-    <div id="project1" class="hidden">
-        <div class="project1-content">
-            <h1>Images of the Russian Empire: Colorizing the Prokudin-Gorskii photo collection</h1>
-            <div class="author">Yichen Cai</div>
+<h4>Prompt 3: "a lithograph of a skull"</h4>
+<div class="images">
+    <img src="images/part 0 image 3 small.png" alt="20 steps">
+    <img src="images/part 0 image 3 big.png" alt="50 steps">
+</div>
+<p class="caption">Left: num_inference_steps = 20 | Right: num_inference_steps = 50</p>
 
-            <h2>Introduction</h2>
-            <p>This project reconstructs color photographs from Sergei Prokudin-Gorskii's digitized glass plates by splitting each plate into three grayscale channels (B, G, R) and aligning R and B to G using only x-y translations. We score candidate shifts with multiple similarity metrics including L2/SSD, NCC, and a combined approach, reporting the chosen displacement vectors. To handle large, high-resolution scans efficiently, we accelerate alignment with a coarse-to-fine image pyramid. The result is a single, well-aligned RGB image with minimal visual artifacts.</p>
+<p><strong>Reflection:</strong> This prompt was chosen for creating hybrid images. The lithograph style produces high-contrast, detailed images with fine line work characteristic of the printmaking technique. The skull anatomy is accurately represented in both versions. With 50 steps, the bone structure details, shading, and overall clarity improve significantly. The monochromatic nature of lithographs is well-preserved.</p>
 
-            <h2>Background</h2>
-            <p>Sergei Mikhailovich Prokudin-Gorskii pioneered early color photography by capturing three sequential exposures of the same scene through blue, green, and red filters on a single glass plate. Decades later, the Library of Congress digitized these B-G-R plates, revealing remarkable views of the late Russian Empire but also exposing practical issues: the three channel images are vertically stacked, often misaligned, and can differ in intensity or contrast. Reconstructing a faithful color photo therefore requires separating the plate into its three grayscale channels and precisely aligning the red and blue images to the green reference using a translation model.</p>
+<div class="note">
+    <strong>Key Observations on num_inference_steps:</strong>
+    <ul>
+        <li>Higher step counts (50) produce finer details and sharper edges</li>
+        <li>Lower step counts (20) result in softer, more abstract interpretations</li>
+        <li>Both accurately capture the essence of the text prompts</li>
+        <li>The style descriptors ("oil painting", "lithograph") are consistently applied</li>
+        <li>Trade-off: more steps = better quality but slower generation</li>
+    </ul>
+</div>
 
-            <h2>Methodology</h2>
-            
-            <h3>Channel Extraction and Preprocessing</h3>
-            <p>I split each glass plate into three grayscale images B, G, R (top→bottom) and treat alignment as integer translations of R and B onto the reference channel G. Before alignment, images undergo border cropping (15% by default) to remove artifacts that negatively impact correlation scores.</p>
+<hr>
 
-    
-            <h3>Similarity Metrics</h3>
-            <p>I implement three alignment metrics, all designed to be maximized:</p>
+<h2>Part 1: Sampling Loops</h2>
 
-            <div class="formula">
-                <strong>Normalized Cross Correlation (NCC):</strong><br>
-                S<sub>NCC</sub>(A,B) = (A·B) / (||A||<sub>2</sub> ||B||<sub>2</sub>)
-            </div>
+<p>In this part, we implement our own sampling loops that use the pretrained DeepFloyd denoisers to produce high-quality images, and then modify these loops for tasks such as inpainting and creating optical illusions.</p>
 
-            <div class="formula">
-                <strong>Sum of Squared Differences (SSD):</strong><br>
-                S<sub>SSD</sub>(A,B) = -Σ(A(y,x) - B(y,x))<sup>2</sup>
-            </div>
+<h3>1.1 Implementing the Forward Process</h3>
 
-            <div class="formula">
-                <strong>Combined Score:</strong><br>
-                S<sub>combined</sub> = 0.8 × S<sub>NCC</sub> + 0.2 × S<sub>SSD_normalized</sub>
-            </div>
+<p>A key part of diffusion is the <strong>forward process</strong>, which takes a clean image and adds noise to it. The forward process is defined by:</p>
 
-            <p>By default, I use the combined metric, which leverages NCC's robustness to brightness variations while incorporating SSD's precision for fine alignment.</p>
+<div class="equation">
+x_t = √(ᾱ_t) · x_0 + √(1 - ᾱ_t) · ε, where ε ~ N(0, 1)
+</div>
 
-            <h3>Multi-Scale Pyramid Alignment</h3>
-            <p>To handle large .tif scans efficiently, I build a Gaussian pyramid by repeatedly downscaling by 0.5 (anti-aliased) for a specified number of levels. Starting from the coarsest level, I run exhaustive search with adaptive search ranges and propagate shifts upward by doubling the previous estimate to seed the next level. The final level returns pixel-accurate integer shifts.</p>
+<p>Given a clean image x₀, we get a noisy image x_t at timestep t by sampling from a Gaussian with mean √(ᾱ_t)·x₀ and variance (1 - ᾱ_t). Note that the forward process is not just adding noise — we also scale the image. The <code>alphas_cumprod</code> variable contains the ᾱ_t values for all t ∈ [0, 999]. For small t, ᾱ_t is close to 1 (clean image), and for large t, ᾱ_t is close to 0 (mostly noise).</p>
 
-            <h3>Warping and Composition</h3>
-            <p>I apply the estimated shifts using numpy's <span class="code">roll</span> function to obtain G', R', B', then stack into RGB as [R', G', B']. The result is clipped to [0,1] and saved as 8-bit format to ensure compatibility.</p>
+<p>Below shows the Berkeley Campanile test image at different noise levels t = [250, 500, 750]:</p>
 
-            <h2>Implementation Details</h2>
-            
-            <h3>Key Design Choices</h3>
-            <ul>
-                <li><strong>Green as Reference:</strong> Unlike traditional approaches that align to blue, I align both red and blue channels to green, which often contains the most structural detail in natural scenes.</li>
-                <li><strong>Adaptive Search Ranges:</strong> Larger search windows at coarse pyramid levels (up to ±20 pixels) with refinement to ±2-4 pixels at fine levels.</li>
-                <li><strong>Border Cropping:</strong> Remove 15% of border pixels before scoring to eliminate alignment artifacts from digitization boundaries.</li>
-                <li><strong>Multiple Metrics:</strong> Support for NCC, SSD, and combined scoring with easy parameter adjustment.</li>
-            </ul>
+<div class="images">
+    <img src="images/part 1.1 original.png" alt="Original">
+    <img src="images/part 1.1 t=250.png" alt="t=250">
+    <img src="images/part 1.1 t=500.png" alt="t=500">
+    <img src="images/part 1.1 t=750.png" alt="t=750">
+</div>
+<p class="caption">Original Campanile | t=250 | t=500 | t=750</p>
 
-            <h3>Algorithm Complexity</h3>
-            <p>The pyramid approach reduces computational complexity from O(n²r²) for exhaustive search to O(n² log r) where n is image dimension and r is search range, enabling efficient processing of high-resolution scans.</p>
+<p>As timestep t increases, more noise is added and the original image becomes progressively harder to discern. At t=250, the Campanile is still clearly visible. At t=500, the structure is faintly visible but significantly degraded. At t=750, the image is almost entirely noise with only hints of the original structure.</p>
 
-            <h2>Results</h2>
-            <p>The algorithm successfully processes both .jpg and .tif formats. Usage: <span class="code">python main.py image_name.tif</span></p>
+<hr>
 
-            <h3>Algorithm Results on Provided Dataset</h3>
-            
-            <div class="results-grid">
-                <div class="result-item">
-                    <img src="cathedral_combined_aligned.jpg" alt="Cathedral result">
-                    <div class="displacement">cathedral.tif<br>B:(-5, -2), R:(7, 1)</div>
-                </div>
-                <div class="result-item">
-                    <img src="monastery_combined_aligned.jpg" alt="monastery result">
-                    <div class="displacement">monastery.tif<br>B:(3, -2), R:(6, 1)</div>
-                </div>
-                <div class="result-item">
-                    <img src="tobolsk_combined_aligned.jpg" alt="tobolsk result">
-                    <div class="displacement">tobolsk.tif<br>B:(-3, -3), R:(4, 1)</div>
-                </div>
-                <div class="result-item">
-                    <img src="emir_combined_aligned.jpg" alt="emir result">
-                    <div class="displacement">emir.tif<br>B:(-49, -24), R:(57, 17)</div>
-                </div>
-                <div class="result-item">
-                    <img src="harvesters_combined_aligned.jpg" alt="harvester result">
-                    <div class="displacement">harvesters.tif<br>B:(-59, -17), R:(65, -3)</div>
-                </div>
-                <div class="result-item">
-                    <img src="icon_combined_aligned.jpg" alt="icon result">
-                    <div class="displacement">icon.tif<br>B:(-41, -17), R:(48, 5)</div>
-                </div>
-                <div class="result-item">
-                    <img src="melons_combined_aligned.jpg" alt="Melons result">
-                    <div class="displacement">melons.tif<br>B:(-82, -11), R:(96, 3)</div>
-                </div>
-                <div class="result-item">
-                    <img src="church_combined_aligned.jpg" alt="Church result">
-                    <div class="displacement">church.tif<br>B:(-25, -4), R:(33, -8)</div>
-                </div>
-                <div class="result-item">
-                    <img src="lugano_combined_aligned.jpg" alt="Lugano result">
-                    <div class="displacement">lugano.tif<br>B:(-41, 16), R:(52, -13)</div>
-                </div>
-                <div class="result-item">
-                    <img src="lastochikino_combined_aligned.jpg" alt="Lastochikino result">
-                    <div class="displacement">lastochikino.tif<br>B:(3, 2), R:(78, -7)</div>
-                </div>
-                <div class="result-item">
-                    <img src="siren_combined_aligned.jpg" alt="Siren result">
-                    <div class="displacement">siren.tif<br>B:(-49, 6), R:(47, -19)</div>
-                </div>
-                <div class="result-item">
-                    <img src="self_portrait_combined_aligned.jpg" alt="Self portrait result">
-                    <div class="displacement">self_portrait.tif<br>B:(-79, -29), R:(98, 8)</div>
-                </div>
-                <div class="result-item">
-                    <img src="three_generations_combined_aligned.jpg" alt="Three generations result">
-                    <div class="displacement">three_generations.tif<br>B:(-53, -14), R:(59, -3)</div>
-                </div>
-                <div class="result-item">
-                    <img src="italil_combined_aligned.jpg" alt="Italil result">
-                    <div class="displacement">italil.tif<br>B:(-38, -21), R:(39, 15)</div>
-                </div>
-            </div>
+<h3>1.2 Classical Denoising</h3>
 
-            <h3>Additional Examples from Prokudin-Gorskii Collection</h3>
-            
-            <div class="results-grid">
-                <div class="result-item">
-                    <img src="master-pnp-prok-00000-00095u_combined_aligned.jpg" alt="Additional example 1">
-                    <div class="displacement"><br>B:(-32, 0), R:(103, -3)</div>
-                </div>
-                <div class="result-item">
-                    <img src="master-pnp-prok-00100-00110u_combined_aligned.jpg" alt="Additional example 2">
-                    <div class="displacement"><br>B:(-26, -10), R:(44, 1)</div>
-                </div>
-                <div class="result-item">
-                    <img src="master-pnp-prok-00100-00115u_combined_aligned.jpg" alt="Additional example 3">
-                    <div class="displacement"><br>B:(-52, -1), R:(62, -25)</div>
-                </div>
-            </div>
+<p>Let's try to denoise these noisy images using classical methods. We apply <strong>Gaussian blur filtering</strong> using <code>torchvision.transforms.functional.gaussian_blur</code> to try to remove the noise.</p>
 
-           
+<div class="images">
+    <img src="images/part 1.2 noisy t=250.png" alt="Noisy t=250">
+    <img src="images/part 1.2 noisy t=500.png" alt="Noisy t=500">
+    <img src="images/part 1.2 noisy t=750.png" alt="Noisy t=750">
+</div>
+<p class="caption">Noisy images at t=250, t=500, t=750</p>
 
-            <h2>Analysis and Discussion</h2>
-            
-            <h3>Performance Characteristics</h3>
-            <p>The multi-scale pyramid approach achieves sub-second processing for small images and 2-15 second processing for large .tif files, representing orders of magnitude improvement over exhaustive search. </p>
+<div class="images">
+    <img src="images/part 1.2 denoise t=250.png" alt="Blur t=250">
+    <img src="images/part 1.2 denoise t=500.png" alt="Blur t=500">
+    <img src="images/part 1.2 denoise t =750.png" alt="Blur t=750">
+</div>
+<p class="caption">Gaussian blur denoised at t=250, t=500, t=750</p>
 
-            <h3>Robustness Considerations</h3>
-            <p>The combined metric approach proves particularly effective for images with varying texture content. While NCC alone works well for high-texture regions, the SSD component helps maintain precision in smoother areas where correlation might be ambiguous.</p>
+<p><strong>Observation:</strong> As expected, classical Gaussian blur filtering fails to recover the original image. While it does reduce some high-frequency noise, it also blurs out all the important details. At t=250, the result is a blurry but somewhat recognizable tower. At t=500 and t=750, the results are essentially unrecognizable blobs. This demonstrates why we need learned denoisers like diffusion models — they can predict and remove noise while preserving (or even hallucinating) realistic image content.</p>
 
-            <h2>Challenges and Solutions</h2>
-            
-            <h3>Key Innovation: Green Channel as Reference</h3>
-            <p>A critical design decision was aligning both red and blue channels to the green channel, rather than the traditional approach of aligning green and red to blue. This choice proved superior for several reasons: (i) the green channel typically contains the most structural detail in natural scenes, providing better features for correlation matching, (ii) aligning two channels (red and blue) to one stable reference (green) is more robust than attempting to align blue and red together, which can compound alignment errors, and (iii) green often has intermediate brightness levels that work well with both NCC and SSD metrics.</p>
-            
-            <h3>Problems Encountered</h3>
-            <p>The primary challenge was ambiguous alignment in low-texture regions, particularly evident in images with large sky areas, water surfaces, or smooth architectural facades. In such regions, many candidate shifts produce nearly identical correlation scores, leading the algorithm to converge on local maxima rather than the global optimum. Additionally, border artifacts from the digitization process created false correlation peaks that misled the alignment.</p>
-            
-            <p>I addressed these issues through: (i) <strong>15% border cropping</strong> to eliminate digitization artifacts that poison correlation metrics, (ii) <strong>green channel reference strategy</strong> providing the most reliable structural content for alignment, (iii) <strong>combined NCC+SSD scoring</strong> to balance robustness against brightness variations with precision in texture matching, and (iv) <strong>coarse-to-fine pyramid search</strong> ensuring the fine-level optimization starts in the correct convergence basin. These modifications eliminated most gross alignment failures, though small residual errors (±1-2 pixels) may persist in extremely low-texture scenarios.</p>
+<hr>
 
-            <h2>Conclusion</h2>
-            <p>The implementation successfully reconstructs color photographs from Prokudin-Gorskii's historical glass plates using a robust multi-scale alignment approach. The combination of adaptive pyramid search, multiple similarity metrics, and careful preprocessing produces high-quality colorizations with minimal computational overhead. The green-channel reference strategy and combined NCC/SSD scoring prove particularly effective for handling the varied content and quality of digitized historical photographs.</p>
-        </div>
-        
-        <div style="text-align: center; margin: 40px 0;">
-            <a href="#" class="back-btn" onclick="hideProject(); return false;">Back to Portfolio</a>
-        </div>
-    </div>
+<h3>1.3 One-Step Denoising</h3>
 
-    <script>
-        function showProject0() {
-            // Hide main portfolio
-            document.getElementById('main-header').classList.add('hidden');
-            document.getElementById('main-intro').classList.add('hidden');
-            document.getElementById('project0-card').classList.add('hidden');
-            document.getElementById('project1-card').classList.add('hidden');
-            document.getElementById('project2-card').classList.add('hidden');
-            document.getElementById('project3-card').classList.add('hidden');
-            document.getElementById('main-footer').classList.add('hidden');
-            
-            // Show project 0
-            document.getElementById('project0').classList.remove('hidden');
-            document.getElementById('project1').classList.add('hidden');
-            
-            window.scrollTo(0, 0);
-        }
+<p>Now we use the pretrained diffusion model UNet (<code>stage_1.unet</code>) to denoise. This UNet has been trained on a very large dataset of (x₀, x_t) pairs. Given a noisy image and timestep t, it predicts the noise in the image. We can then remove this noise to recover an estimate of the original image.</p>
 
-        function showProject1() {
-            // Hide main portfolio
-            document.getElementById('main-header').classList.add('hidden');
-            document.getElementById('main-intro').classList.add('hidden');
-            document.getElementById('project0-card').classList.add('hidden');
-            document.getElementById('project1-card').classList.add('hidden');
-            document.getElementById('project2-card').classList.add('hidden');
-            document.getElementById('project3-card').classList.add('hidden');
-            document.getElementById('main-footer').classList.add('hidden');
-            
-            // Show project 1
-            document.getElementById('project1').classList.remove('hidden');
-            document.getElementById('project0').classList.add('hidden');
-            
-            window.scrollTo(0, 0);
-        }
-        
-        function hideProject() {
-            // Hide both projects
-            document.getElementById('project0').classList.add('hidden');
-            document.getElementById('project1').classList.add('hidden');
-            
-            // Show main portfolio
-            document.getElementById('main-header').classList.remove('hidden');
-            document.getElementById('main-intro').classList.remove('hidden');
-            document.getElementById('project0-card').classList.remove('hidden');
-            document.getElementById('project1-card').classList.remove('hidden');
-            document.getElementById('project2-card').classList.remove('hidden');
-            document.getElementById('main-footer').classList.remove('hidden');
-            document.getElementById('project2-card').classList.remove('hidden');
-            
-            window.scrollTo(0, 0);
-        }
-    </script>
+<p>Using the prompt embedding for "a high quality photo", we estimate and remove noise for t = [250, 500, 750]:</p>
+
+<div class="images">
+    <img src="images/part 1.3 t=250.png" alt="t=250">
+    <img src="images/part 1.3 t=500.png" alt="t=500">
+    <img src="images/part 1.3 t=750.png" alt="t=750">
+</div>
+<p class="caption">One-step denoised at t=250, t=500, t=750</p>
+
+<p><strong>Observation:</strong> The UNet-based denoising does a dramatically better job than Gaussian blur! At t=250, the denoised image is nearly identical to the original Campanile. At t=500, the structure is well-preserved though some details are slightly different. At t=750, there's more degradation — the model has to "hallucinate" more content, so the result looks like a plausible tower but with different details. This makes sense: with more noise, the problem becomes harder, and the model must be more creative in its reconstruction.</p>
+
+<hr>
+
+<h3>1.4 Iterative Denoising</h3>
+
+<p>While one-step denoising works reasonably well, diffusion models are designed to denoise <strong>iteratively</strong>. Instead of jumping directly from x_t to x_0, we take many small steps, gradually removing noise.</p>
+
+<p>We create <code>strided_timesteps</code>, a list starting at 990 with stride 30, eventually reaching 0. We use the DDPM formula:</p>
+
+<div class="equation">
+x_{t'} = (√ᾱ_{t'} · β_t / (1 - ᾱ_t)) · x_0 + (√α_t · (1 - ᾱ_{t'}) / (1 - ᾱ_t)) · x_t + v_σ
+</div>
+
+<p>Starting from i_start = 10, we iteratively denoise and compare with one-step denoising and Gaussian blur:</p>
+
+<div class="images">
+    <img src="images/part 1.4 iterative denoised.png" alt="Iterative">
+    <img src="images/part 1.4 one-step denoised.png" alt="One-step">
+    <img src="images/part 1.4 gaussian blur.png" alt="Blur">
+</div>
+<p class="caption">Iterative Denoising | One-Step Denoising | Gaussian Blur</p>
+
+<p><strong>Observation:</strong> Iterative denoising produces the best results by far. The image is sharp, detailed, and closely matches the original Campanile. One-step denoising produces a reasonable result but with some artifacts and slight differences from the original. Gaussian blur produces a blurry mess. This demonstrates the power of the iterative denoising approach — by taking many small steps, we can more accurately reverse the noise process.</p>
+
+<hr>
+
+<h3>1.5 Diffusion Model Sampling</h3>
+
+<p>We can use the <code>iterative_denoise</code> function to generate images from scratch by setting i_start = 0 and passing pure random noise as input. This effectively "denoises" pure noise into a coherent image.</p>
+
+<p>Using the prompt "a high quality photo", here are 5 sampled images:</p>
+
+<div class="images">
+    <img src="images/part 1.5 sample 1.png" alt="Sample 1">
+    <img src="images/part 1.5 sample 2.png" alt="Sample 2">
+    <img src="images/part 1.5 sample 3.png" alt="Sample 3">
+    <img src="images/part 1.5 sample 4.png" alt="Sample 4">
+    <img src="images/part 1.5 sample 5.png" alt="Sample 5">
+</div>
+<p class="caption">5 sampled images without CFG</p>
+
+<p><strong>Observation:</strong> The generated images are somewhat recognizable but lack clarity and coherence. Some look like abstract patterns, others have vague object-like structures. The quality is not spectacular because the prompt "a high quality photo" is quite generic and doesn't provide strong guidance. We will improve this significantly with Classifier-Free Guidance in the next section.</p>
+
+<hr>
+
+<h3>1.6 Classifier-Free Guidance (CFG)</h3>
+
+<p>To greatly improve image quality (at the expense of diversity), we use <strong>Classifier-Free Guidance</strong>. In CFG, we compute both a conditional noise estimate (ε_c, using our prompt) and an unconditional noise estimate (ε_u, using an empty prompt). Our final noise estimate is:</p>
+
+<div class="equation">
+ε = ε_u + γ(ε_c - ε_u)
+</div>
+
+<p>where γ controls the strength of CFG. For γ=0, we get unconditional generation. For γ=1, we get standard conditional generation. The magic happens when γ > 1 — we get much higher quality images. We use γ = 7.</p>
+
+<div class="images">
+    <img src="images/part 1.6 sample 1.png" alt="CFG 1">
+    <img src="images/part 1.6 sample 2.png" alt="CFG 2">
+    <img src="images/part 1.6 sample 3.png" alt="CFG 3">
+    <img src="images/part 1.6 sample 4.png" alt="CFG 4">
+    <img src="images/part 1.6 sample 5.png" alt="CFG 5">
+</div>
+<p class="caption">5 CFG samples with γ=7</p>
+
+<p><strong>Observation:</strong> The difference is dramatic! CFG samples are significantly higher quality than non-CFG samples. The images have clearer structures, more realistic details, and better overall coherence. Objects are recognizable and the compositions make sense. CFG effectively amplifies the conditional signal, making the model more strongly follow the prompt guidance.</p>
+
+<hr>
+
+<h3>1.7 Image-to-image Translation (SDEdit)</h3>
+
+<p>Using the iterative denoising with CFG, we can edit existing images. By adding noise to a real image and then denoising, the diffusion model "hallucinates" new content while preserving the overall structure. This follows the <strong>SDEdit</strong> algorithm.</p>
+
+<p>The amount of noise (controlled by i_start) determines how much the image changes. Lower i_start = more noise = more creative changes. Higher i_start = less noise = closer to original.</p>
+
+<h4>Campanile SDEdit</h4>
+<div class="images">
+    <img src="images/part 1.7 i_start = 1.png" alt="i_start=1">
+    <img src="images/part 1.7 i_start = 3.png" alt="i_start=3">
+    <img src="images/part 1.7 i_start=5.png" alt="i_start=5">
+    <img src="images/part 1.7 i_start = 7.png" alt="i_start=7">
+</div>
+<div class="images">
+    <img src="images/part 1.7 i_start = 10.png" alt="i_start=10">
+    <img src="images/part 1.7 i_start = 20.png" alt="i_start=20">
+    <img src="images/part 1.7 original.png" alt="Original">
+</div>
+<p class="caption">SDEdit on Campanile: i_start = 1, 3, 5, 7, 10, 20, Original</p>
+
+<p><strong>Observation:</strong> At i_start=1, the image is almost completely reimagined — it looks like a completely different building or structure. As i_start increases, the output progressively resembles the original Campanile more closely. At i_start=20, the image is nearly identical to the original with only minor variations. This demonstrates how we can control the degree of "creativity" in the edit.</p>
+
+<hr>
+
+<h3>1.7.1 Editing Hand-Drawn and Web Images</h3>
+
+<p>SDEdit works particularly well for projecting non-realistic images (sketches, paintings, web images) onto the natural image manifold. The diffusion model transforms rough sketches into photorealistic images.</p>
+
+<h4>Web Image</h4>
+<div class="images">
+    <img src="images/part 1.7.1 i_start = 1.png" alt="i_start=1">
+    <img src="images/part 1.7.1 i_start = 3.png" alt="i_start=3">
+    <img src="images/part 1.7.1 i_start = 5.png" alt="i_start=5">
+    <img src="images/part 1.7.1 i_start = 7.png" alt="i_start=7">
+</div>
+<div class="images">
+    <img src="images/part 1.7.1 i_start = 10.png" alt="i_start=10">
+    <img src="images/part 1.7.1 i_start = 20.png" alt="i_start=20">
+    <img src="images/part 1.7.1 original.png" alt="Original">
+</div>
+<p class="caption">Web image SDEdit: i_start = 1, 3, 5, 7, 10, 20, Original</p>
+
+<h4>Hand-Drawn Image</h4>
+<div class="images">
+    <img src="images/part 1.7.1 image 2 i_start = 1.png" alt="i_start=1">
+    <img src="images/part 1.7.1 image 2 i_start = 3.png" alt="i_start=3">
+    <img src="images/part 1.7.1 image 2 i_start = 5.png" alt="i_start=5">
+    <img src="images/part 1.7.1 image 2 i_start = 7.png" alt="i_start=7">
+</div>
+<div class="images">
+    <img src="images/part 1.7.1 image 2 i_start = 10.png" alt="i_start=10">
+    <img src="images/part 1.7.1 image 2 i_start = 20.png" alt="i_start=20">
+    <img src="images/part 1.7.1 image 2 original.png" alt="Original">
+</div>
+<p class="caption">Hand-drawn SDEdit: i_start = 1, 3, 5, 7, 10, 20, Original sketch</p>
+
+<p><strong>Observation:</strong> The hand-drawn sketch is transformed into increasingly realistic images. At low i_start values, the model generates completely new photorealistic images inspired by the sketch's composition. At higher i_start values, the output retains more of the sketch's specific structure while still adding realistic textures and details.</p>
+
+<hr>
+
+<h3>1.7.2 Inpainting</h3>
+
+<p>Using the same diffusion denoising loop, we can implement <strong>inpainting</strong> following the RePaint paper. Given an image x_orig and a binary mask m, we create a new image with the same content where m is 0, but new content where m is 1.</p>
+
+<p>At every denoising step, after obtaining x_t, we "force" x_t to have the same pixels as x_orig where the mask is 0:</p>
+
+<div class="equation">
+x_t ← m · x_t + (1 - m) · forward(x_orig, t)
+</div>
+
+<div class="images">
+    <img src="images/part 1.7.2 image.png" alt="Original">
+    <img src="images/part 1.7.2 mask.png" alt="Mask">
+    <img src="images/part 1.7.2 inpainted.png" alt="Inpainted">
+</div>
+<p class="caption">Original Image | Mask (white = region to fill) | Inpainted Result</p>
+
+<p><strong>Observation:</strong> The inpainting successfully fills in the masked region (the top of the Campanile) with plausible content that blends seamlessly with the surrounding image. The diffusion model hallucinates realistic architectural details that match the style of the building. The result looks natural and coherent.</p>
+
+<hr>
+
+<h3>1.7.3 Text-Conditional Image-to-image Translation</h3>
+
+<p>Now we combine SDEdit with text conditioning. Instead of using a generic prompt like "a high quality photo", we use a specific text prompt to guide the transformation. This allows us to control not just how much the image changes, but <em>what</em> it changes into.</p>
+
+<div class="images">
+    <img src="images/part 1.7.3 i_start = 1.png" alt="i_start=1">
+    <img src="images/part 1.7.3 i_start = 3.png" alt="i_start=3">
+    <img src="images/part 1.7.3 i_start = 5.png" alt="i_start=5">
+    <img src="images/part 1.7.3 i_start = 7.png" alt="i_start=7">
+</div>
+<div class="images">
+    <img src="images/part 1.7.3 i_start = 10.png" alt="i_start=10">
+    <img src="images/part 1.7.3 i_start = 20.png" alt="i_start=20">
+    <img src="images/part 1.7.3 original.png" alt="Original">
+</div>
+<p class="caption">Text-conditional SDEdit: i_start = 1, 3, 5, 7, 10, 20, Original</p>
+
+<p><strong>Observation:</strong> The text prompt guides the transformation while the noise level controls how much of the original structure is preserved. At low i_start values, the output strongly reflects the text prompt. At higher values, it's a blend of the original image and the prompt concept. This technique enables powerful semantic image editing.</p>
+
+<hr>
+
+<h3>1.8 Visual Anagrams</h3>
+
+<p>Now we implement <strong>Visual Anagrams</strong> to create optical illusions with diffusion models. We create an image that looks like one thing normally, but reveals another image when flipped upside down.</p>
+
+<p>The algorithm works by averaging noise estimates from two different prompts and orientations:</p>
+
+<div class="equation">
+ε₁ = CFG_UNet(x_t, t, prompt_1)
+ε₂ = flip(CFG_UNet(flip(x_t), t, prompt_2))
+ε = (ε₁ + ε₂) / 2
+</div>
+
+<p>By averaging noise estimates from the normal and flipped orientations, the diffusion model creates an image that satisfies both prompts simultaneously but from different viewpoints.</p>
+
+<h4>Visual Anagram 1: "An Oil Painting of an Old Man" ↔ "An Oil Painting of People around a Campfire"</h4>
+<div class="images">
+    <img src="images/part 1.8 normal.png" alt="Normal">
+    <img src="images/part 1.8 flipped.png" alt="Flipped">
+</div>
+<p class="caption">Normal view: Old Man | Flipped view: People around a Campfire</p>
+
+<h4>Visual Anagram 2</h4>
+<div class="images">
+    <img src="images/part 1.8 image 2 original" alt="Normal">
+    <img src="images/part 1.8 image 2 flipped.png" alt="Flipped">
+</div>
+<p class="caption">Normal view | Flipped view</p>
+
+<p><strong>Observation:</strong> The visual anagrams successfully create optical illusions! When viewed normally, the images show one interpretation. When flipped upside down, the same features rearrange to reveal a completely different scene. The algorithm works by averaging noise estimates from both orientations, forcing the diffusion model to find an image that satisfies both prompts simultaneously.</p>
+
+<hr>
+
+<h3>1.9 Hybrid Images</h3>
+
+<p>Finally, we implement <strong>Factorized Diffusion</strong> to create hybrid images, similar to Project 2. We create a composite noise estimate by combining low frequencies from one prompt with high frequencies from another:</p>
+
+<div class="equation">
+ε₁ = CFG_UNet(x_t, t, prompt_1)
+ε₂ = CFG_UNet(x_t, t, prompt_2)
+ε = lowpass(ε₁) + highpass(ε₂)
+</div>
+
+<p>We use a Gaussian blur with kernel size 33 and sigma 2 for the low-pass filter. The high-pass is computed as the original minus the low-pass.</p>
+
+<h4>Hybrid Image 1: "A Lithograph of a Skull" (low freq) + "A Lithograph of Waterfalls" (high freq)</h4>
+<div class="images">
+    <img src="images/part 1.9 image 1 a lithograph of a skull + a lithograph of waterfulls.png" alt="Hybrid">
+</div>
+<p class="caption">Hybrid Image: View close to see waterfall textures, view from far (or squint) to see skull shape</p>
+
+<h4>Hybrid Image 2: "A Photo of a Man" (low freq) + "A Photo of a Dog" (high freq)</h4>
+<div class="images">
+    <img src="images/part 1.9 image 2 a photo of a man + a photo of a dog.png" alt="Hybrid">
+</div>
+<p class="caption">Hybrid Image: View close to see dog features, view from far (or squint) to see man's face</p>
+
+<p><strong>Observation:</strong> The hybrid images work as intended! When viewed up close, the fine details and textures of the high-frequency prompt are visible. When viewed from a distance (or by squinting), these details blur together and the low-frequency shape becomes dominant. This technique successfully combines frequency components from different prompts during the denoising process.</p>
+
+<div class="note">
+    <strong>Tips for viewing hybrid images:</strong>
+    <ul>
+        <li>View the image at different distances from your screen</li>
+        <li>Try squinting to blur out high-frequency details</li>
+        <li>The low-frequency content dominates from far away</li>
+        <li>The high-frequency content dominates up close</li>
+    </ul>
+</div>
+
+<hr>
+
+<h1>Part B: Training Your Own Diffusion Model</h1>
+
+<p>In Part B, we train our own flow matching model on MNIST from scratch.</p>
+
+<h2>Part 1: Training a Single-Step Denoising UNet</h2>
+
+<h3>1.2 Using the UNet to Train a Denoiser</h3>
+
+<p>We visualize the noising process over σ ∈ [0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0]. As σ increases, the images become progressively noisier.</p>
+
+<div class="images-small">
+    <img src="images/part 1.2 images at different noisy level.png" alt="Noising Process">
+</div>
+<p class="caption">Visualization of the noising process at different σ values</p>
+
+<h3>1.2.1 Training</h3>
+
+<p>We train a denoiser to denoise images with σ = 0.5. The model is trained for 5 epochs using Adam optimizer with learning rate 1e-4 and hidden dimension D = 128.</p>
+
+<div class="images-small">
+    <img src="images/part 1.2.1.png" alt="Training Results">
+</div>
+<p class="caption">Training loss curve and sample results on test set after 1st and 5th epoch</p>
+
+<h3>1.2.2 Out-of-Distribution Testing</h3>
+
+<p>We test the denoiser on noise levels it wasn't trained on. The same image is shown with varying σ values to evaluate generalization.</p>
+
+<div class="images-small">
+    <img src="images/part 1.2.2.png" alt="OOD Testing">
+</div>
+<p class="caption">Out-of-distribution denoising results with varying σ levels</p>
+
+<h3>1.2.3 Denoising Pure Noise</h3>
+
+<p>We train a model to denoise pure random Gaussian noise (σ = 1.0) to see if we can generate images from scratch.</p>
+
+<div class="images-small">
+    <img src="images/part 1.2.3.png" alt="Pure Noise Denoising">
+</div>
+<p class="caption">Training loss curve and sample results on pure noise after 1st and 5th epoch</p>
+
+<p><strong>Observation:</strong> The generated outputs show blurry, averaged patterns that resemble a superposition of all digits. This happens because with MSE loss, the model learns to predict the centroid (mean) of all training examples. Since different digits have different shapes, the model compromises by outputting an average of all possible digits, resulting in blurry, non-distinct outputs. This demonstrates why one-step denoising alone cannot perform proper generative modeling.</p>
+
+<hr>
+
+<h2>Part 2: Training a Flow Matching Model</h2>
+
+<h3>2.2 Training the Time-Conditioned UNet</h3>
+
+<p>We train a time-conditioned UNet to predict the flow from noisy to clean data. The model uses hidden dimension D = 64 and is trained with Adam optimizer (initial lr = 1e-2) with exponential learning rate decay (γ = 0.1^(1/num_epochs)).</p>
+
+<div class="images-small">
+    <img src="images/part 2.2.png" alt="Training Loss">
+</div>
+<p class="caption">Training loss curve for time-conditioned UNet</p>
+
+<h3>2.3 Sampling from the Time-Conditioned UNet</h3>
+
+<p>Sampling results at epochs 1, 5, and 10:</p>
+
+<h4>Epoch 1</h4>
+<div class="images-small">
+    <img src="images/part 2.3 epoch 1.png" alt="Epoch 1">
+</div>
+
+<h4>Epoch 5</h4>
+<div class="images-small">
+    <img src="images/part 2.3 epoch 5.png" alt="Epoch 5">
+</div>
+
+<h4>Epoch 10</h4>
+<div class="images-small">
+    <img src="images/part 2.3 epoch 10.png" alt="Epoch 10">
+</div>
+<p class="caption">Time-conditioned sampling results at epochs 1, 5, and 10</p>
+
+<hr>
+
+<h3>2.5 Training the Class-Conditioned UNet</h3>
+
+<p>We add class conditioning (digits 0-9) with 10% dropout for classifier-free guidance during training.</p>
+
+<div class="images-small">
+    <img src="images/part 2.5.png" alt="Training Loss">
+</div>
+<p class="caption">Training loss curve for class-conditioned UNet</p>
+
+<h3>2.6 Sampling from the Class-Conditioned UNet</h3>
+
+<p>We sample with CFG (γ = 5), generating 4 instances of each digit (0-9) at epochs 1, 5, and 10:</p>
+
+<h4>Epoch 1</h4>
+<div class="images-small">
+    <img src="images/part 2.6 epoch 1.png" alt="Epoch 1">
+</div>
+
+<h4>Epoch 5</h4>
+<div class="images-small">
+    <img src="images/part 2.6 epoch 5.png" alt="Epoch 5">
+</div>
+
+<h4>Epoch 10</h4>
+<div class="images-small">
+    <img src="images/part 2.6 epoch 10.png" alt="Epoch 10">
+</div>
+<p class="caption">Class-conditioned sampling results at epochs 1, 5, and 10 (4 instances per digit)</p>
+
+<hr>
+
+<h3>Training Without Learning Rate Scheduler</h3>
+
+<p>To remove the exponential learning rate scheduler while maintaining performance, we made the following changes:</p>
+
+<ul>
+    <li>Used a lower constant learning rate (1e-3 instead of 1e-2)</li>
+    <li>Added gradient clipping (max norm = 1.0) to stabilize training</li>
+    <li>Trained for the same number of epochs</li>
+</ul>
+
+<p>Results without scheduler at epochs 1, 5, and 10:</p>
+
+<h4>Epoch 1</h4>
+<div class="images-small">
+    <img src="images/part 2.6 epoch 1.png" alt="No Scheduler Epoch 1">
+</div>
+
+<h4>Epoch 5</h4>
+<div class="images-small">
+    <img src="images/part 2.6 epoch 5.png" alt="No Scheduler Epoch 5">
+</div>
+
+<h4>Epoch 10</h4>
+<div class="images-small">
+    <img src="images/part 2.6 epoch 10.png" alt="No Scheduler Epoch 10">
+</div>
+<p class="caption">Sampling results without learning rate scheduler at epochs 1, 5, and 10</p>
+
+<p><strong>Observation:</strong> By using a lower constant learning rate and gradient clipping, we can achieve comparable performance without the learning rate scheduler. The key insight is that the scheduler's main benefit is preventing the learning rate from being too high in later epochs — we can achieve the same effect by simply starting with a lower learning rate. Gradient clipping further helps stabilize training by preventing large gradient updates that could destabilize the model.</p>
+
+<hr>
+
+<p style="text-align: center; color: #999; margin-top: 50px;">CS 180 Project 5 • Fall 2025 • UC Berkeley</p>
+
 </body>
 </html>
