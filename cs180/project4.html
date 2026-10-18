@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS 180 Project 4: Neural Radiance Fields · Yichen Cai</title>
+  <meta name="description" content="Yichen Cai's CS 180 Project 4: camera calibration, a 2D neural field and a full 3D NeRF rendering novel views of the Lego scene and a self-captured object.">
+  <link rel="stylesheet" href="site.css">
+</head>
+<body class="c180">
+<nav class="c180-nav" aria-label="CS 180 projects"><a class="c180-home" href="index.html"><b>CS 180</b> · Yichen Cai</a><ul class="c180-links"><li><a href="project1.html"><span class="c180-n">1</span>Colorization</a></li><li><a href="project2.html"><span class="c180-n">2</span>Filters &amp; Frequencies</a></li><li><a href="project3.html"><span class="c180-n">3</span>Mosaics</a></li><li><a href="project4.html" class=on><span class="c180-n">4</span>NeRF</a></li><li><a href="project5.html"><span class="c180-n">5</span>Diffusion</a></li></ul><a class="c180-out" href="../">Main portfolio ↗</a></nav>
+
+<p class="c180-kicker">Project 4 · November 2025</p>
+<h1>Neural Radiance Fields</h1>
+<p class="c180-meta">Yichen Cai · UC Berkeley CS 180</p>
+<p class="c180-lead">In this project I build up from camera calibration and a simple 2D neural field to a full 3D Neural Radiance Field (NeRF) that can render novel views of an object from arbitrary viewpoints.</p>
+
+<h2>Part 0: Camera Calibration and 3D Scan</h2>
+
+<h3>0.1 Calibrating the camera</h3>
+<p>I first estimate my camera intrinsics and lens distortion using ArUco tags. Using OpenCV's ArUco detector, I collect 2D corner positions across a set of calibration photos and associate them with known 3D coordinates on the tag plane. These correspondences are passed to <code>cv2.calibrateCamera</code>, which recovers the intrinsic matrix K and distortion coefficients.</p>
+<div class="c180-figs">
+  <figure><img src="proj4/calib_1.jpg" alt="Calibration photo with ArUco board" loading="lazy"><figcaption>Example calibration image with the ArUco board.</figcaption></figure>
+  <figure><img src="proj4/calib_2.jpg" alt="Calibration photo from another angle" loading="lazy"><figcaption>Another calibration view from a different angle and distance.</figcaption></figure>
+</div>
+<p>The calibration images are captured from many viewpoints and distances while keeping the camera zoom fixed. This gives a diverse set of observations that allow calibration to converge to a stable solution.</p>
+
+<h3>0.2 Capturing a 3D object scan</h3>
+<p>Next I capture a multi-view dataset of my chosen object placed next to a single printed ArUco tag. I keep the same camera and focal length as in calibration, move the camera around the object, and record 30 to 50 images at roughly constant distance so the object fills about half of the frame.</p>
+<div class="c180-figs">
+  <figure><img src="proj4/scan_1.jpg" alt="Object scan view" loading="lazy"><figcaption>One view from the object scan, with the tag visible.</figcaption></figure>
+  <figure><img src="proj4/scan_2.jpg" alt="Object scan, another view" loading="lazy"><figcaption>Another viewpoint showing the object and calibration tag.</figcaption></figure>
+</div>
+
+<h3>0.3 Camera pose estimation</h3>
+<p>For each object image, I detect the ArUco tag and use <code>cv2.solvePnP</code> to solve the Perspective-n-Point problem. This estimates the camera's extrinsics (rotation and translation) from:</p>
+<ul>
+  <li><strong>objectPoints:</strong> 3D coordinates of the tag corners in world space, e.g. <code>[(0,0,0), (0.02,0,0), (0.02,0.02,0), (0,0.02,0)]</code> for a 2&nbsp;cm tag</li>
+  <li><strong>imagePoints:</strong> 2D pixel coordinates of the detected tag corners</li>
+  <li><strong>cameraMatrix K</strong> and <strong>distCoeffs</strong></li>
+</ul>
+<p>The function returns a rotation vector and translation vector. I convert the rotation vector to a matrix with <code>cv2.Rodrigues()</code>. OpenCV returns the world-to-camera transform, so I invert it to get camera-to-world:</p>
+<div class="c180-formula">c2w[:3, :3] = Rᵀ<br>c2w[:3, 3] = −Rᵀ · t</div>
+<p>Poses were recovered for 35 of 43 object images; images where the tag wasn't detected or <code>solvePnP</code> failed were skipped automatically. The Viser screenshots below show the camera frustums, each displaying its captured image, forming a ring around the object, which is a good sanity check that the poses are consistent.</p>
+<div class="c180-figs">
+  <figure><img src="proj4/frustums_1.png" alt="Viser camera frustums, view 1" loading="lazy"><figcaption>35 camera frustums surrounding the object (view 1).</figcaption></figure>
+  <figure><img src="proj4/frustums_2.png" alt="Viser camera frustums, view 2" loading="lazy"><figcaption>The same frustums from a different angle (view 2).</figcaption></figure>
+</div>
+
+<h3>0.4 Undistortion and dataset packaging</h3>
+<p>To prepare the data for NeRF training I load every image with its camera-to-world pose, resize to a 400&nbsp;px maximum dimension, update K for the resize, split into training (70%), validation (15%) and test (15%) sets, and package everything in the same <code>.npz</code> format as the provided Lego dataset. With full distortion coefficients, the undistortion step would look like this:</p>
+<pre><code>new_K, roi = cv2.getOptimalNewCameraMatrix(K, dist_coeffs, (w, h), alpha=0)
+undistorted = cv2.undistort(img, K, dist_coeffs, None, new_K)
+x, y, w_roi, h_roi = roi
+undistorted = undistorted[y:y+h_roi, x:x+w_roi]
+new_K[0, 2] -= x  # update cx for crop
+new_K[1, 2] -= y  # update cy for crop</code></pre>
+<div class="c180-figs small">
+  <figure><img src="proj4/processed_example.png" alt="Processed training image" loading="lazy"><figcaption>A processed training image (400 px).</figcaption></figure>
+</div>
+
+<h2>Part 1: 2D Neural Field</h2>
+<p>Before moving to 3D, I train a neural field on single images: a multilayer perceptron that takes normalized 2D pixel coordinates, applies sinusoidal positional encoding, and outputs RGB values in [0, 1]. It uses ReLU hidden layers with a sigmoid output, an MSE loss, and Adam with a learning rate of 1e-2. Reconstruction quality is tracked with PSNR.</p>
+<p>The prediction starts as noise and sharpens into a recognizable image within a few hundred iterations. Higher encoding frequencies and wider networks capture more fine detail, while smaller models produce smoother, blurrier reconstructions.</p>
+<div class="c180-figs one">
+  <figure><img src="proj4/field_dog_progress.png" alt="Training progression on the dog image" loading="lazy"><figcaption>Training progression on the provided dog image at iterations 0, 250, 500, 1000 and 2000.</figcaption></figure>
+  <figure><img src="proj4/field_custom_progress.png" alt="Training progression on my own image" loading="lazy"><figcaption>Training progression on my own image at the same iterations.</figcaption></figure>
+</div>
+<div class="c180-figs">
+  <figure><img src="proj4/field_psnr.png" alt="PSNR curve" loading="lazy"><figcaption>PSNR over iterations: rapid early improvement, then gradual refinement.</figcaption></figure>
+  <figure><img src="proj4/field_grid.png" alt="Hyperparameter comparison grid" loading="lazy"><figcaption>Positional-encoding frequency vs. MLP width. Low frequencies and narrow networks oversmooth the image.</figcaption></figure>
+</div>
+
+<h2>Part 2: 3D Neural Radiance Field</h2>
+<p>In the second half I implement a NeRF that learns a volumetric representation of the Lego scene from many posed views. The pipeline is ray generation, sampling points along rays, an MLP that predicts color and density, and differentiable volume rendering that maps those predictions back to pixel colors.</p>
+
+<h3>Rays and sampling</h3>
+<p>Given intrinsics and camera-to-world transforms, I convert each pixel into a ray origin and direction. For training I sample rays randomly across all images, then place a fixed number of sample points along each ray between the near and far bounds, with a small random jitter per interval to reduce aliasing.</p>
+<div class="c180-figs one">
+  <figure><img src="proj4/lego_rays.png" alt="Cameras, rays and sample points in Viser" loading="lazy"><figcaption>Lego cameras, 100 sampled rays and the 3D sample points along them, visualized in Viser.</figcaption></figure>
+</div>
+
+<h3>Network and volume rendering</h3>
+<p>The NeRF takes a 3D position and a view direction (both with sinusoidal encodings) and outputs an RGB color and a volume density. I implement the discrete volume-rendering equation, accumulating colors along each ray with transmittance weights derived from the densities. Everything is written in PyTorch, so gradients flow from each rendered pixel back into the network.</p>
+<div class="c180-figs">
+  <figure><img src="proj4/lego_training.png" alt="Lego novel view during training" loading="lazy"><figcaption>A novel view of the Lego scene during training.</figcaption></figure>
+  <figure><img src="proj4/lego_psnr.png" alt="Lego validation PSNR" loading="lazy"><figcaption>Validation PSNR rising as the NeRF converges.</figcaption></figure>
+</div>
+
+<h3>Spherical rendering</h3>
+<p>After training, I sweep the camera along the provided test trajectory, rendering each pose through the ray generator and the NeRF to produce a smooth orbit around the model.</p>
+<div class="c180-figs small">
+  <figure><img src="proj4/lego_orbit.png" alt="Frame from the Lego orbit rendering" loading="lazy"><figcaption>A frame from the spherical rendering of the Lego scene.</figcaption></figure>
+</div>
+
+<h2>Part 2.6: NeRF on My Own Object</h2>
+<p>Finally, I reuse the same NeRF on the dataset I captured in Part 0. My object was photographed much closer than the Lego scene, so I adjusted:</p>
+<ul>
+  <li><strong>Near/far planes:</strong> 0.02 / 0.5 instead of 2.0 / 6.0</li>
+  <li><strong>Samples per ray:</strong> 64 (vs. 128 for Lego), balancing quality and speed</li>
+  <li><strong>Learning rate:</strong> 5e-4 with Adam</li>
+  <li><strong>Architecture:</strong> same as Lego (L_pos = 10, L_dir = 4, width 256)</li>
+  <li><strong>Training:</strong> 3,000 to 5,000 iterations</li>
+</ul>
+<div class="c180-figs">
+  <figure><img src="proj4/object_psnr.png" alt="PSNR on my object dataset" loading="lazy"><figcaption>PSNR during training on my object.</figcaption></figure>
+  <figure><img src="proj4/object_loss.png" alt="Training loss on my object dataset" loading="lazy"><figcaption>Training loss for my object NeRF.</figcaption></figure>
+</div>
+<p>The rendered views gradually move from noise to recognizable shapes and textures, and the final model renders a camera orbit showing the object from viewpoints never seen in training.</p>
+<div class="c180-figs small">
+  <figure><img src="proj4/object_orbit.png" alt="Novel view of my object" loading="lazy"><figcaption>A novel view of my object from the trained NeRF.</figcaption></figure>
+</div>
+
+<h2>Summary</h2>
+<p>This project ties together camera geometry, neural fields and differentiable rendering. Starting from physical calibration photos, I built a fully learned 3D representation that synthesizes convincing new views of both a synthetic Lego scene and a real object captured with my phone.</p>
+
+<nav class="c180-pager" aria-label="Previous and next project"><a class="prev" href="project3.html"><small>← Previous</small>Project 3: Image Warping and Mosaicing</a><a class="next" href="project5.html"><small>Next →</small>Project 5: Fun with Diffusion Models</a><a class="c180-all" href="index.html"><small>Overview</small>All CS 180 projects</a></nav>
+</body>
+</html>

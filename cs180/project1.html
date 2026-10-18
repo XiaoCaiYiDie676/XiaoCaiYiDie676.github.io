@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS 180 Project 1: Colorizing the Prokudin-Gorskii Collection · Yichen Cai</title>
+  <meta name="description" content="Yichen Cai's CS 180 Project 1: reconstructing color photographs from Prokudin-Gorskii glass plates with multi-scale channel alignment.">
+  <link rel="stylesheet" href="site.css">
+</head>
+<body class="c180">
+<nav class="c180-nav" aria-label="CS 180 projects"><a class="c180-home" href="index.html"><b>CS 180</b> · Yichen Cai</a><ul class="c180-links"><li><a href="project1.html" class=on><span class="c180-n">1</span>Colorization</a></li><li><a href="project2.html"><span class="c180-n">2</span>Filters &amp; Frequencies</a></li><li><a href="project3.html"><span class="c180-n">3</span>Mosaics</a></li><li><a href="project4.html"><span class="c180-n">4</span>NeRF</a></li><li><a href="project5.html"><span class="c180-n">5</span>Diffusion</a></li></ul><a class="c180-out" href="../">Main portfolio ↗</a></nav>
+
+<p class="c180-kicker">Project 1 · September 2025</p>
+<h1>Images of the Russian Empire: Colorizing the Prokudin-Gorskii Photo Collection</h1>
+<p class="c180-meta">Yichen Cai · UC Berkeley CS 180</p>
+
+
+
+            <h2>Introduction</h2>
+            <p>This project reconstructs color photographs from Sergei Prokudin-Gorskii's digitized glass plates by splitting each plate into three grayscale channels (B, G, R) and aligning R and B to G using only x-y translations. We score candidate shifts with multiple similarity metrics including L2/SSD, NCC, and a combined approach, reporting the chosen displacement vectors. To handle large, high-resolution scans efficiently, we accelerate alignment with a coarse-to-fine image pyramid. The result is a single, well-aligned RGB image with minimal visual artifacts.</p>
+
+            <h2>Background</h2>
+            <p>Sergei Mikhailovich Prokudin-Gorskii pioneered early color photography by capturing three sequential exposures of the same scene through blue, green, and red filters on a single glass plate. Decades later, the Library of Congress digitized these B-G-R plates, revealing remarkable views of the late Russian Empire but also exposing practical issues: the three channel images are vertically stacked, often misaligned, and can differ in intensity or contrast. Reconstructing a faithful color photo therefore requires separating the plate into its three grayscale channels and precisely aligning the red and blue images to the green reference using a translation model.</p>
+
+            <h2>Methodology</h2>
+            
+            <h3>Channel Extraction and Preprocessing</h3>
+            <p>I split each glass plate into three grayscale images B, G, R (top→bottom) and treat alignment as integer translations of R and B onto the reference channel G. Before alignment, images undergo border cropping (15% by default) to remove artifacts that negatively impact correlation scores.</p>
+
+    
+            <h3>Similarity Metrics</h3>
+            <p>I implement three alignment metrics, all designed to be maximized:</p>
+
+            <div class="c180-formula">
+                <strong>Normalized Cross Correlation (NCC):</strong><br>
+                S<sub>NCC</sub>(A,B) = (A·B) / (||A||<sub>2</sub> ||B||<sub>2</sub>)
+            </div>
+
+            <div class="c180-formula">
+                <strong>Sum of Squared Differences (SSD):</strong><br>
+                S<sub>SSD</sub>(A,B) = -Σ(A(y,x) - B(y,x))<sup>2</sup>
+            </div>
+
+            <div class="c180-formula">
+                <strong>Combined Score:</strong><br>
+                S<sub>combined</sub> = 0.8 × S<sub>NCC</sub> + 0.2 × S<sub>SSD_normalized</sub>
+            </div>
+
+            <p>By default, I use the combined metric, which leverages NCC's robustness to brightness variations while incorporating SSD's precision for fine alignment.</p>
+
+            <h3>Multi-Scale Pyramid Alignment</h3>
+            <p>To handle large .tif scans efficiently, I build a Gaussian pyramid by repeatedly downscaling by 0.5 (anti-aliased) for a specified number of levels. Starting from the coarsest level, I run exhaustive search with adaptive search ranges and propagate shifts upward by doubling the previous estimate to seed the next level. The final level returns pixel-accurate integer shifts.</p>
+
+            <h3>Warping and Composition</h3>
+            <p>I apply the estimated shifts using numpy's <span class="code">roll</span> function to obtain G', R', B', then stack into RGB as [R', G', B']. The result is clipped to [0,1] and saved as 8-bit format to ensure compatibility.</p>
+
+            <h2>Implementation Details</h2>
+            
+            <h3>Key Design Choices</h3>
+            <ul>
+                <li><strong>Green as Reference:</strong> Unlike traditional approaches that align to blue, I align both red and blue channels to green, which often contains the most structural detail in natural scenes.</li>
+                <li><strong>Adaptive Search Ranges:</strong> Larger search windows at coarse pyramid levels (up to ±20 pixels) with refinement to ±2-4 pixels at fine levels.</li>
+                <li><strong>Border Cropping:</strong> Remove 15% of border pixels before scoring to eliminate alignment artifacts from digitization boundaries.</li>
+                <li><strong>Multiple Metrics:</strong> Support for NCC, SSD, and combined scoring with easy parameter adjustment.</li>
+            </ul>
+
+            <h3>Algorithm Complexity</h3>
+            <p>The pyramid approach reduces computational complexity from O(n²r²) for exhaustive search to O(n² log r) where n is image dimension and r is search range, enabling efficient processing of high-resolution scans.</p>
+
+            <h2>Results</h2>
+            <p>The algorithm successfully processes both .jpg and .tif formats. Usage: <span class="code">python main.py image_name.tif</span></p>
+
+            <h3>Algorithm Results on Provided Dataset</h3>
+            
+            <div class="c180-figs three">
+                <figure><img src="cathedral_combined_aligned.jpg" alt="Cathedral result" loading="lazy"><figcaption>cathedral.tif<br>B:(-5, -2), R:(7, 1)</figcaption></figure>
+                <figure><img src="monastery_combined_aligned.jpg" alt="monastery result" loading="lazy"><figcaption>monastery.tif<br>B:(3, -2), R:(6, 1)</figcaption></figure>
+                <figure><img src="tobolsk_combined_aligned.jpg" alt="tobolsk result" loading="lazy"><figcaption>tobolsk.tif<br>B:(-3, -3), R:(4, 1)</figcaption></figure>
+                <figure><img src="emir_combined_aligned.jpg" alt="emir result" loading="lazy"><figcaption>emir.tif<br>B:(-49, -24), R:(57, 17)</figcaption></figure>
+                <figure><img src="harvesters_combined_aligned.jpg" alt="harvester result" loading="lazy"><figcaption>harvesters.tif<br>B:(-59, -17), R:(65, -3)</figcaption></figure>
+                <figure><img src="icon_combined_aligned.jpg" alt="icon result" loading="lazy"><figcaption>icon.tif<br>B:(-41, -17), R:(48, 5)</figcaption></figure>
+                <figure><img src="melons_combined_aligned.jpg" alt="Melons result" loading="lazy"><figcaption>melons.tif<br>B:(-82, -11), R:(96, 3)</figcaption></figure>
+                <figure><img src="church_combined_aligned.jpg" alt="Church result" loading="lazy"><figcaption>church.tif<br>B:(-25, -4), R:(33, -8)</figcaption></figure>
+                <figure><img src="lugano_combined_aligned.jpg" alt="Lugano result" loading="lazy"><figcaption>lugano.tif<br>B:(-41, 16), R:(52, -13)</figcaption></figure>
+                <figure><img src="lastochikino_combined_aligned.jpg" alt="Lastochikino result" loading="lazy"><figcaption>lastochikino.tif<br>B:(3, 2), R:(78, -7)</figcaption></figure>
+                <figure><img src="siren_combined_aligned.jpg" alt="Siren result" loading="lazy"><figcaption>siren.tif<br>B:(-49, 6), R:(47, -19)</figcaption></figure>
+                <figure><img src="self_portrait_combined_aligned.jpg" alt="Self portrait result" loading="lazy"><figcaption>self_portrait.tif<br>B:(-79, -29), R:(98, 8)</figcaption></figure>
+                <figure><img src="three_generations_combined_aligned.jpg" alt="Three generations result" loading="lazy"><figcaption>three_generations.tif<br>B:(-53, -14), R:(59, -3)</figcaption></figure>
+                <figure><img src="italil_combined_aligned.jpg" alt="Italil result" loading="lazy"><figcaption>italil.tif<br>B:(-38, -21), R:(39, 15)</figcaption></figure>
+            </div>
+
+            <h3>Additional Examples from Prokudin-Gorskii Collection</h3>
+            
+            <div class="c180-figs three">
+                <figure><img src="master-pnp-prok-00000-00095u_combined_aligned.jpg" alt="Additional example 1" loading="lazy"><figcaption>B:(-32, 0), R:(103, -3)</figcaption></figure>
+                <figure><img src="master-pnp-prok-00100-00110u_combined_aligned.jpg" alt="Additional example 2" loading="lazy"><figcaption>B:(-26, -10), R:(44, 1)</figcaption></figure>
+                <figure><img src="master-pnp-prok-00100-00115u_combined_aligned.jpg" alt="Additional example 3" loading="lazy"><figcaption>B:(-52, -1), R:(62, -25)</figcaption></figure>
+            </div>
+
+           
+
+            <h2>Analysis and Discussion</h2>
+            
+            <h3>Performance Characteristics</h3>
+            <p>The multi-scale pyramid approach achieves sub-second processing for small images and 2-15 second processing for large .tif files, representing orders of magnitude improvement over exhaustive search. </p>
+
+            <h3>Robustness Considerations</h3>
+            <p>The combined metric approach proves particularly effective for images with varying texture content. While NCC alone works well for high-texture regions, the SSD component helps maintain precision in smoother areas where correlation might be ambiguous.</p>
+
+            <h2>Challenges and Solutions</h2>
+            
+            <h3>Key Innovation: Green Channel as Reference</h3>
+            <p>A critical design decision was aligning both red and blue channels to the green channel, rather than the traditional approach of aligning green and red to blue. This choice proved superior for several reasons: (i) the green channel typically contains the most structural detail in natural scenes, providing better features for correlation matching, (ii) aligning two channels (red and blue) to one stable reference (green) is more robust than attempting to align blue and red together, which can compound alignment errors, and (iii) green often has intermediate brightness levels that work well with both NCC and SSD metrics.</p>
+            
+            <h3>Problems Encountered</h3>
+            <p>The primary challenge was ambiguous alignment in low-texture regions, particularly evident in images with large sky areas, water surfaces, or smooth architectural facades. In such regions, many candidate shifts produce nearly identical correlation scores, leading the algorithm to converge on local maxima rather than the global optimum. Additionally, border artifacts from the digitization process created false correlation peaks that misled the alignment.</p>
+            
+            <p>I addressed these issues through: (i) <strong>15% border cropping</strong> to eliminate digitization artifacts that poison correlation metrics, (ii) <strong>green channel reference strategy</strong> providing the most reliable structural content for alignment, (iii) <strong>combined NCC+SSD scoring</strong> to balance robustness against brightness variations with precision in texture matching, and (iv) <strong>coarse-to-fine pyramid search</strong> ensuring the fine-level optimization starts in the correct convergence basin. These modifications eliminated most gross alignment failures, though small residual errors (±1-2 pixels) may persist in extremely low-texture scenarios.</p>
+
+            <h2>Conclusion</h2>
+            <p>The implementation successfully reconstructs color photographs from Prokudin-Gorskii's historical glass plates using a robust multi-scale alignment approach. The combination of adaptive pyramid search, multiple similarity metrics, and careful preprocessing produces high-quality colorizations with minimal computational overhead. The green-channel reference strategy and combined NCC/SSD scoring prove particularly effective for handling the varied content and quality of digitized historical photographs.</p>
+        </div>
+        
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="#" class="back-btn" onclick="hideProject(); return false;">Back to Portfolio</a>
+        
+<nav class="c180-pager" aria-label="Previous and next project"><a class="next" href="project2.html"><small>Next →</small>Project 2: Fun with Filters and Frequencies</a><a class="c180-all" href="index.html"><small>Overview</small>All CS 180 projects</a></nav>
+</body>
+</html>

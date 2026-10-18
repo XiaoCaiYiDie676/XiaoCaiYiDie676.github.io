@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS 180 Computer Vision Projects · Yichen Cai</title>
+  <meta name="description" content="Yichen Cai's CS 180 (Computer Vision and Computational Photography, UC Berkeley) projects: image colorization, filters and frequencies, panorama mosaics, neural radiance fields (NeRF) and diffusion models.">
+  <meta name="author" content="Yichen Cai">
+  <link rel="canonical" href="https://xiaocaiyidie676.github.io/cs180/">
+  <meta property="og:title" content="CS 180 Computer Vision Projects · Yichen Cai">
+  <meta property="og:description" content="Five computer vision projects from UC Berkeley's CS 180, from colorizing century-old photos to training diffusion models.">
+  <meta property="og:image" content="https://xiaocaiyidie676.github.io/cs180/thumbs/p3.jpg">
+  <link rel="stylesheet" href="site.css">
+</head>
+<body class="c180">
+<nav class="c180-nav" aria-label="CS 180 projects"><a class="c180-home" href="index.html"><b>CS 180</b> · Yichen Cai</a><ul class="c180-links"><li><a href="project1.html"><span class="c180-n">1</span>Colorization</a></li><li><a href="project2.html"><span class="c180-n">2</span>Filters &amp; Frequencies</a></li><li><a href="project3.html"><span class="c180-n">3</span>Mosaics</a></li><li><a href="project4.html"><span class="c180-n">4</span>NeRF</a></li><li><a href="project5.html"><span class="c180-n">5</span>Diffusion</a></li></ul><a class="c180-out" href="../">Main portfolio ↗</a></nav>
+
+<header class="c180-hero">
+  <p class="c180-kicker">UC Berkeley · CS 180 · Fall 2025</p>
+  <h1>Computer Vision &amp; Computational Photography</h1>
+  <p class="c180-lead">Five projects by <a href="../">Yichen Cai</a>, from colorizing century-old glass-plate photographs to training diffusion models from scratch. Each one is a full write-up with my results, the techniques behind them, and what I learned.</p>
+</header>
+
+<main class="c180-grid">
+  <a class="c180-card" href="project1.html">
+    <img src="thumbs/p1.jpg" alt="Colorized Prokudin-Gorskii photograph of the Emir of Bukhara" loading="lazy">
+    <div class="body">
+      <span class="num">Project 1</span>
+      <h3>Colorizing the Prokudin-Gorskii Collection</h3>
+      <p>Splitting glass-plate scans into B, G and R channels and aligning them automatically with a coarse-to-fine image pyramid.</p>
+      <div class="c180-tags"><span>NCC / SSD</span><span>Image pyramids</span><span>Alignment</span></div>
+      <span class="go">Read the write-up →</span>
+    </div>
+  </a>
+  <a class="c180-card" href="project2.html">
+    <img src="thumbs/p2.jpg" alt="Hybrid image result" loading="lazy">
+    <div class="body">
+      <span class="num">Project 2</span>
+      <h3>Fun with Filters and Frequencies</h3>
+      <p>Convolution from scratch, edge detection, unsharp masking, hybrid images and multi-resolution blending.</p>
+      <div class="c180-tags"><span>Convolution</span><span>Fourier analysis</span><span>Hybrid images</span></div>
+      <span class="go">Read the write-up →</span>
+    </div>
+  </a>
+  <a class="c180-card" href="project3.html">
+    <img src="thumbs/p3.jpg" alt="Panorama mosaic of the UC Berkeley campus" loading="lazy">
+    <div class="body">
+      <span class="num">Project 3</span>
+      <h3>Image Warping and Mosaicing</h3>
+      <p>Homographies, warping and blending, then fully automatic panorama stitching with Harris corners, ANMS, feature matching and RANSAC.</p>
+      <div class="c180-tags"><span>Homographies</span><span>RANSAC</span><span>Panoramas</span></div>
+      <span class="go">Read the write-up →</span>
+    </div>
+  </a>
+  <a class="c180-card" href="project4.html">
+    <img src="thumbs/p4.jpg" alt="NeRF rendering of the Lego bulldozer scene" loading="lazy">
+    <div class="body">
+      <span class="num">Project 4</span>
+      <h3>Neural Radiance Fields (NeRF)</h3>
+      <p>Camera calibration and pose estimation, a 2D neural field, then a full 3D NeRF that renders novel views of Lego and of an object I scanned myself.</p>
+      <div class="c180-tags"><span>PyTorch</span><span>Volume rendering</span><span>Camera calibration</span></div>
+      <span class="go">Read the write-up →</span>
+    </div>
+  </a>
+  <a class="c180-card" href="project5.html">
+    <img src="thumbs/p5.jpg" alt="Images generated with a diffusion model" loading="lazy">
+    <div class="body">
+      <span class="num">Project 5</span>
+      <h3>Fun with Diffusion Models</h3>
+      <p>Sampling loops, classifier-free guidance, inpainting and visual anagrams, then training my own denoising UNet and flow-matching models.</p>
+      <div class="c180-tags"><span>Diffusion</span><span>UNet</span><span>Flow matching</span></div>
+      <span class="go">Read the write-up →</span>
+    </div>
+  </a>
+</main>
+
+<a class="c180-extra" href="project0.html">
+  <img src="thumbs/p0.jpg" alt="" loading="lazy">
+  <div>
+    <strong>Warm-up · Project 0: Becoming Friends with Your Camera</strong>
+    <p>Selfies at different distances, perspective compression, and a dolly-zoom GIF.</p>
+  </div>
+</a>
+
+<p class="c180-foot">Yichen Cai · <a href="../">Main portfolio</a> · <a href="https://github.com/XiaoCaiYiDie676">GitHub</a></p>
+</body>
+</html>

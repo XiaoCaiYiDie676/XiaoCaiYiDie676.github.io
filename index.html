@@ -1,625 +1,194 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS 180 Project 5: Fun With Diffusion Models!</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            line-height: 1.6;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #fff;
-            color: #333;
-        }
-
-        h1 {
-            text-align: center;
-            border-bottom: 2px solid #333;
-            padding-bottom: 10px;
-        }
-
-        h2 {
-            margin-top: 40px;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 5px;
-        }
-
-        h3 {
-            margin-top: 30px;
-            color: #555;
-        }
-
-        h4 {
-            margin-top: 20px;
-            color: #666;
-        }
-
-        p {
-            margin: 15px 0;
-        }
-
-        .author {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-        }
-
-        .images {
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .images img {
-            margin: 10px;
-            border: 1px solid #ddd;
-        }
-
-        .images-small img {
-            margin: 10px;
-            border: 1px solid #ddd;
-            max-width: 500px;
-        }
-
-        .caption {
-            font-style: italic;
-            color: #666;
-            text-align: center;
-            margin-top: 5px;
-            margin-bottom: 20px;
-        }
-
-        code {
-            background: #f4f4f4;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .equation {
-            background: #f9f9f9;
-            padding: 15px;
-            margin: 15px 0;
-            border-left: 3px solid #666;
-            font-family: 'Courier New', monospace;
-            overflow-x: auto;
-        }
-
-        .note {
-            background: #f0f7ff;
-            padding: 15px;
-            margin: 15px 0;
-            border-left: 3px solid #0066cc;
-        }
-
-        hr {
-            border: none;
-            border-top: 1px solid #ddd;
-            margin: 30px 0;
-        }
-
-        ul {
-            margin: 10px 0;
-            padding-left: 30px;
-        }
-
-        li {
-            margin: 5px 0;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yichen Cai · Portfolio</title>
+  <meta name="description" content="Yichen Cai is a master's student in Information Networking (MSIN) at Carnegie Mellon University and a UC Berkeley Computer Science graduate who loves prototyping, hackathons like Cal Hacks, and databases. Portfolio, projects and CS 180 computer vision work." />
+  <meta name="author" content="Yichen Cai" />
+  <meta name="keywords" content="Yichen Cai, Carnegie Mellon, CMU, MSIN, Information Networking, UC Berkeley, Computer Science, Cal Hacks, databases, portfolio, XiaoCaiYiDie676" />
+  <link rel="canonical" href="https://xiaocaiyidie676.github.io/" />
+  <meta property="og:type" content="profile" />
+  <meta property="og:title" content="Yichen Cai · Portfolio" />
+  <meta property="og:description" content="MSIN student at Carnegie Mellon, UC Berkeley CS graduate. Prototypes, hackathons, databases and computer vision." />
+  <meta property="og:url" content="https://xiaocaiyidie676.github.io/" />
+  <meta property="og:image" content="https://avatars.githubusercontent.com/u/143157126?v=4" />
+  <meta name="twitter:card" content="summary" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Yichen Cai",
+      "url": "https://xiaocaiyidie676.github.io/",
+      "image": "https://avatars.githubusercontent.com/u/143157126?v=4",
+      "jobTitle": "Master's student, Information Networking",
+      "affiliation": { "@type": "CollegeOrUniversity", "name": "Carnegie Mellon University" },
+      "alumniOf": { "@type": "CollegeOrUniversity", "name": "University of California, Berkeley" },
+      "knowsAbout": ["Databases", "Computer Science", "Computer Vision", "Prototyping", "Web Development", "Contract bridge"],
+      "sameAs": ["https://github.com/XiaoCaiYiDie676"]
+    }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect x=%224%22 y=%224%22 width=%2256%22 height=%2256%22 rx=%2210%22 fill=%22%23c8372d%22/%3E%3Ctext x=%2232%22 y=%2245%22 font-size=%2226%22 text-anchor=%22middle%22 fill=%22%23fff%22 font-family=%22serif%22 font-weight=%22700%22%3EYC%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
 </head>
 <body>
+  <canvas id="scene" aria-label="Interactive 3D scene"></canvas>
 
-<h1>CS 180 Project 5: Fun With Diffusion Models!</h1>
-<p class="author">Fall 2025 • UC Berkeley</p>
+  <!-- floating labels over project lanterns -->
+  <div id="labels" aria-hidden="true"></div>
+  <div id="tooltip" role="tooltip"></div>
 
-<p>In this project, we explore the power of diffusion models for image generation. We will implement diffusion sampling loops and use them for various tasks such as image denoising, inpainting, and creating optical illusions like visual anagrams and hybrid images.</p>
+  <!-- loader + intro -->
+  <section id="loader">
+    <div class="loader-inner">
+      <svg class="enso" viewBox="0 0 200 200" aria-hidden="true">
+        <defs>
+          <filter id="brush" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" result="n" />
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="5" />
+          </filter>
+        </defs>
+        <circle id="enso-path" cx="100" cy="100" r="78" pathLength="1" />
+      </svg>
+      <div class="enso-kanji">旅</div>
+      <p class="loader-status"><span id="loader-text">Grinding ink</span> · <span id="loader-pct">0</span>%</p>
+    </div>
 
-<h1>Part A: The Power of Diffusion Models!</h1>
+    <div class="intro" id="intro" hidden>
+      <p class="intro-kicker">春 · An interactive portfolio</p>
+      <h1 class="intro-name" id="intro-name">Yichen Cai</h1>
+      <p class="intro-title" id="intro-title">MSIN @ Carnegie Mellon · CS @ UC Berkeley</p>
+      <p class="intro-text" id="intro-text">I'm a master's student in Information Networking at Carnegie Mellon and a UC Berkeley Computer Science graduate. I love turning ideas into working prototypes, from Cal Hacks weekends to database engines.</p>
+      <button class="hanko-btn" id="enter-btn"><span class="seal">乘</span><span>Board the boat</span></button>
+      <p class="intro-hint">Best with sound on and a mouse · works on touch too</p>
+    </div>
+  </section>
 
-<h2>Part 0: Setup</h2>
+  <!-- HUD -->
+  <header class="hud hud-top" id="hud-top" hidden>
+    <button class="brand" id="brand-btn" aria-label="Open About">
+      <span class="brand-seal" id="brand-seal">YC</span>
+      <span class="brand-text">
+        <strong id="brand-name">Yichen Cai</strong>
+        <small id="brand-sub"></small>
+      </span>
+    </button>
+    <nav class="nav" aria-label="Sections">
+      <button data-panel="about"><span class="jp">己</span><span>About</span></button>
+      <button data-panel="works"><span class="jp">作</span><span>Works</span></button>
+      <button data-panel="skills"><span class="jp">技</span><span>Skills</span></button>
+      <button data-panel="journey"><span class="jp">道</span><span>Journey</span></button>
+      <button data-panel="settings"><span class="jp">设</span><span>Settings</span></button>
+      <a id="nav-github" target="_blank" rel="noopener"><svg class="jp" width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span></a>
+    </nav>
+  </header>
 
-<p>For this project, we are using the <strong>DeepFloyd IF</strong> diffusion model, a two-stage text-to-image model trained by Stability AI. The first stage produces images of size 64×64 and the second stage upsamples to 256×256. We focus on the first stage for this project.</p>
+  <div class="hud hud-bottom" id="hud-bottom" hidden>
+    <div class="caption">
+      <p class="caption-jp" id="caption-jp">春溪</p>
+      <p class="caption-en" id="caption-en">Upstream through the blossom valley</p>
+      <div class="voyage" id="voyage"><span id="voyage-fill"></span></div>
+    </div>
 
-<p>DeepFloyd was trained as a text-to-image model, which takes text prompts as input and outputs images aligned with the text. However, a raw text string cannot be directly used as the model's input — we first need to convert it into a high-dimensional vector (of 4096 dimensions) that the model can understand, known as prompt embeddings.</p>
+    <div class="pov" role="tablist" aria-label="Point of view">
+      <button role="tab" data-view="valley" class="active"><span class="jp">溪</span>Valley</button>
+      <button role="tab" data-view="boat"><span class="jp">舟</span>Boat</button>
+      <button role="tab" data-view="festival"><span class="jp">火</span>Festival</button>
+      <span class="pov-key">V</span>
+    </div>
 
-<div class="note">
-    <strong>Random Seed:</strong> <code>100</code> — This seed is used throughout all parts of this project for reproducibility.
-</div>
+    <div class="actions">
+      <button id="act-tour" class="chip">▶ Guided tour</button>
+      <button id="act-pause" class="chip" data-for="valley">❚❚ Pause boat</button>
+      <button id="act-finale" class="chip" data-for="festival">Grand finale</button>
+      <button id="act-sound" class="chip" aria-pressed="false">♪ Sound off</button>
+    </div>
+  </div>
 
-<h3>Text Prompts and Generated Images</h3>
-
-<p>I generated embeddings for several interesting text prompts. Since we will be creating visual anagrams and hybrid images later, I included prompt pairs that would work well together for those tasks. Below are 3 of my chosen prompts, each shown with two different <code>num_inference_steps</code> values to demonstrate how the number of denoising steps affects image quality.</p>
-
-<h4>Prompt 1: "an oil painting of people around a campfire"</h4>
-<div class="images">
-    <img src="images/part 0 image 1 small.png" alt="20 steps">
-    <img src="images/part 0 image 1 big.png" alt="50 steps">
-</div>
-<p class="caption">Left: num_inference_steps = 20 | Right: num_inference_steps = 50</p>
-
-<p><strong>Reflection:</strong> This prompt successfully generates images that capture the warm, painterly quality of an oil painting. Both versions show figures gathered around a glowing fire. With 20 steps, the image has a rougher, more impressionistic quality with less defined figures. With 50 steps, the details become sharper — the flames are more distinct, the figures have clearer silhouettes, and the overall composition feels more polished. The warm color palette (oranges, reds, browns) is consistent with the campfire theme.</p>
-
-<h4>Prompt 2: "an oil painting of an old man"</h4>
-<div class="images">
-    <img src="images/part 0 image 2 small.png" alt="20 steps">
-    <img src="images/part 0 image 2 big.png" alt="50 steps">
-</div>
-<p class="caption">Left: num_inference_steps = 20 | Right: num_inference_steps = 50</p>
-
-<p><strong>Reflection:</strong> This prompt was chosen to pair with the campfire prompt for visual anagrams. The model generates portraits with clear elderly features — wrinkles, aged skin tones, and thoughtful expressions. The "oil painting" style is evident in the brushstroke-like textures. With more inference steps, facial features become more refined and realistic. The model successfully captures the essence of classical portrait painting.</p>
-
-<h4>Prompt 3: "a lithograph of a skull"</h4>
-<div class="images">
-    <img src="images/part 0 image 3 small.png" alt="20 steps">
-    <img src="images/part 0 image 3 big.png" alt="50 steps">
-</div>
-<p class="caption">Left: num_inference_steps = 20 | Right: num_inference_steps = 50</p>
-
-<p><strong>Reflection:</strong> This prompt was chosen for creating hybrid images. The lithograph style produces high-contrast, detailed images with fine line work characteristic of the printmaking technique. The skull anatomy is accurately represented in both versions. With 50 steps, the bone structure details, shading, and overall clarity improve significantly. The monochromatic nature of lithographs is well-preserved.</p>
-
-<div class="note">
-    <strong>Key Observations on num_inference_steps:</strong>
-    <ul>
-        <li>Higher step counts (50) produce finer details and sharper edges</li>
-        <li>Lower step counts (20) result in softer, more abstract interpretations</li>
-        <li>Both accurately capture the essence of the text prompts</li>
-        <li>The style descriptors ("oil painting", "lithograph") are consistently applied</li>
-        <li>Trade-off: more steps = better quality but slower generation</li>
+  <!-- first-visit welcome -->
+  <section class="welcome" id="welcome" hidden aria-labelledby="welcome-title">
+    <p class="w-kicker">欢迎 · Welcome aboard</p>
+    <h3 id="welcome-title">Hi, I'm Yichen</h3>
+    <p class="w-text">This river <em>is</em> my portfolio. Every landmark along the banks is a chapter: a notice board with who I am, a stone lantern for each project, a temple of skills, a paifang archway for my journey, and a lantern festival at the end.</p>
+    <div class="w-actions">
+      <button class="w-primary" id="w-tour">▶ Take the guided tour <small>about 2 min</small></button>
+      <button class="w-ghost" id="w-free">Explore on my own</button>
+    </div>
+    <ul class="w-legend">
+      <li><span class="dot"></span>Click anything that glows or has a label</li>
+      <li><span class="key">drag</span> look around · <span class="key">scroll</span> zoom</li>
+      <li><span class="key">map</span> the river map on the left jumps anywhere</li>
     </ul>
-</div>
-
-<hr>
-
-<h2>Part 1: Sampling Loops</h2>
-
-<p>In this part, we implement our own sampling loops that use the pretrained DeepFloyd denoisers to produce high-quality images, and then modify these loops for tasks such as inpainting and creating optical illusions.</p>
-
-<h3>1.1 Implementing the Forward Process</h3>
-
-<p>A key part of diffusion is the <strong>forward process</strong>, which takes a clean image and adds noise to it. The forward process is defined by:</p>
-
-<div class="equation">
-x_t = √(ᾱ_t) · x_0 + √(1 - ᾱ_t) · ε, where ε ~ N(0, 1)
-</div>
-
-<p>Given a clean image x₀, we get a noisy image x_t at timestep t by sampling from a Gaussian with mean √(ᾱ_t)·x₀ and variance (1 - ᾱ_t). Note that the forward process is not just adding noise — we also scale the image. The <code>alphas_cumprod</code> variable contains the ᾱ_t values for all t ∈ [0, 999]. For small t, ᾱ_t is close to 1 (clean image), and for large t, ᾱ_t is close to 0 (mostly noise).</p>
-
-<p>Below shows the Berkeley Campanile test image at different noise levels t = [250, 500, 750]:</p>
-
-<div class="images">
-    <img src="images/part 1.1 original.png" alt="Original">
-    <img src="images/part 1.1 t=250.png" alt="t=250">
-    <img src="images/part 1.1 t=500.png" alt="t=500">
-    <img src="images/part 1.1 t=750.png" alt="t=750">
-</div>
-<p class="caption">Original Campanile | t=250 | t=500 | t=750</p>
-
-<p>As timestep t increases, more noise is added and the original image becomes progressively harder to discern. At t=250, the Campanile is still clearly visible. At t=500, the structure is faintly visible but significantly degraded. At t=750, the image is almost entirely noise with only hints of the original structure.</p>
-
-<hr>
-
-<h3>1.2 Classical Denoising</h3>
-
-<p>Let's try to denoise these noisy images using classical methods. We apply <strong>Gaussian blur filtering</strong> using <code>torchvision.transforms.functional.gaussian_blur</code> to try to remove the noise.</p>
-
-<div class="images">
-    <img src="images/part 1.2 noisy t=250.png" alt="Noisy t=250">
-    <img src="images/part 1.2 noisy t=500.png" alt="Noisy t=500">
-    <img src="images/part 1.2 noisy t=750.png" alt="Noisy t=750">
-</div>
-<p class="caption">Noisy images at t=250, t=500, t=750</p>
-
-<div class="images">
-    <img src="images/part 1.2 denoise t=250.png" alt="Blur t=250">
-    <img src="images/part 1.2 denoise t=500.png" alt="Blur t=500">
-    <img src="images/part 1.2 denoise t =750.png" alt="Blur t=750">
-</div>
-<p class="caption">Gaussian blur denoised at t=250, t=500, t=750</p>
-
-<p><strong>Observation:</strong> As expected, classical Gaussian blur filtering fails to recover the original image. While it does reduce some high-frequency noise, it also blurs out all the important details. At t=250, the result is a blurry but somewhat recognizable tower. At t=500 and t=750, the results are essentially unrecognizable blobs. This demonstrates why we need learned denoisers like diffusion models — they can predict and remove noise while preserving (or even hallucinating) realistic image content.</p>
-
-<hr>
-
-<h3>1.3 One-Step Denoising</h3>
-
-<p>Now we use the pretrained diffusion model UNet (<code>stage_1.unet</code>) to denoise. This UNet has been trained on a very large dataset of (x₀, x_t) pairs. Given a noisy image and timestep t, it predicts the noise in the image. We can then remove this noise to recover an estimate of the original image.</p>
-
-<p>Using the prompt embedding for "a high quality photo", we estimate and remove noise for t = [250, 500, 750]:</p>
-
-<div class="images">
-    <img src="images/part 1.3 t=250.png" alt="t=250">
-    <img src="images/part 1.3 t=500.png" alt="t=500">
-    <img src="images/part 1.3 t=750.png" alt="t=750">
-</div>
-<p class="caption">One-step denoised at t=250, t=500, t=750</p>
-
-<p><strong>Observation:</strong> The UNet-based denoising does a dramatically better job than Gaussian blur! At t=250, the denoised image is nearly identical to the original Campanile. At t=500, the structure is well-preserved though some details are slightly different. At t=750, there's more degradation — the model has to "hallucinate" more content, so the result looks like a plausible tower but with different details. This makes sense: with more noise, the problem becomes harder, and the model must be more creative in its reconstruction.</p>
-
-<hr>
-
-<h3>1.4 Iterative Denoising</h3>
-
-<p>While one-step denoising works reasonably well, diffusion models are designed to denoise <strong>iteratively</strong>. Instead of jumping directly from x_t to x_0, we take many small steps, gradually removing noise.</p>
-
-<p>We create <code>strided_timesteps</code>, a list starting at 990 with stride 30, eventually reaching 0. We use the DDPM formula:</p>
-
-<div class="equation">
-x_{t'} = (√ᾱ_{t'} · β_t / (1 - ᾱ_t)) · x_0 + (√α_t · (1 - ᾱ_{t'}) / (1 - ᾱ_t)) · x_t + v_σ
-</div>
-
-<p>Starting from i_start = 10, we iteratively denoise and compare with one-step denoising and Gaussian blur:</p>
-
-<div class="images">
-    <img src="images/part 1.4 iterative denoised.png" alt="Iterative">
-    <img src="images/part 1.4 one-step denoised.png" alt="One-step">
-    <img src="images/part 1.4 gaussian blur.png" alt="Blur">
-</div>
-<p class="caption">Iterative Denoising | One-Step Denoising | Gaussian Blur</p>
-
-<p><strong>Observation:</strong> Iterative denoising produces the best results by far. The image is sharp, detailed, and closely matches the original Campanile. One-step denoising produces a reasonable result but with some artifacts and slight differences from the original. Gaussian blur produces a blurry mess. This demonstrates the power of the iterative denoising approach — by taking many small steps, we can more accurately reverse the noise process.</p>
-
-<hr>
-
-<h3>1.5 Diffusion Model Sampling</h3>
-
-<p>We can use the <code>iterative_denoise</code> function to generate images from scratch by setting i_start = 0 and passing pure random noise as input. This effectively "denoises" pure noise into a coherent image.</p>
-
-<p>Using the prompt "a high quality photo", here are 5 sampled images:</p>
-
-<div class="images">
-    <img src="images/part 1.5 sample 1.png" alt="Sample 1">
-    <img src="images/part 1.5 sample 2.png" alt="Sample 2">
-    <img src="images/part 1.5 sample 3.png" alt="Sample 3">
-    <img src="images/part 1.5 sample 4.png" alt="Sample 4">
-    <img src="images/part 1.5 sample 5.png" alt="Sample 5">
-</div>
-<p class="caption">5 sampled images without CFG</p>
-
-<p><strong>Observation:</strong> The generated images are somewhat recognizable but lack clarity and coherence. Some look like abstract patterns, others have vague object-like structures. The quality is not spectacular because the prompt "a high quality photo" is quite generic and doesn't provide strong guidance. We will improve this significantly with Classifier-Free Guidance in the next section.</p>
-
-<hr>
-
-<h3>1.6 Classifier-Free Guidance (CFG)</h3>
-
-<p>To greatly improve image quality (at the expense of diversity), we use <strong>Classifier-Free Guidance</strong>. In CFG, we compute both a conditional noise estimate (ε_c, using our prompt) and an unconditional noise estimate (ε_u, using an empty prompt). Our final noise estimate is:</p>
-
-<div class="equation">
-ε = ε_u + γ(ε_c - ε_u)
-</div>
-
-<p>where γ controls the strength of CFG. For γ=0, we get unconditional generation. For γ=1, we get standard conditional generation. The magic happens when γ > 1 — we get much higher quality images. We use γ = 7.</p>
-
-<div class="images">
-    <img src="images/part 1.6 sample 1.png" alt="CFG 1">
-    <img src="images/part 1.6 sample 2.png" alt="CFG 2">
-    <img src="images/part 1.6 sample 3.png" alt="CFG 3">
-    <img src="images/part 1.6 sample 4.png" alt="CFG 4">
-    <img src="images/part 1.6 sample 5.png" alt="CFG 5">
-</div>
-<p class="caption">5 CFG samples with γ=7</p>
-
-<p><strong>Observation:</strong> The difference is dramatic! CFG samples are significantly higher quality than non-CFG samples. The images have clearer structures, more realistic details, and better overall coherence. Objects are recognizable and the compositions make sense. CFG effectively amplifies the conditional signal, making the model more strongly follow the prompt guidance.</p>
-
-<hr>
-
-<h3>1.7 Image-to-image Translation (SDEdit)</h3>
-
-<p>Using the iterative denoising with CFG, we can edit existing images. By adding noise to a real image and then denoising, the diffusion model "hallucinates" new content while preserving the overall structure. This follows the <strong>SDEdit</strong> algorithm.</p>
-
-<p>The amount of noise (controlled by i_start) determines how much the image changes. Lower i_start = more noise = more creative changes. Higher i_start = less noise = closer to original.</p>
-
-<h4>Campanile SDEdit</h4>
-<div class="images">
-    <img src="images/part 1.7 i_start = 1.png" alt="i_start=1">
-    <img src="images/part 1.7 i_start = 3.png" alt="i_start=3">
-    <img src="images/part 1.7 i_start=5.png" alt="i_start=5">
-    <img src="images/part 1.7 i_start = 7.png" alt="i_start=7">
-</div>
-<div class="images">
-    <img src="images/part 1.7 i_start = 10.png" alt="i_start=10">
-    <img src="images/part 1.7 i_start = 20.png" alt="i_start=20">
-    <img src="images/part 1.7 original.png" alt="Original">
-</div>
-<p class="caption">SDEdit on Campanile: i_start = 1, 3, 5, 7, 10, 20, Original</p>
-
-<p><strong>Observation:</strong> At i_start=1, the image is almost completely reimagined — it looks like a completely different building or structure. As i_start increases, the output progressively resembles the original Campanile more closely. At i_start=20, the image is nearly identical to the original with only minor variations. This demonstrates how we can control the degree of "creativity" in the edit.</p>
-
-<hr>
-
-<h3>1.7.1 Editing Hand-Drawn and Web Images</h3>
-
-<p>SDEdit works particularly well for projecting non-realistic images (sketches, paintings, web images) onto the natural image manifold. The diffusion model transforms rough sketches into photorealistic images.</p>
-
-<h4>Web Image</h4>
-<div class="images">
-    <img src="images/part 1.7.1 i_start = 1.png" alt="i_start=1">
-    <img src="images/part 1.7.1 i_start = 3.png" alt="i_start=3">
-    <img src="images/part 1.7.1 i_start = 5.png" alt="i_start=5">
-    <img src="images/part 1.7.1 i_start = 7.png" alt="i_start=7">
-</div>
-<div class="images">
-    <img src="images/part 1.7.1 i_start = 10.png" alt="i_start=10">
-    <img src="images/part 1.7.1 i_start = 20.png" alt="i_start=20">
-    <img src="images/part 1.7.1 original.png" alt="Original">
-</div>
-<p class="caption">Web image SDEdit: i_start = 1, 3, 5, 7, 10, 20, Original</p>
-
-<h4>Hand-Drawn Image</h4>
-<div class="images">
-    <img src="images/part 1.7.1 image 2 i_start = 1.png" alt="i_start=1">
-    <img src="images/part 1.7.1 image 2 i_start = 3.png" alt="i_start=3">
-    <img src="images/part 1.7.1 image 2 i_start = 5.png" alt="i_start=5">
-    <img src="images/part 1.7.1 image 2 i_start = 7.png" alt="i_start=7">
-</div>
-<div class="images">
-    <img src="images/part 1.7.1 image 2 i_start = 10.png" alt="i_start=10">
-    <img src="images/part 1.7.1 image 2 i_start = 20.png" alt="i_start=20">
-    <img src="images/part 1.7.1 image 2 original.png" alt="Original">
-</div>
-<p class="caption">Hand-drawn SDEdit: i_start = 1, 3, 5, 7, 10, 20, Original sketch</p>
-
-<p><strong>Observation:</strong> The hand-drawn sketch is transformed into increasingly realistic images. At low i_start values, the model generates completely new photorealistic images inspired by the sketch's composition. At higher i_start values, the output retains more of the sketch's specific structure while still adding realistic textures and details.</p>
-
-<hr>
-
-<h3>1.7.2 Inpainting</h3>
-
-<p>Using the same diffusion denoising loop, we can implement <strong>inpainting</strong> following the RePaint paper. Given an image x_orig and a binary mask m, we create a new image with the same content where m is 0, but new content where m is 1.</p>
-
-<p>At every denoising step, after obtaining x_t, we "force" x_t to have the same pixels as x_orig where the mask is 0:</p>
-
-<div class="equation">
-x_t ← m · x_t + (1 - m) · forward(x_orig, t)
-</div>
-
-<div class="images">
-    <img src="images/part 1.7.2 image.png" alt="Original">
-    <img src="images/part 1.7.2 mask.png" alt="Mask">
-    <img src="images/part 1.7.2 inpainted.png" alt="Inpainted">
-</div>
-<p class="caption">Original Image | Mask (white = region to fill) | Inpainted Result</p>
-
-<p><strong>Observation:</strong> The inpainting successfully fills in the masked region (the top of the Campanile) with plausible content that blends seamlessly with the surrounding image. The diffusion model hallucinates realistic architectural details that match the style of the building. The result looks natural and coherent.</p>
-
-<hr>
-
-<h3>1.7.3 Text-Conditional Image-to-image Translation</h3>
-
-<p>Now we combine SDEdit with text conditioning. Instead of using a generic prompt like "a high quality photo", we use a specific text prompt to guide the transformation. This allows us to control not just how much the image changes, but <em>what</em> it changes into.</p>
-
-<div class="images">
-    <img src="images/part 1.7.3 i_start = 1.png" alt="i_start=1">
-    <img src="images/part 1.7.3 i_start = 3.png" alt="i_start=3">
-    <img src="images/part 1.7.3 i_start = 5.png" alt="i_start=5">
-    <img src="images/part 1.7.3 i_start = 7.png" alt="i_start=7">
-</div>
-<div class="images">
-    <img src="images/part 1.7.3 i_start = 10.png" alt="i_start=10">
-    <img src="images/part 1.7.3 i_start = 20.png" alt="i_start=20">
-    <img src="images/part 1.7.3 original.png" alt="Original">
-</div>
-<p class="caption">Text-conditional SDEdit: i_start = 1, 3, 5, 7, 10, 20, Original</p>
-
-<p><strong>Observation:</strong> The text prompt guides the transformation while the noise level controls how much of the original structure is preserved. At low i_start values, the output strongly reflects the text prompt. At higher values, it's a blend of the original image and the prompt concept. This technique enables powerful semantic image editing.</p>
-
-<hr>
-
-<h3>1.8 Visual Anagrams</h3>
-
-<p>Now we implement <strong>Visual Anagrams</strong> to create optical illusions with diffusion models. We create an image that looks like one thing normally, but reveals another image when flipped upside down.</p>
-
-<p>The algorithm works by averaging noise estimates from two different prompts and orientations:</p>
-
-<div class="equation">
-ε₁ = CFG_UNet(x_t, t, prompt_1)
-ε₂ = flip(CFG_UNet(flip(x_t), t, prompt_2))
-ε = (ε₁ + ε₂) / 2
-</div>
-
-<p>By averaging noise estimates from the normal and flipped orientations, the diffusion model creates an image that satisfies both prompts simultaneously but from different viewpoints.</p>
-
-<h4>Visual Anagram 1: "An Oil Painting of an Old Man" ↔ "An Oil Painting of People around a Campfire"</h4>
-<div class="images">
-    <img src="images/part 1.8 normal.png" alt="Normal">
-    <img src="images/part 1.8 flipped.png" alt="Flipped">
-</div>
-<p class="caption">Normal view: Old Man | Flipped view: People around a Campfire</p>
-
-<h4>Visual Anagram 2</h4>
-<div class="images">
-    <img src="images/part 1.8 image 2 original" alt="Normal">
-    <img src="images/part 1.8 image 2 flipped.png" alt="Flipped">
-</div>
-<p class="caption">Normal view | Flipped view</p>
-
-<p><strong>Observation:</strong> The visual anagrams successfully create optical illusions! When viewed normally, the images show one interpretation. When flipped upside down, the same features rearrange to reveal a completely different scene. The algorithm works by averaging noise estimates from both orientations, forcing the diffusion model to find an image that satisfies both prompts simultaneously.</p>
-
-<hr>
-
-<h3>1.9 Hybrid Images</h3>
-
-<p>Finally, we implement <strong>Factorized Diffusion</strong> to create hybrid images, similar to Project 2. We create a composite noise estimate by combining low frequencies from one prompt with high frequencies from another:</p>
-
-<div class="equation">
-ε₁ = CFG_UNet(x_t, t, prompt_1)
-ε₂ = CFG_UNet(x_t, t, prompt_2)
-ε = lowpass(ε₁) + highpass(ε₂)
-</div>
-
-<p>We use a Gaussian blur with kernel size 33 and sigma 2 for the low-pass filter. The high-pass is computed as the original minus the low-pass.</p>
-
-<h4>Hybrid Image 1: "A Lithograph of a Skull" (low freq) + "A Lithograph of Waterfalls" (high freq)</h4>
-<div class="images">
-    <img src="images/part 1.9 image 1 a lithograph of a skull + a lithograph of waterfulls.png" alt="Hybrid">
-</div>
-<p class="caption">Hybrid Image: View close to see waterfall textures, view from far (or squint) to see skull shape</p>
-
-<h4>Hybrid Image 2: "A Photo of a Man" (low freq) + "A Photo of a Dog" (high freq)</h4>
-<div class="images">
-    <img src="images/part 1.9 image 2 a photo of a man + a photo of a dog.png" alt="Hybrid">
-</div>
-<p class="caption">Hybrid Image: View close to see dog features, view from far (or squint) to see man's face</p>
-
-<p><strong>Observation:</strong> The hybrid images work as intended! When viewed up close, the fine details and textures of the high-frequency prompt are visible. When viewed from a distance (or by squinting), these details blur together and the low-frequency shape becomes dominant. This technique successfully combines frequency components from different prompts during the denoising process.</p>
-
-<div class="note">
-    <strong>Tips for viewing hybrid images:</strong>
-    <ul>
-        <li>View the image at different distances from your screen</li>
-        <li>Try squinting to blur out high-frequency details</li>
-        <li>The low-frequency content dominates from far away</li>
-        <li>The high-frequency content dominates up close</li>
-    </ul>
-</div>
-
-<hr>
-
-<h1>Part B: Training Your Own Diffusion Model</h1>
-
-<p>In Part B, we train our own flow matching model on MNIST from scratch.</p>
-
-<h2>Part 1: Training a Single-Step Denoising UNet</h2>
-
-<h3>1.2 Using the UNet to Train a Denoiser</h3>
-
-<p>We visualize the noising process over σ ∈ [0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0]. As σ increases, the images become progressively noisier.</p>
-
-<div class="images-small">
-    <img src="images/part 1.2 images at different noisy level.png" alt="Noising Process">
-</div>
-<p class="caption">Visualization of the noising process at different σ values</p>
-
-<h3>1.2.1 Training</h3>
-
-<p>We train a denoiser to denoise images with σ = 0.5. The model is trained for 5 epochs using Adam optimizer with learning rate 1e-4 and hidden dimension D = 128.</p>
-
-<div class="images-small">
-    <img src="images/part 1.2.1.png" alt="Training Results">
-</div>
-<p class="caption">Training loss curve and sample results on test set after 1st and 5th epoch</p>
-
-<h3>1.2.2 Out-of-Distribution Testing</h3>
-
-<p>We test the denoiser on noise levels it wasn't trained on. The same image is shown with varying σ values to evaluate generalization.</p>
-
-<div class="images-small">
-    <img src="images/part 1.2.2.png" alt="OOD Testing">
-</div>
-<p class="caption">Out-of-distribution denoising results with varying σ levels</p>
-
-<h3>1.2.3 Denoising Pure Noise</h3>
-
-<p>We train a model to denoise pure random Gaussian noise (σ = 1.0) to see if we can generate images from scratch.</p>
-
-<div class="images-small">
-    <img src="images/part 1.2.3.png" alt="Pure Noise Denoising">
-</div>
-<p class="caption">Training loss curve and sample results on pure noise after 1st and 5th epoch</p>
-
-<p><strong>Observation:</strong> The generated outputs show blurry, averaged patterns that resemble a superposition of all digits. This happens because with MSE loss, the model learns to predict the centroid (mean) of all training examples. Since different digits have different shapes, the model compromises by outputting an average of all possible digits, resulting in blurry, non-distinct outputs. This demonstrates why one-step denoising alone cannot perform proper generative modeling.</p>
-
-<hr>
-
-<h2>Part 2: Training a Flow Matching Model</h2>
-
-<h3>2.2 Training the Time-Conditioned UNet</h3>
-
-<p>We train a time-conditioned UNet to predict the flow from noisy to clean data. The model uses hidden dimension D = 64 and is trained with Adam optimizer (initial lr = 1e-2) with exponential learning rate decay (γ = 0.1^(1/num_epochs)).</p>
-
-<div class="images-small">
-    <img src="images/part 2.2.png" alt="Training Loss">
-</div>
-<p class="caption">Training loss curve for time-conditioned UNet</p>
-
-<h3>2.3 Sampling from the Time-Conditioned UNet</h3>
-
-<p>Sampling results at epochs 1, 5, and 10:</p>
-
-<h4>Epoch 1</h4>
-<div class="images-small">
-    <img src="images/part 2.3 epoch 1.png" alt="Epoch 1">
-</div>
-
-<h4>Epoch 5</h4>
-<div class="images-small">
-    <img src="images/part 2.3 epoch 5.png" alt="Epoch 5">
-</div>
-
-<h4>Epoch 10</h4>
-<div class="images-small">
-    <img src="images/part 2.3 epoch 10.png" alt="Epoch 10">
-</div>
-<p class="caption">Time-conditioned sampling results at epochs 1, 5, and 10</p>
-
-<hr>
-
-<h3>2.5 Training the Class-Conditioned UNet</h3>
-
-<p>We add class conditioning (digits 0-9) with 10% dropout for classifier-free guidance during training.</p>
-
-<div class="images-small">
-    <img src="images/part 2.5.png" alt="Training Loss">
-</div>
-<p class="caption">Training loss curve for class-conditioned UNet</p>
-
-<h3>2.6 Sampling from the Class-Conditioned UNet</h3>
-
-<p>We sample with CFG (γ = 5), generating 4 instances of each digit (0-9) at epochs 1, 5, and 10:</p>
-
-<h4>Epoch 1</h4>
-<div class="images-small">
-    <img src="images/part 2.6 epoch 1.png" alt="Epoch 1">
-</div>
-
-<h4>Epoch 5</h4>
-<div class="images-small">
-    <img src="images/part 2.6 epoch 5.png" alt="Epoch 5">
-</div>
-
-<h4>Epoch 10</h4>
-<div class="images-small">
-    <img src="images/part 2.6 epoch 10.png" alt="Epoch 10">
-</div>
-<p class="caption">Class-conditioned sampling results at epochs 1, 5, and 10 (4 instances per digit)</p>
-
-<hr>
-
-<h3>Training Without Learning Rate Scheduler</h3>
-
-<p>To remove the exponential learning rate scheduler while maintaining performance, we made the following changes:</p>
-
-<ul>
-    <li>Used a lower constant learning rate (1e-3 instead of 1e-2)</li>
-    <li>Added gradient clipping (max norm = 1.0) to stabilize training</li>
-    <li>Trained for the same number of epochs</li>
-</ul>
-
-<p>Results without scheduler at epochs 1, 5, and 10:</p>
-
-<h4>Epoch 1</h4>
-<div class="images-small">
-    <img src="images/part 2.6 epoch 1.png" alt="No Scheduler Epoch 1">
-</div>
-
-<h4>Epoch 5</h4>
-<div class="images-small">
-    <img src="images/part 2.6 epoch 5.png" alt="No Scheduler Epoch 5">
-</div>
-
-<h4>Epoch 10</h4>
-<div class="images-small">
-    <img src="images/part 2.6 epoch 10.png" alt="No Scheduler Epoch 10">
-</div>
-<p class="caption">Sampling results without learning rate scheduler at epochs 1, 5, and 10</p>
-
-<p><strong>Observation:</strong> By using a lower constant learning rate and gradient clipping, we can achieve comparable performance without the learning rate scheduler. The key insight is that the scheduler's main benefit is preventing the learning rate from being too high in later epochs — we can achieve the same effect by simply starting with a lower learning rate. Gradient clipping further helps stabilize training by preventing large gradient updates that could destabilize the model.</p>
-
-<hr>
-
-<p style="text-align: center; color: #999; margin-top: 50px;">CS 180 Project 5 • Fall 2025 • UC Berkeley</p>
-
+  </section>
+
+  <!-- guided tour card -->
+  <section class="tour" id="tour" hidden aria-live="polite">
+    <div class="tour-top">
+      <span class="tour-step" id="tour-step"></span>
+      <button class="tour-end" id="tour-end">End tour ✕</button>
+    </div>
+    <p class="tour-kicker" id="tour-kicker"></p>
+    <h3 class="tour-title" id="tour-title"></h3>
+    <p class="tour-text" id="tour-text"></p>
+    <div class="tour-actions">
+      <button id="tour-prev">← Prev</button>
+      <button id="tour-more">Read more</button>
+      <button id="tour-next" class="primary">Next →</button>
+    </div>
+    <div class="tour-bar"><span id="tour-fill"></span></div>
+  </section>
+
+  <!-- river map -->
+  <nav class="rail" id="rail" hidden aria-label="River map">
+    <p class="rail-sec">春 · The river</p>
+    <ol id="rail-valley"></ol>
+    <p class="rail-sec">夏 · The festival</p>
+    <ol id="rail-fest"></ol>
+  </nav>
+
+  <!-- zoom -->
+  <div class="zoom" id="zoom" hidden>
+    <button id="zoom-in" aria-label="Zoom in">＋</button>
+    <button id="zoom-out" aria-label="Zoom out">－</button>
+    <button id="zoom-home" aria-label="Reset view" title="Reset view">⌂</button>
+  </div>
+
+  <!-- festival camera shots -->
+  <div class="shots" id="shots" hidden>
+    <button data-shot="overview">Overview</button>
+    <button data-shot="street">Works street</button>
+    <button data-shot="lake">Lantern lake</button>
+    <button data-shot="pagoda">Pagoda</button>
+    <button data-shot="mountain">Snow mountain</button>
+  </div>
+
+  <div class="hint" id="hint" hidden></div>
+  <div class="toast" id="toast" hidden></div>
+
+  <!-- panels: a hanging scroll -->
+  <div class="scrim" id="scrim" hidden></div>
+  <section class="scroll" id="scroll" hidden aria-modal="true" role="dialog">
+    <div class="roller roller-top"></div>
+    <div class="scroll-paper">
+      <button class="scroll-close" id="scroll-close" aria-label="Close">✕</button>
+      <div class="scroll-body" id="scroll-body"></div>
+    </div>
+    <div class="roller roller-bottom"></div>
+  </section>
+
+  <noscript><p class="noscript">Yichen Cai: MSIN student at Carnegie Mellon, UC Berkeley Computer Science graduate. This site needs JavaScript and WebGL. See my <a href="cs180/">CS 180 computer vision projects</a> and my code at <a href="https://github.com/XiaoCaiYiDie676">github.com/XiaoCaiYiDie676</a>.</p></noscript>
+
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS 180 Project 0: Becoming Friends with Your Camera · Yichen Cai</title>
+  <meta name="description" content="Yichen Cai's CS 180 Project 0: experiments with camera distance, focal length, perspective and the dolly zoom.">
+  <link rel="stylesheet" href="site.css">
+</head>
+<body class="c180">
+<nav class="c180-nav" aria-label="CS 180 projects"><a class="c180-home" href="index.html"><b>CS 180</b> · Yichen Cai</a><ul class="c180-links"><li><a href="project1.html"><span class="c180-n">1</span>Colorization</a></li><li><a href="project2.html"><span class="c180-n">2</span>Filters &amp; Frequencies</a></li><li><a href="project3.html"><span class="c180-n">3</span>Mosaics</a></li><li><a href="project4.html"><span class="c180-n">4</span>NeRF</a></li><li><a href="project5.html"><span class="c180-n">5</span>Diffusion</a></li></ul><a class="c180-out" href="../">Main portfolio ↗</a></nav>
+
+<p class="c180-kicker">Warm-up · Project 0 · September 2025</p>
+<h1>Becoming Friends with Your Camera</h1>
+<p class="c180-meta">Yichen Cai · UC Berkeley CS 180</p>
+<p class="c180-lead">How camera distance and focal length change perspective: a selfie series, a perspective comparison and a dolly zoom.</p>
+<section>
+            <h2>Part 1 — Selfie Series</h2>
+            <p class="c180-note">
+                Distances are measured from a <em>reference position</em> that achieves optimal framing. Values below this baseline represent moving toward the subject, while those above indicate increasing distance. To preserve consistent facial proportions when moving backward, I correspondingly adjusted the zoom to compensate.
+            </p>
+
+            <div class="c180-figs">
+                <figure><img src="Image_20250902220431.jpg" loading="lazy"><figcaption>(−1 feet) Closer than baseline; stronger perspective exaggeration.</figcaption></figure>
+                <figure><img src="Image_20250902220437.jpg" loading="lazy"><figcaption>(0 feet) Baseline position and framing.</figcaption></figure>
+            </div>
+
+            <div class="c180-note">
+                <h4>Reflection — Part 1</h4>
+                <p>
+                    As I moved closer to the subject, their facial features became increasingly pronounced, with the nose appearing substantially larger in relation to the ears. Conversely, increasing the distance resulted in more compressed and balanced facial proportions. This phenomenon occurs because reduced shooting distance amplifies the relative distance variance between facial features—the nose being significantly closer to the lens than the ears. Consequently, the nose and mouth command greater visual prominence, naturally drawing the viewer's attention.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Part 2 — Perspective Comparison</h2>
+            <div class="c180-figs">
+                <figure><img src="Image_20250902215133.jpg" alt="Zoomed-in scene shot from far away" loading="lazy"><figcaption>Zoomed from far — scene appears flatter/compressed; parallels remain nearly parallel.</figcaption></figure>
+                <figure><img src="Image_20250902215140.jpg" alt="Wide-angle view from near" loading="lazy"><figcaption>No zoom — stronger convergence; foreground/background depth is emphasized.</figcaption></figure>
+            </div>
+
+            <div class="c180-note">
+                <h4>Reflection — Part 2</h4>
+                <p>
+                   As observed in the portrait study, adjusting camera position fundamentally alters perspective, while focal length primarily affects image composition without changing spatial relationships. At closer proximity, foreground elements appear dramatically enlarged compared to background features, creating exaggerated depth perception. By increasing shooting distance, the relative scale differences diminish, producing a more balanced, compressed visual representation that appears flatter and more uniform in perspective.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Part 3 — The Dolly Zoom</h2>
+            <div class="c180-figs small"><figure><img src="a4ximv.gif" alt="Animated dolly zoom GIF"></figure></div>
+            
+            <div class="c180-note">
+                <h4>Reflection — Part 3</h4>
+                <p>
+                    The dolly zoom generates a powerful psychological disorientation by dramatically shifting background perspective while keeping the subject's size constant. This cinematic technique creates a surreal, vertigo-inducing experience where the environment appears to expand or contract around a stable focal point. It's remarkable how this seemingly straightforward combination of camera movement and focal adjustment can so profoundly manipulate our perception of three-dimensional space within a two-dimensional medium.
+                </p>
+            </div>
+        </section>
+<nav class="c180-pager" aria-label="Previous and next project"><a class="next" href="project1.html"><small>Next →</small>Project 1: Colorizing the Prokudin-Gorskii Collection</a><a class="c180-all" href="index.html"><small>Overview</small>All CS 180 projects</a></nav>
+</body>
+</html>
