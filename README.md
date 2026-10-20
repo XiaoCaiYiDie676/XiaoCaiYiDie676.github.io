@@ -23,6 +23,10 @@ Switch views with the buttons at the bottom or the keys `V`, `1`, `2`, `3`. `Esc
 | Festival gate | end of the river | the festival scene |
 | Works street (one stall per project, with crowds) | festival | the project |
 
+## Work portfolio (plain page)
+
+[`work.html`](https://xiaocaiyidie676.github.io/work.html) is a fast, scrollable, printable version of the portfolio for recruiters: featured case studies, all projects with category filters, skills, journey and contact. It renders from the same `js/data.js`, so it never drifts from the 3D site. Linked from the 3D site's top nav (册 Portfolio).
+
 ## CS 180 projects
 
 [`cs180/`](https://xiaocaiyidie676.github.io/cs180/) collects all five of my CS 180 (Computer Vision and Computational Photography, UC Berkeley) write-ups in one site:
@@ -50,6 +54,7 @@ Add a project there and it appears in the Works panel, as a lantern in the valle
 ## Structure
 
 ```
+work.html             plain work portfolio page (css/work.css, js/work.js)
 index.html            HUD + panels markup, SEO tags, import map (three@0.160.0 from jsDelivr)
 css/style.css         rice-paper / ink UI
 js/main.js            UI, panels, settings presets, synthesized audio
